@@ -8,21 +8,21 @@ export default function index() {
   return (
     <View style={styles.container}>
       <Text>Esta sería la página principal</Text>
-      <Boton name="Abrir modal"
+      <Boton name="modal"
         textStyle={[styles.titulo, { color: "#DDF4E7" }]}
         buttonStyle={styles.tarjeta}
         unpressedButton={{ backgroundColor: "#67C090" }}
         pressedButton={{ backgroundColor: "#26667F" }}
         onPress={() => router.push("../modal")}
       />
-      <Boton name="Perfil"
+      <Boton name="perfil"
         textStyle={[styles.titulo, { color: "#DDF4E7" }]}
         buttonStyle={styles.tarjeta}
         unpressedButton={{ backgroundColor: "#67C090" }}
         pressedButton={{ backgroundColor: "#26667F" }}
         onPress={() => router.push("./perfil")}
       />
-      <Boton name="About"
+      <Boton name="about"
         textStyle={[styles.titulo, { color: "#DDF4E7" }]}
         buttonStyle={styles.tarjeta}
         unpressedButton={{ backgroundColor: "#67C090" }}
@@ -40,17 +40,22 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: '#DDF4E7',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
+    flexWrap:"nowrap"
+
 
   },
   tarjeta: {
     borderRadius: 10,
-    padding: 50,
     borderWidth: 3,
-    borderColor: "#DDF4E7"
+    borderColor: "#DDF4E7",
+    width:"90%",
+    height:"30%",
+    justifyContent:"flex-end",
+    alignItems:"flex-end"
   },
   titulo: {
-    fontSize: 30,
+    fontSize: 80,
     fontWeight: "bold"
   }
 });
