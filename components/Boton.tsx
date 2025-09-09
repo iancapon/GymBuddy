@@ -1,8 +1,8 @@
-import { Text, Pressable, StyleSheet, StyleProp, ViewStyle } from 'react-native'
+import { Text, Pressable, StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native'
 
 type CustomButtonStyles = {
     button: ViewStyle
-    font: ViewStyle
+    font: TextStyle
     pressedButton: ViewStyle
     unpressedButton: ViewStyle
 }
@@ -10,12 +10,13 @@ type CustomButtonStyles = {
 type buttonProps = {
     name: string
     onPress?: () => void
-    style?: StyleSheet.NamedStyles<CustomButtonStyles>;
+    customStyle?: StyleSheet.NamedStyles<CustomButtonStyles>;
+
 }
 
 
 export default function Boton(props: buttonProps) {
-    const styles = props.style == undefined ? defaultStyles : props.style
+    const styles = props.customStyle == undefined ? defaultStyles : props.customStyle
     return (
         <Pressable style={({ pressed }) => [
             { borderWidth: 1 },
@@ -23,7 +24,7 @@ export default function Boton(props: buttonProps) {
             pressed ? styles.pressedButton : styles.unpressedButton
         ]}
             onPress={props.onPress}>
-            <Text style={styles.font}>{props.name}</Text>
+            <Text style={[styles.font]}>{props.name}</Text>
         </Pressable>
     )
 }
@@ -32,7 +33,8 @@ const defaultStyles = StyleSheet.create({
         padding: 7,
         margin: 6,
         borderRadius: 3,
-        
+        justifyContent: "center",
+        alignSelf:"baseline"
     },
     font: {
         fontSize: 15

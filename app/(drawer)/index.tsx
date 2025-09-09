@@ -8,32 +8,32 @@ export default function index() {
   return (
     <ScrollView contentContainerStyle={{alignItems: "center"}} style={styles.verticalContainer}>
       <Boton name="modal"
-        style={buttonStyles(styles.titulo)}
+        customStyle={buttonStyles(styles.titulo)}
         onPress={() => router.push("../modal")}
       />
       <View style={styles.horizontalContainer}>
         <Boton name="perfil"
-          style={buttonStyles(styles.subtitulo)}
+          customStyle={buttonStyles(styles.subtitulo)}
           onPress={() => router.push("./perfil")}
         />
         <Boton name="perfil"
-          style={buttonStyles(styles.subtitulo)}
+          customStyle={buttonStyles(styles.subtitulo)}
           onPress={() => router.push("./perfil")}
         />
       </View>
       <Boton name="about"
-        style={buttonStyles(styles.titulo)}
+        customStyle={buttonStyles(styles.titulo)}
         onPress={() => router.push("./about")}
       />
       <Boton name="about"
-        style={buttonStyles(styles.titulo)}
+        customStyle={buttonStyles(styles.titulo)}
         onPress={() => router.push("./about")}
       />
       <Boton name="lyer lawyer mirror for ya"
-        style={buttonStyles(styles.titulo)}
+        customStyle={buttonStyles(styles.titulo)}
       />
       <Boton name="whats the difference"
-        style={buttonStyles(styles.subtitulo)}
+        customStyle={buttonStyles(styles.subtitulo)}
       />
       <StatusBar style="auto" />
     </ScrollView>
@@ -52,8 +52,8 @@ const buttonStyles = (fuente?: TextStyle) => {
         width: "96%",
         justifyContent: "flex-end",
         alignItems: "flex-end",
+        alignSelf:"center",
         flex: 1,
-       // height:300
       },
       font: fuente == undefined ? {
         color: "#DDF4E7",
