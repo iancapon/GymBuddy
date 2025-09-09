@@ -1,15 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { useRouter, Link } from 'expo-router'
+import Boton from "../../components/Boton"
 
 export default function index() {
   const router = useRouter()
   return (
     <View style={styles.container}>
       <Text>Perfil propio del usuario</Text>
-      <Link href="../modal" style={styles.link}>
-        abrir modal
-      </Link> 
+      <Boton name="volver atras" onPress={()=> router.back()}/>
       <StatusBar style="auto" />
     </View>
   );
