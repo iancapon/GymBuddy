@@ -23,7 +23,7 @@ export default function Modal() {
 
         <View style={{ flex: 1 }}>
 
-          <Boton name="volver atras" customStyle={buttonStyles(styles.medioW)} onPress={() => router.back()} />
+          <Boton name="volver atras" viewStyle={[styles.button, { maxHeight: 80 }]} textStyle={styles.medioW} onPress={() => router.back()} />
 
         </View>
 
@@ -43,6 +43,18 @@ export default function Modal() {
 
 
 const styles = StyleSheet.create({
+  button: {
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#ffffffff",
+    width: "96%",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    alignSelf: "center",
+    flex: 1,
+    backgroundColor: "#67C090"
+  },
   verticalContainer: {
     flex: 1,
     flexDirection: "column",

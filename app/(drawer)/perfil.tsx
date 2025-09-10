@@ -32,15 +32,15 @@ export default function index() {
 
         <View style={{ flex: 1 }}>
 
-          <Boton name="volver atras" customStyle={buttonStyles(styles.medioW)} onPress={() => router.back()} />
+          <Boton name="volver atras" viewStyle={styles.button} textStyle={styles.medioW} onPress={() => router.back()} />
 
         </View>
 
         <View style={[styles.verticalContainer, { flex: 2 }]}>
 
-          <Boton name="ingresar datos" customStyle={buttonStyles(styles.medioW)} onPress={() => router.push("/modal")} />
+          <Boton name="ingresar datos" viewStyle={styles.button} textStyle={styles.medioW} onPress={() => router.push("/modal")} />
 
-          <Boton name="nuevo plan" customStyle={buttonStyles(styles.medioW)} onPress={() => router.push("/modal")} />
+          <Boton name="nuevo plan" viewStyle={styles.button} textStyle={styles.medioW} onPress={() => router.push("/modal")} />
 
         </View>
 
@@ -55,6 +55,18 @@ export default function index() {
 
 
 const styles = StyleSheet.create({
+  button: {
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#ffffffff",
+    width: "96%",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    alignSelf: "center",
+    flex: 1,
+    backgroundColor: "#67C090"
+  },
   verticalContainer: {
     flex: 1,
     flexDirection: "column",
@@ -102,33 +114,3 @@ const styles = StyleSheet.create({
 });
 
 
-
-const buttonStyles = (fuente?: TextStyle) => {
-
-  return (
-    StyleSheet.create({
-      button: {
-        padding: 5,
-        borderRadius: 10,
-        borderWidth: 3,
-        borderColor: "white",
-        width: "96%",
-        justifyContent: "flex-end",
-        alignItems: "flex-end",
-        maxHeight: 80,
-        flex: 1,
-      },
-      font: fuente == undefined ? {
-        color: "#DDF4E7",
-        fontSize: 20,
-        fontWeight: "bold"
-      } : fuente,
-      pressedButton: {
-        backgroundColor: "#26667F",
-      },
-      unpressedButton: {
-        backgroundColor: "#67C090",
-      }
-    })
-  )
-}

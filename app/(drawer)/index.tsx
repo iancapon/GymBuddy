@@ -15,51 +15,62 @@ export default function index() {
   return (
     <ScrollView contentContainerStyle={{ alignItems: "center" }} style={[styles.verticalContainer, {}]}>
       <Boton name="gym workout para hoy"
-        customStyle={buttonStyles(styles.titulo)}
+        viewStyle={[styles.button]}
+        textStyle={[styles.titulo]}
         onPress={() => router.push("/workout")}
       />
       <View style={styles.horizontalContainer}>
         <Boton name="ayer"
-          customStyle={buttonStyles(styles.subtitulo)}
+          textStyle={[styles.subtitulo]}
+          viewStyle={[styles.button]}
           onPress={() => router.push("/workout")}
         />
         <Boton name="anteayer"
-          customStyle={buttonStyles(styles.subtitulo)}
+          textStyle={[styles.subtitulo]}
+          viewStyle={[styles.button]}
           onPress={() => router.push("/workout")}
         />
       </View>
       <View style={styles.horizontalContainer}>
         <Boton name="nuevo workout"
-          customStyle={buttonStyles(styles.grande)}
+          textStyle={[styles.grande]}
+          viewStyle={[styles.button]}
           onPress={() => router.push("/nuevo_workout")}
         />
         <Boton name="programar calendario"
-          customStyle={buttonStyles(styles.grande)}
+          textStyle={[styles.grande]}
+          viewStyle={[styles.button]}
           onPress={() => router.push("/calendario")}
         />
       </View>
       <Boton name="core"
-        customStyle={buttonStyles(styles.titulo)}
+        textStyle={[styles.titulo]}
+        viewStyle={[styles.button]}
         onPress={() => router.push("/workout")}
       />
       <Boton name="espalda"
-        customStyle={buttonStyles(styles.titulo)}
+        textStyle={[styles.titulo]}
+        viewStyle={[styles.button]}
         onPress={() => router.push("/workout")}
       />
       <Boton name="brazos"
-        customStyle={buttonStyles(styles.titulo)}
+        textStyle={[styles.subtitulo]}
+        viewStyle={[styles.button]}
         onPress={() => router.push("/workout")}
       />
       <Boton name="piernas"
-        customStyle={buttonStyles(styles.subtitulo)}
+        textStyle={[styles.subtitulo]}
+        viewStyle={[styles.button]}
         onPress={() => router.push("/workout")}
       />
       <Boton name="custom 1"
-        customStyle={buttonStyles(styles.titulo)}
+        textStyle={[styles.titulo]}
+        viewStyle={[styles.button]}
         onPress={() => router.push("/workout")}
       />
       <Boton name="custom 2"
-        customStyle={buttonStyles(styles.subtitulo)}
+        textStyle={[styles.titulo]}
+        viewStyle={[styles.button]}
         onPress={() => router.push("/workout")}
       />
       <View style={{ padding: 50 }}></View>
@@ -68,38 +79,20 @@ export default function index() {
   );
 }
 
-function buttonStyles(fuente?: TextStyle) {
-
-  return (
-    StyleSheet.create({
-      button: {
-        padding: 5,
-        borderRadius: 10,
-        borderWidth: 3,
-        borderColor: "#ffffffff",
-        width: "96%",
-        justifyContent: "flex-end",
-        alignItems: "flex-end",
-        alignSelf: "center",
-        flex: 1,
-      },
-      font: fuente == undefined ? {
-        color: "#DDF4E7",
-        fontSize: 20,
-        fontWeight: "bold"
-      } : fuente,
-      pressedButton: {
-        backgroundColor: "#26667F",
-      },
-      unpressedButton: {
-        backgroundColor: "#67C090",
-      }
-    })
-  )
-}
-
 
 const styles = StyleSheet.create({
+  button: {
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#ffffffff",
+    width: "96%",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    alignSelf: "center",
+    flex: 1,
+    backgroundColor: "#67C090"
+  },
   verticalContainer: {
     flex: 1,
     flexDirection: "column",

@@ -8,31 +8,31 @@ import * as NavigationBar from "expo-navigation-bar";
 export default function Modal() {
   const router = useRouter()
   useEffect(() => {
-      NavigationBar.setVisibilityAsync("hidden");
-      //NavigationBar.setBehaviorAsync("overlay-swipe");
-    }, []);
+    NavigationBar.setVisibilityAsync("hidden");
+    //NavigationBar.setBehaviorAsync("overlay-swipe");
+  }, []);
   return (
     <View style={styles.verticalContainer}>
-      <View style={[{flex: 9}]}>
+      <View style={[{ flex: 9 }]}>
         <Text style={[styles.medio, {}]}>
           Esta es una pantalla modal de prueba..
           holalalal
         </Text>
-        
+
       </View>
-      <View style={[styles.horizontalContainer, {flex: 2}]}>
+      <View style={[styles.horizontalContainer, { flex: 2 }]}>
 
         <View style={{ flex: 1 }}>
 
-          <Boton name="volver atras" customStyle={buttonStyles(styles.medioW)} onPress={() => router.back()} />
+          <Boton name="volver atras" viewStyle={[styles.button, { maxHeight: 80 }]} textStyle={styles.medioW} onPress={() => router.back()} />
 
         </View>
 
         <View style={[styles.verticalContainer, { flex: 2 }]}>
           <Text style={[styles.medio, {}]}>
-          el volver atras desde el modal funciona cuando quiere
-          (arreglado)
-        </Text>
+            el volver atras desde el modal funciona cuando quiere
+            (arreglado)
+          </Text>
         </View>
 
 
@@ -44,11 +44,23 @@ export default function Modal() {
 
 
 const styles = StyleSheet.create({
+  button: {
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#ffffffff",
+    width: "96%",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    alignSelf: "center",
+    flex: 1,
+    backgroundColor: "#67C090"
+  },
   verticalContainer: {
     flex: 1,
     flexDirection: "column",
     backgroundColor: "white",
-    padding:10
+    padding: 10
   },
   horizontalContainer: {
     flex: 1,
@@ -88,37 +100,5 @@ const styles = StyleSheet.create({
   }
 
 });
-
-
-
-const buttonStyles = (fuente?: TextStyle) => {
-
-  return (
-    StyleSheet.create({
-      button: {
-        padding: 5,
-        borderRadius: 10,
-        borderWidth: 3,
-        borderColor: "white",
-        width: "96%",
-        justifyContent: "flex-end",
-        alignItems: "flex-end",
-        maxHeight: 80,
-        flex: 1,
-      },
-      font: fuente == undefined ? {
-        color: "#DDF4E7",
-        fontSize: 20,
-        fontWeight: "bold"
-      } : fuente,
-      pressedButton: {
-        backgroundColor: "#26667F",
-      },
-      unpressedButton: {
-        backgroundColor: "#67C090",
-      }
-    })
-  )
-}
 
 
