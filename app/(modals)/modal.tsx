@@ -9,14 +9,16 @@ export default function Modal() {
   const router = useRouter()
   useEffect(() => {
       NavigationBar.setVisibilityAsync("hidden");
-      NavigationBar.setBehaviorAsync("overlay-swipe");
+      //NavigationBar.setBehaviorAsync("overlay-swipe");
     }, []);
   return (
     <View style={styles.verticalContainer}>
       <View style={[{flex: 9}]}>
         <Text style={[styles.medio, {}]}>
-          Esta pantalla tiene la informacion legal de la aplicacion
+          Esta es una pantalla modal de prueba..
+          holalalal
         </Text>
+        
       </View>
       <View style={[styles.horizontalContainer, {flex: 2}]}>
 
@@ -26,7 +28,12 @@ export default function Modal() {
 
         </View>
 
-        <View style={[styles.verticalContainer, { flex: 2 }]}></View>
+        <View style={[styles.verticalContainer, { flex: 2 }]}>
+          <Text style={[styles.medio, {}]}>
+          el volver atras desde el modal funciona cuando quiere
+        </Text>
+        </View>
+
 
       </View>
     </View>
@@ -41,7 +48,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "white",
     padding:10
-    
   },
   horizontalContainer: {
     flex: 1,

@@ -2,9 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, TextStyle, Text, View, ScrollView } from 'react-native';
 import { useRouter, Link } from 'expo-router'
 import Boton from "../../components/Boton"
+import { useEffect } from "react";
+import * as NavigationBar from "expo-navigation-bar";
 
 export default function index() {
   const router = useRouter()
+  useEffect(() => {
+    NavigationBar.setVisibilityAsync("hidden");
+    NavigationBar.setBehaviorAsync("overlay-swipe");
+  }, []);
   return (
     <ScrollView style={styles.verticalContainer}>
 
@@ -32,7 +38,7 @@ export default function index() {
 
         <View style={[styles.verticalContainer, { flex: 2 }]}>
 
-          <Boton name="ingresar datos" customStyle={buttonStyles(styles.medioW)} onPress={() => router.push("../modal")} />
+          <Boton name="ingresar datos" customStyle={buttonStyles(styles.medioW)} onPress={() => router.push("../(modals)/modal")} />
 
           <Boton name="nuevo plan" customStyle={buttonStyles(styles.medioW)} onPress={() => router.push("../modal")} />
 
@@ -53,7 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "white",
-    padding: 0,
+    padding: 2,
     //justifyContent:"space-between"
   },
   horizontalContainer: {
@@ -109,7 +115,7 @@ const buttonStyles = (fuente?: TextStyle) => {
         width: "96%",
         justifyContent: "flex-end",
         alignItems: "flex-end",
-
+        maxHeight: 80,
         flex: 1,
       },
       font: fuente == undefined ? {
