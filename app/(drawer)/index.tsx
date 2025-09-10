@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, ViewStyle, StyleProp , Text, View, ScrollView, TextStyle } from 'react-native';
+import { StyleSheet, ViewStyle, StyleProp, Text, View, ScrollView, TextStyle } from 'react-native';
 import Boton from '../../components/Boton'
 import { Link, useRouter } from 'expo-router'
 import { useEffect } from "react";
@@ -9,11 +9,11 @@ import * as NavigationBar from "expo-navigation-bar";
 export default function index() {
   const router = useRouter()
   useEffect(() => {
-      NavigationBar.setVisibilityAsync("hidden");
-      //NavigationBar.setBehaviorAsync("overlay-swipe");
-    }, []);
+    NavigationBar.setVisibilityAsync("hidden");
+    //NavigationBar.setBehaviorAsync("overlay-swipe");
+  }, []);
   return (
-    <ScrollView contentContainerStyle={{alignItems: "center"}} style={styles.verticalContainer}>
+    <ScrollView contentContainerStyle={{ alignItems: "center" }} style={[styles.verticalContainer, {}]}>
       <Boton name="gym workout para hoy"
         customStyle={buttonStyles(styles.titulo)}
         onPress={() => router.push("/workout")}
@@ -62,24 +62,25 @@ export default function index() {
         customStyle={buttonStyles(styles.subtitulo)}
         onPress={() => router.push("/workout")}
       />
+      <View style={{ padding: 50 }}></View>
       <StatusBar style="auto" />
     </ScrollView>
   );
 }
 
-function buttonStyles (fuente?: TextStyle) {
+function buttonStyles(fuente?: TextStyle) {
 
   return (
     StyleSheet.create({
       button: {
-        padding:5,
+        padding: 5,
         borderRadius: 10,
         borderWidth: 3,
         borderColor: "#ffffffff",
         width: "96%",
         justifyContent: "flex-end",
         alignItems: "flex-end",
-        alignSelf:"center",
+        alignSelf: "center",
         flex: 1,
       },
       font: fuente == undefined ? {
