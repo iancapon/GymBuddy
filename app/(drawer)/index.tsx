@@ -33,7 +33,7 @@ export default function index() {
           customStyle={buttonStyles(styles.grande)}
           onPress={() => router.push("/nuevo_workout")}
         />
-        <Boton name="programar workout"
+        <Boton name="programar calendario"
           customStyle={buttonStyles(styles.grande)}
           onPress={() => router.push("/calendario")}
         />
