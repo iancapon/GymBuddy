@@ -10,50 +10,54 @@ export default function index() {
   const router = useRouter()
   useEffect(() => {
       NavigationBar.setVisibilityAsync("hidden");
-      NavigationBar.setBehaviorAsync("overlay-swipe");
+      //NavigationBar.setBehaviorAsync("overlay-swipe");
     }, []);
   return (
     <ScrollView contentContainerStyle={{alignItems: "center"}} style={styles.verticalContainer}>
       <Boton name="gym workout para hoy"
         customStyle={buttonStyles(styles.titulo)}
-        onPress={() => router.push("../modal")}
+        onPress={() => router.push("/workout")}
       />
       <View style={styles.horizontalContainer}>
         <Boton name="ayer"
           customStyle={buttonStyles(styles.subtitulo)}
-          onPress={() => router.push("./perfil")}
+          onPress={() => router.push("/workout")}
         />
         <Boton name="anteayer"
           customStyle={buttonStyles(styles.subtitulo)}
-          onPress={() => router.push("./perfil")}
+          onPress={() => router.push("/workout")}
         />
       </View>
       <Boton name="core"
         customStyle={buttonStyles(styles.titulo)}
-        onPress={() => router.push("./about")}
+        onPress={() => router.push("/workout")}
       />
       <Boton name="espalda"
         customStyle={buttonStyles(styles.titulo)}
-        onPress={() => router.push("./about")}
+        onPress={() => router.push("/workout")}
       />
       <Boton name="brazos"
         customStyle={buttonStyles(styles.titulo)}
+        onPress={() => router.push("/workout")}
       />
       <Boton name="piernas"
         customStyle={buttonStyles(styles.subtitulo)}
+        onPress={() => router.push("/workout")}
       />
       <Boton name="custom 1"
         customStyle={buttonStyles(styles.titulo)}
+        onPress={() => router.push("/workout")}
       />
       <Boton name="custom 2"
         customStyle={buttonStyles(styles.subtitulo)}
+        onPress={() => router.push("/workout")}
       />
       <StatusBar style="auto" />
     </ScrollView>
   );
 }
 
-const buttonStyles = (fuente?: TextStyle) => {
+function buttonStyles (fuente?: TextStyle) {
 
   return (
     StyleSheet.create({
@@ -82,7 +86,6 @@ const buttonStyles = (fuente?: TextStyle) => {
     })
   )
 }
-
 
 
 const styles = StyleSheet.create({

@@ -5,13 +5,13 @@ import * as NavigationBar from "expo-navigation-bar";
 export default function RootLayout() {
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
-    NavigationBar.setBehaviorAsync("overlay-swipe");
+    //NavigationBar.setBehaviorAsync("overlay-swipe");
   }, []);
   return (
     <Stack>
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
 
-      <Stack.Screen name="(modals)/modal" options={{title:"modal", presentation: "modal" }} />
+      <Stack.Screen name="(modals)" options={{headerShown: false}} />
     </Stack>
   );
 }

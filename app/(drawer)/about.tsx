@@ -9,7 +9,7 @@ export default function Modal() {
   const router = useRouter()
   useEffect(() => {
       NavigationBar.setVisibilityAsync("hidden");
-      NavigationBar.setBehaviorAsync("overlay-swipe");
+      //NavigationBar.setBehaviorAsync("overlay-swipe");
     }, []);
   return (
     <View style={styles.verticalContainer}>

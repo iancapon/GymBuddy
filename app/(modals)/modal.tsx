@@ -31,6 +31,7 @@ export default function Modal() {
         <View style={[styles.verticalContainer, { flex: 2 }]}>
           <Text style={[styles.medio, {}]}>
           el volver atras desde el modal funciona cuando quiere
+          (arreglado)
         </Text>
         </View>
 

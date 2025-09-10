@@ -1,7 +1,13 @@
 import { Drawer } from 'expo-router/drawer'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useEffect } from "react";
+import * as NavigationBar from "expo-navigation-bar";
 
 export default function DrawerLayout() {
+    useEffect(() => {
+        NavigationBar.setVisibilityAsync("hidden");
+        //NavigationBar.setBehaviorAsync("overlay-swipe");
+      }, []);
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <Drawer>

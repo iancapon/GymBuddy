@@ -1,57 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, TextStyle, Text, View, ScrollView } from 'react-native';
-import { useRouter, Link } from 'expo-router'
-import Boton from "../../components/Boton"
+import { Text, View, StyleSheet, TextStyle } from 'react-native'
+import Boton from '../../components/Boton';
+import { useRouter } from 'expo-router'
 import { useEffect } from "react";
 import * as NavigationBar from "expo-navigation-bar";
 
-export default function index() {
+
+export default function Modal() {
   const router = useRouter()
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
     //NavigationBar.setBehaviorAsync("overlay-swipe");
   }, []);
   return (
-    <ScrollView style={styles.verticalContainer}>
-
-      <Text style={[styles.subtitulo, { flex: 2 }]}>mi perfil</Text>
-
-      <Text style={[styles.titulo, { flex: 3 }]}>Ian Capon</Text>
-
-      <Text style={[styles.medio, { flex: 1 }]}>fecha de admisión: 09/09/2025</Text>
-
-      <Text style={[styles.medio, { flex: 1 }]}>plan: básico</Text>
-
-      <View style={{ height: 400, flex: 6, borderWidth: 2, borderColor: "#26667F", justifyContent: "center", alignItems: "center" }}>
-
-        <Text>Algo habria que poner acá</Text>
+    <View style={styles.verticalContainer}>
+      <View style={[{ flex: 9 }]}>
+        <Text style={[styles.medio, {}]}>
+          Esta es una pantalla WORKOUT de prueba..
+          holalalal
+        </Text>
 
       </View>
-
       <View style={[styles.horizontalContainer, { flex: 2 }]}>
 
         <View style={{ flex: 1 }}>
 
-          <Boton name="volver atras" customStyle={buttonStyles(styles.medioW)} onPress={() => router.back()} />
+          <Boton name="volver atras" customStyle={buttonStyles(styles.medioW)} onPress={() => {
+            if (router.canGoBack()) {
+              router.back();
+            } else {
+              router.replace("../index"); // o la ruta a la que quieras forzar
+            }
+          }} />
 
         </View>
 
         <View style={[styles.verticalContainer, { flex: 2 }]}>
-
-          <Boton name="ingresar datos" customStyle={buttonStyles(styles.medioW)} onPress={() => router.push("/modal")} />
-
-          <Boton name="nuevo plan" customStyle={buttonStyles(styles.medioW)} onPress={() => router.push("/modal")} />
-
+          <Text style={[styles.medio, {}]}>
+            el volver atras desde el modal funciona cuando quiere (arreglado)
+          </Text>
         </View>
 
+
       </View>
-
-
-
-      <StatusBar style="auto" />
-    </ScrollView>
-  );
+    </View>
+  )
 }
+
 
 
 const styles = StyleSheet.create({
@@ -59,8 +53,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "white",
-    padding: 2,
-    //justifyContent:"space-between"
+    padding: 10
   },
   horizontalContainer: {
     flex: 1,
@@ -132,3 +125,5 @@ const buttonStyles = (fuente?: TextStyle) => {
     })
   )
 }
+
+

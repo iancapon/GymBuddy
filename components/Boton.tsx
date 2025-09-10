@@ -28,6 +28,7 @@ export default function Boton(props: buttonProps) {
         </Pressable>
     )
 }
+
 const defaultStyles = StyleSheet.create({
     button: {
         padding: 7,
