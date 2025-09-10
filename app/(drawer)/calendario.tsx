@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     alignSelf: "center",
     flex: 1,
-    backgroundColor: "#67C090"
   },
   verticalContainer: {
     flex: 1,
@@ -99,37 +98,5 @@ const styles = StyleSheet.create({
   }
 
 });
-
-
-
-const buttonStyles = (fuente?: TextStyle) => {
-
-  return (
-    StyleSheet.create({
-      button: {
-        padding: 5,
-        borderRadius: 10,
-        borderWidth: 3,
-        borderColor: "white",
-        width: "96%",
-        justifyContent: "flex-end",
-        alignItems: "flex-end",
-        maxHeight: 80,
-        flex: 1,
-      },
-      font: fuente == undefined ? {
-        color: "#DDF4E7",
-        fontSize: 20,
-        fontWeight: "bold"
-      } : fuente,
-      pressedButton: {
-        backgroundColor: "#26667F",
-      },
-      unpressedButton: {
-        backgroundColor: "#67C090",
-      }
-    })
-  )
-}
 
 

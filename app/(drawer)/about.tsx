@@ -8,21 +8,21 @@ import * as NavigationBar from "expo-navigation-bar";
 export default function Modal() {
   const router = useRouter()
   useEffect(() => {
-      NavigationBar.setVisibilityAsync("hidden");
-      //NavigationBar.setBehaviorAsync("overlay-swipe");
-    }, []);
+    NavigationBar.setVisibilityAsync("hidden");
+    //NavigationBar.setBehaviorAsync("overlay-swipe");
+  }, []);
   return (
     <View style={styles.verticalContainer}>
-      <View style={[{flex: 9}]}>
+      <View style={[{ flex: 9 }]}>
         <Text style={[styles.medio, {}]}>
           Esta pantalla tiene la informacion legal de la aplicacion
         </Text>
       </View>
-      <View style={[styles.horizontalContainer, {flex: 2}]}>
+      <View style={[styles.horizontalContainer, { flex: 2 }]}>
 
         <View style={{ flex: 1 }}>
 
-          <Boton name="volver atras" customStyle={buttonStyles(styles.medioW)} onPress={() => router.back()} />
+          <Boton name="volver atras" viewStyle={[styles.button, { maxHeight: 80 }]} textStyle={styles.medioW} onPress={() => router.back()} />
 
         </View>
 
@@ -36,12 +36,23 @@ export default function Modal() {
 
 
 const styles = StyleSheet.create({
+  button: {
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#ffffffff",
+    width: "96%",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    alignSelf: "center",
+    flex: 1,
+  },
   verticalContainer: {
     flex: 1,
     flexDirection: "column",
     backgroundColor: "white",
-    padding:10
-    
+    padding: 10
+
   },
   horizontalContainer: {
     flex: 1,

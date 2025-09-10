@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     alignSelf: "center",
     flex: 1,
-    backgroundColor: "#67C090"
   },
   verticalContainer: {
     flex: 1,
