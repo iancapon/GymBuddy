@@ -11,34 +11,34 @@ export default function Modal() {
 
   return (
     <View style={styles.verticalContainer}>
-      <View style={[{ flex: 0.8 }]}>
+      <View style={[{ flex: 0.8 , justifyContent:"flex-end"}]}>
 
         <Text style={[styles.grande, { alignSelf: "center" }]}> Core </Text>
 
       </View>
 
       <View style={[{ flex: 4 }]}>
-        <ScrollView horizontal contentContainerStyle={{ gap: 20 }} >
+        <ScrollView horizontal contentContainerStyle={{ gap: 20 , paddingStart:20, paddingEnd:20}} >
 
-          <Boton viewStyle={[styles.button, { height: 300, justifyContent: "center", alignItems: "center", borderColor: "#26667F" }]}>
+          <Boton viewStyle={[styles.tarjeta]}>
 
-            <Text style={[styles.subtitulo, styles.claro, { alignSelf: "center" }]} >Abdominales</Text>
-            <View style={{ padding: 10 }}></View>
-            <Text style={[styles.grande, styles.claro, { alignSelf: "center" }]} >30 x 5</Text>
-            <View style={{ padding: 10 }}></View>
-            <Text style={[styles.grande, styles.claro, { alignSelf: "center" }]} >descanso de 1 minuto</Text>
+            <Text style={[styles.subtitulo, styles.claro, { alignSelf: "center", flex:2 }]} >Abdominales</Text>
+            <View style={[styles.horizontalContainer,{flex:7}]}><Text>Acá habría una imagen / video</Text></View>
+            <Text style={[styles.grande, styles.claro, { alignSelf: "center" , flex:2}]} >30 x 5</Text>
+            <Text style={[styles.grande, styles.claro, { alignSelf: "center" , flex:2}]} >descanso de 1 minuto</Text>
+
+          </Boton>
+
+          <Boton viewStyle={[styles.tarjeta]}>
+
+            <Text style={[styles.subtitulo, styles.claro, { alignSelf: "center", flex:2 }]} >Plancha</Text>
+            <View style={[styles.horizontalContainer,{flex:7}]}><Text>Acá habría una imagen / video</Text></View>
+            <Text style={[styles.grande, styles.claro, { alignSelf: "center" , flex:2}]} >10 x 1 minuto</Text>
+            <Text style={[styles.grande, styles.claro, { alignSelf: "center" , flex:2}]} >descanso de 1 minuto</Text>
 
           </Boton>
 
-          <Boton viewStyle={[styles.button, { height: 300, justifyContent: "center", alignItems: "center", borderColor: "#26667F" }]}>
-
-            <Text style={[styles.subtitulo, styles.claro, { alignSelf: "center" }]} >Plancha</Text>
-            <View style={{ padding: 10 }}></View>
-            <Text style={[styles.grande, styles.claro, { alignSelf: "center" }]} >10 x 1 minuto</Text>
-            <View style={{ padding: 10 }}></View>
-            <Text style={[styles.grande, styles.claro, { alignSelf: "center" }]} >descanso de 1 minuto</Text>
-
-          </Boton>
+          
 
         </ScrollView>
       </View>
@@ -77,10 +77,23 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     alignSelf: "center",
     flex: 1,
-    backgroundColor: "#67C090"
+    //backgroundColor: "#67C090"
+  },
+  tarjeta:{
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#ffffffff",
+    width: "90%",
+    height:400,
+    justifyContent: "space-between",
+    alignItems: "center",
+    alignSelf: "center",
+    flex: 1,
+    backgroundColor: "#10a4c9ff"
   },
   claro: {
-    color: "#DDF4E7"
+    color: "#ffffffff"
   },
   oscuro: {
     color: "#26667F"
