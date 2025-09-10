@@ -19,6 +19,10 @@ export default function DrawerLayout() {
                     title: "GymBuddy - Mi perfil",
                     drawerLabel: 'Mi perfil',
                 }} />
+                <Drawer.Screen name="calendario" options={{
+                    title: "GymBuddy - Calendario",
+                    drawerLabel: 'Calendario'
+                }} />
                 <Drawer.Screen name="about" options={{
                     title: "GymBuddy - Sobre nosotros",
                     drawerLabel: 'Sobre nosotros'

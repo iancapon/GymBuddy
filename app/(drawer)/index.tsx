@@ -28,6 +28,16 @@ export default function index() {
           onPress={() => router.push("/workout")}
         />
       </View>
+      <View style={styles.horizontalContainer}>
+        <Boton name="nuevo workout"
+          customStyle={buttonStyles(styles.grande)}
+          onPress={() => router.push("/nuevo_workout")}
+        />
+        <Boton name="programar workout"
+          customStyle={buttonStyles(styles.grande)}
+          onPress={() => router.push("/calendario")}
+        />
+      </View>
       <Boton name="core"
         customStyle={buttonStyles(styles.titulo)}
         onPress={() => router.push("/workout")}
@@ -108,6 +118,21 @@ const styles = StyleSheet.create({
   },
   subtitulo: {
     fontSize: 40,
+    fontWeight: "bold",
+    color: "#DDF4E7"
+  },
+  grande: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#DDF4E7"
+  },
+  medio: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#DDF4E7"
+  },
+  chico: {
+    fontSize: 10,
     fontWeight: "bold",
     color: "#DDF4E7"
   }

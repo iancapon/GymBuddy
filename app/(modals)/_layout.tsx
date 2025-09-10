@@ -14,6 +14,8 @@ export default function ModalLayout() {
 
             <Stack.Screen name="workout" options={{ title: "workout" }} />
 
+            <Stack.Screen name="nuevo_workout" options={{ title: "nuevo workout" }} />
+
         </Stack>
     )
 }
