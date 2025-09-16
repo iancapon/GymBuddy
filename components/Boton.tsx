@@ -1,47 +1,46 @@
+import { Text, Pressable, StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native'
 import { ReactNode } from 'react'
-import { Text, Pressable, StyleSheet, StyleProp, ViewStyle, TextStyle, View } from 'react-native'
 
 type buttonProps = {
-    name?: string
-    textStyle?: StyleProp<TextStyle>
-    viewStyle?: StyleProp<ViewStyle>
-    onPress?: () => void
+    name?: string,
+    onLongPress?: () => void
+    onPress?: () => void;
+    onPressIn?: () => void
+    onPressOut?: () => void
     children?: ReactNode
+    viewStyle?: StyleProp<ViewStyle>;
+    textStyle?: StyleProp<TextStyle>
+
 }
 
 export default function Boton(props: buttonProps) {
-    const view = props.viewStyle != undefined ? props.viewStyle : defaultStyles.button
-    const text = props.textStyle != undefined ? props.textStyle : defaultStyles.text
+    const unpressedView = props.viewStyle != null ? [styles.button, props.viewStyle] : styles.button
+    const unpressedText = props.textStyle != null ? [styles.text, props.textStyle] : styles.text
+
     return (
-        <Pressable style={({ pressed }) => [
-            { borderWidth: 1 },
-            pressed ? defaultStyles.pressedButton : defaultStyles.unpressedButton,
-            view
-        ]}
-            onPress={props.onPress}>
-            <View>
-                {props.children}
-                <Text style={[text]}>{props.name}</Text>
-            </View>
+        <Pressable
+            onPress={props.onPress}
+            onLongPress={props.onLongPress}
+            onPressIn={props.onPressIn}
+            onPressOut={props.onPressOut}
+            style={({ pressed }) => [pressed ? { opacity: 0.5 } : { opacity: 1 }, unpressedView]}
+        >
+
+            {props.name != undefined ? <Text style={[unpressedText]}>{props.name}</Text> : props.children}
         </Pressable>
     )
 }
-
-const defaultStyles = StyleSheet.create({
+const styles = StyleSheet.create({
     button: {
         padding: 7,
         margin: 6,
         borderRadius: 3,
-        justifyContent: "center",
-        alignSelf: "baseline"
+        backgroundColor: 'white',
     },
+
     text: {
+        color: "black",
         fontSize: 15
     },
-    pressedButton: {
-        backgroundColor: '#26667F',
-    },
-    unpressedButton: {
-        backgroundColor: '#67C090',
-    }
+
 });
