@@ -45,16 +45,40 @@ function Item(props: itemProps) {
   )
 }
 
+type myListProps = {
+  data: Array<itemProps>
+  currentIndex: number
+}
+
+function MyList(props: myListProps) {// arreglo de
+  if (props.currentIndex < 0 || props.currentIndex >= props.data.length) {
+    throw new Error('Workout current index outside of bounds')
+  }
+
+  const emptyCard = <Tarjeta viewStyle={[styles.tarjeta, { width: 300, height: 500, opacity: 0.5 }]} pressedOptions={[{ opacity: 0.5 }]} ></Tarjeta>
+  const noCard = <Tarjeta viewStyle={[styles.tarjeta, { width: 300, height: 500, opacity: 0 }]} pressedOptions={[{ opacity: 0 }]} ></Tarjeta>
+
+  const current = props.data[props.currentIndex]
+  const previous = props.currentIndex - 1 < 0 ? noCard : emptyCard
+  const next = props.currentIndex + 1 > props.data.length - 1 ? noCard : emptyCard
+
+  return (
+    <View style={[styles.container, { flex: 10, borderWidth: 1, flexDirection: 'row' }]}>
+
+      {previous}
+
+      <Item titulo={current.titulo} media={current.media} info1={current.info1} info2={current.info2} />
+
+      {next}
+
+    </View>
+  )
+}
+
 
 export default function Index() {
-  return (
-    <View style={styles.container}>
-
-      <View style={[styles.container, { flex: 2, borderWidth: 1 }]}>
-        <Text style={[styles.negro, styles.titulo, {}]}> Workout xyz </Text>
-      </View>
-
-      <View style={[styles.container, { flex: 10, borderWidth: 1,  width: '90%' }]}>
+  /* 
+    <View style={[styles.container, { flex: 10, borderWidth: 1, width: '90%' }]}>
         <FlatList
           horizontal
           style={[{}]}
@@ -63,15 +87,36 @@ export default function Index() {
           keyExtractor={item => item.id}
         />
       </View>
+  */
+  const [woIndex, setWoIndex] = useState(0)// current workout index
+
+  return (
+    <View style={styles.container}>
+
+      <View style={[styles.container, { flex: 2, borderWidth: 1 }]}>
+        <Text style={[styles.negro, styles.titulo, {}]}> Workout xyz </Text>
+      </View>
+
+      <MyList data={WORKOUT} currentIndex={woIndex} />
 
       <View style={[styles.container, { flex: 2, borderWidth: 1, flexDirection: 'row' }]}>
 
         <Boton name='anterior'
+          onPress={() => {
+            if (woIndex > 0) {
+              setWoIndex(woIndex - 1)
+            }
+          }}
           viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
           textStyle={[styles.grande, styles.blanco]}>
         </Boton>
 
         <Boton name='siguiente'
+          onPress={() => {
+            if (woIndex < WORKOUT.length - 1) {
+              setWoIndex(woIndex + 1)
+            }
+          }}
           viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
           textStyle={[styles.grande, styles.blanco]}>
         </Boton>
