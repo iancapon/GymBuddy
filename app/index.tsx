@@ -11,6 +11,7 @@ export default function Index() {
                 pagina index
             </Text>
             <Boton name='WORKOUT' viewStyle={{ width: 100 }} onPress={() => router.push("./workout_screen")} />
+            <Boton name='SELECT' viewStyle={{ width: 100 }} onPress={() => router.push("./select_workouts_screen")} />
         </View>
     )
 }

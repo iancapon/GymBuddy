@@ -49,12 +49,13 @@ export default function Slides(props: myListProps) {
     }
 
     const card = (index: number, action?: () => void) => <Item onPress={action} titulo={props.data[index].titulo} media={props.data[index].media} info1={props.data[index].info1} info2={props.data[index].info2} />
-    
+
+    const emptyCard = <Tarjeta viewStyle={[styles.tarjeta, { width: 300, height: 470, opacity: 0.5 }]} pressedOptions={[{ opacity: 0.45 }]} ></Tarjeta>
     const noCard = <Tarjeta viewStyle={[styles.tarjeta, { width: 300, height: 500, opacity: 0 }]} pressedOptions={[{ opacity: 0 }]} ></Tarjeta>
 
-    const previous = props.currentIndex - 1 < 0 ? noCard : card(props.currentIndex - 1)//, () => props.slider(props.currentIndex - 1))
+    const previous = props.currentIndex - 1 < 0 ? noCard : emptyCard//card(props.currentIndex - 1)//, () => props.slider(props.currentIndex - 1))
     const current = card(props.currentIndex)
-    const next = props.currentIndex + 1 > props.data.length - 1 ? noCard : card(props.currentIndex + 1)//, () => props.slider(props.currentIndex = 1))
+    const next = props.currentIndex + 1 > props.data.length - 1 ? noCard : emptyCard//card(props.currentIndex + 1)//, () => props.slider(props.currentIndex = 1))
 
     return (
         <View style={[styles.container, { borderWidth: 0, flexDirection: 'row' }]}>
@@ -62,7 +63,7 @@ export default function Slides(props: myListProps) {
             {current}
             {next}
         </View>
-        
+
     )
 }
 
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
         margin: 10,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: 'rgba(171, 164, 164, 1)',
+        backgroundColor: '#00b7ffff',
         borderRadius: 10,
     },
     amarillo: {

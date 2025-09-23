@@ -8,10 +8,28 @@ import Slides from '../components/Slides';
 
 const WORKOUT = [
   {
-    id: '1', titulo: 'Flexiones de brazo', media: 'video o explicacion', info1: '10 x 5', info2: 'descanso de un minuto'
+    id: '1',
+    titulo: 'Flexiones de brazo',
+    media: 'video o explicacion',
+    info1: '10 x 5', info2: 'descanso de un minuto'
   },
   {
-    id: '2', titulo: 'Plancha', media: 'video o explicacion', info1: '60 segundos x 5', info2: 'descanso de un minuto'
+    id: '2',
+    titulo: 'Plancha',
+    media: 'video o explicacion',
+    info1: '60 segundos x 5', info2: 'descanso de un minuto'
+  },
+  {
+    id: '3',
+    titulo: 'Abdominales',
+    media: 'video o explicacion',
+    info1: '20 x 5', info2: 'descanso de un minuto'
+  },
+  {
+    id: '4',
+    titulo: 'Pecho',
+    media: 'video o explicacion',
+    info1: '10 x 5', info2: 'descanso de un minuto'
   }
 ]
 
@@ -22,7 +40,7 @@ export default function WorkoutScreen() {
     <View style={styles.container}>
 
       <View style={[styles.container, { flex: 2, borderWidth: 0 }]}>
-        <Text style={[styles.negro, styles.titulo, {}]}> Workout "xyz" </Text>
+        <Text style={[styles.celeste, styles.titulo, {}]}> Workout "xyz" </Text>
       </View>
 
       <View style={{ flex: 10 }}>
@@ -31,8 +49,8 @@ export default function WorkoutScreen() {
           currentIndex={woIndex}
         />
       </View>
-      
-      <Text style={styles.grande}>~ {woIndex + 1} ~</Text>
+
+      <Text style={[styles.grande]}>~ {woIndex + 1} ~</Text>
 
       <View style={[styles.container, { flex: 2, borderWidth: 0, flexDirection: 'row' }]}>
 
@@ -58,7 +76,7 @@ export default function WorkoutScreen() {
 
       </View>
 
-      <StatusBar style="auto"/>
+      <StatusBar style="auto" />
     </View >
   );
 }
@@ -78,7 +96,7 @@ const styles = StyleSheet.create({
     margin: 10,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: 'rgba(171, 164, 164, 1)',
+    backgroundColor: '#00b7ffff',
     borderRadius: 10,
   },
   amarillo: {
@@ -86,6 +104,9 @@ const styles = StyleSheet.create({
   },
   negro: {
     color: 'rgba(0, 0, 0, 1)'
+  },
+  celeste: {
+    color: '#00b7ffff'
   },
   blanco: {
     color: 'rgba(255, 255, 255, 1)'
