@@ -11,8 +11,7 @@ export default function IndexScreen() {
   };
 
   const handleRegister = () => {
-    Alert.alert("Registro", "Te has registrado correctamente ✅");
-    router.push("../(modals)/registro_screen.tsx")
+    router.push("../(modals)/registro_screen")
   };
 
   return (

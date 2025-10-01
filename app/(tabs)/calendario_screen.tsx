@@ -1,5 +1,6 @@
 import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, ImageBackground } from 'react-native';
 import Boton from '../../components/Boton';
+import {Calendar} from "react-native-calendars"
 
 export default function Calendario() {
     return (

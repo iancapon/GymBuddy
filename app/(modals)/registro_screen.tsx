@@ -1,8 +1,11 @@
 import { Text, View } from "react-native"
 import { useState } from "react";
-import { Alert, Button, ScrollView, StyleSheet, TextInput, StatusBar } from "react-native";
+import { Alert, Button, ScrollView, StyleSheet, TextInput, StatusBar, ImageBackground } from "react-native";
+import { useRouter } from "expo-router"
+import Boton from "../../components/Boton";
 
 export default function RegistroScreen() {
+  const router = useRouter()
   // Estados para los campos
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -12,14 +15,21 @@ export default function RegistroScreen() {
   const [edad, setEdad] = useState("");
 
   const handleRegister = () => {
-    Alert.alert(
+    Alert.alert("Registro", "Te has registrado correctamente ✅");
+    router.back()
+    /*Alert.alert(
       "Registro exitoso ✅",
       `Nombre: ${nombre}\nApellido: ${apellido}\nDNI: ${dni}\nEmail: ${email}\nTeléfono: ${telefono}\nEdad: ${edad}`
-    );
+    );*/
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <ImageBackground
+        source={{ uri: "https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww" }}
+        style={StyleSheet.absoluteFillObject}
+        resizeMode="cover"
+      />
       <Text style={styles.title}>Formulario de Registro</Text>
 
       <TextInput
@@ -64,8 +74,14 @@ export default function RegistroScreen() {
       />
 
       <View style={styles.buttonContainer}>
-        <Button title="Registrarme" onPress={handleRegister} />
+        <Boton
+          name="Registrarme"
+          viewStyle={styles.boton}
+          textStyle={{ color: "white", fontSize: 20, fontWeight: "700" }}
+          onPress={handleRegister}>
+        </Boton>
       </View>
+
       <StatusBar style="auto" />
     </ScrollView>
   );
@@ -77,11 +93,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
+    
   },
   title: {
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 20,
+    color:"#007eafff"
   },
   input: {
     width: "100%",
@@ -95,5 +113,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
     width: "100%",
+  },
+  boton: {
+    padding: 0,
+    margin: 0,
+    paddingTop: 15,
+    paddingBottom: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: '#00b7ffff',
+    borderRadius: 10,
   },
 });
