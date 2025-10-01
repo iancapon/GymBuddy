@@ -41,6 +41,7 @@ type myListProps = {
     data: Array<itemProps>
     currentIndex: number
     slider?: React.Dispatch<React.SetStateAction<number>>// no estoy seguro
+    style?: StyleProp<ViewStyle>
 }
 
 export default function Slides(props: myListProps) {
@@ -58,7 +59,7 @@ export default function Slides(props: myListProps) {
     const next = props.currentIndex + 1 > props.data.length - 1 ? noCard : emptyCard//card(props.currentIndex + 1)//, () => props.slider(props.currentIndex = 1))
 
     return (
-        <View style={[styles.container, { borderWidth: 0, flexDirection: 'row' }]}>
+        <View style={[styles.container, { borderWidth: 0, flexDirection: 'row' }, props.style]}>
             {previous}
             {current}
             {next}

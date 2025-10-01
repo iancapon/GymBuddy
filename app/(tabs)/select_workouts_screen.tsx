@@ -1,10 +1,38 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, ImageBackground } from 'react-native';
 import { ReactNode, useState } from 'react';
 import Boton from '../../components/Boton';
 import Tarjeta from '../../components/Tarjeta';
 import Slides from '../../components/Slides';
 import { useRouter } from "expo-router"
+
+export default function SelectWorkout() {
+    const router = useRouter()
+    return (
+        <View style={styles.container}>
+            <ImageBackground
+                    source={{ uri: "https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww" }}
+                    style={StyleSheet.absoluteFillObject}
+                    resizeMode="cover"
+                  />
+            <FlatList
+                data={WORKOUTS}
+                keyExtractor={item => item.id}
+                style={styles.list}
+                contentContainerStyle={{ justifyContent: "flex-start", alignItems: "flex-start" }}
+                renderItem={({ item }) => (
+                    <Boton name={item.titulo}
+                        onPress={() => {
+                            router.push("../(modals)/workout_screen")// acá con la opcion del item.workout_id
+                        }}
+                        viewStyle={[styles.tarjeta, { width: 300, height: 80 }]}
+                        textStyle={[styles.titulo, styles.blanco]} />
+                )}
+            />
+            <StatusBar style="auto" />
+        </View>
+    );
+}
 
 
 const WORKOUTS = [
@@ -55,28 +83,6 @@ const WORKOUTS = [
     },
 ]
 
-export default function SelectWorkout() {
-    const router = useRouter()
-    return (
-        <View style={styles.container}>
-            <FlatList
-                data={WORKOUTS}
-                keyExtractor={item => item.id}
-                style={styles.list}
-                contentContainerStyle={{ justifyContent: "flex-start", alignItems: "flex-start" }}
-                renderItem={({ item }) => (
-                    <Boton name={item.titulo}
-                        onPress={() => {
-                            router.push("../(modals)/workout_screen")// acá con la opcion del item.workout_id
-                        }}
-                        viewStyle={[styles.tarjeta, { width: 300, height: 80 }]}
-                        textStyle={[styles.titulo, styles.blanco]} />
-                )}
-            />
-            <StatusBar style="auto" />
-        </View>
-    );
-}
 
 
 

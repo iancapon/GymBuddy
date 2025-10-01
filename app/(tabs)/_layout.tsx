@@ -5,6 +5,10 @@ export default function Layout() {
     return (
         <Tabs>
             <Tabs.Screen
+                name="index"
+                options={{ title: "Sesión" }}
+            />
+            <Tabs.Screen
                 name="calendario_screen"
                 options={{ title: "Calendario" }}
             />
@@ -18,10 +22,6 @@ export default function Layout() {
             <Tabs.Screen
                 name="perfil_screen"
                 options={{ title: "Mi Perfil" }}
-            />
-            <Tabs.Screen
-                name="sesion_screen"
-                options={{ title: "Sesión" }}
             />
 
         </Tabs>

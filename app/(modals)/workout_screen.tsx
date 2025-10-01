@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, ImageBackground } from 'react-native';
 import { ReactNode, useState } from 'react';
 import Boton from '../../components/Boton';
 import Tarjeta from '../../components/Tarjeta';
@@ -38,21 +38,25 @@ export default function WorkoutScreen() {
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+        source={{ uri: "https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww" }}
+        style={StyleSheet.absoluteFillObject}
+        resizeMode="cover"
+      />
 
-      <View style={[styles.container, { flex: 2, borderWidth: 0 }]}>
-        <Text style={[styles.celeste, styles.titulo, {}]}> Workout "xyz" </Text>
-      </View>
+      <Text style={[styles.celeste, styles.titulo, { flex: 2, textAlignVertical: "center" }]}> Workout "xyz" </Text>
 
-      <View style={{ flex: 10 }}>
+      <View style={{ flex: 10, backgroundColor: "transparent" }}>
         <Slides
           data={WORKOUT}
           currentIndex={woIndex}
+          style={{ backgroundColor: "transparent" }}
         />
       </View>
 
-      <Text style={[styles.grande]}>~ {woIndex + 1} ~</Text>
+      <Text style={[styles.grande, styles.celeste]}>~ {woIndex + 1} ~</Text>
 
-      <View style={[styles.container, { flex: 2, borderWidth: 0, flexDirection: 'row' }]}>
+      <View style={[styles.container, { flex: 2, borderWidth: 0, flexDirection: 'row', backgroundColor: "transparent" }]}>
 
         <Boton name='anterior'
           onPress={() => {

@@ -8,6 +8,10 @@ export default function ModalsLayout() {
                 name="workout_screen"
                 options={{ presentation: "modal", animation: "fade", title: "Workout" }}
             />
+            <Stack.Screen
+                name="registro_screen"
+                options={{ presentation: "modal", animation: "fade", title:"Registro" }}
+            />
         </Stack>
     );
 }
