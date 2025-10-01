@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList } from 'react-native';
 import { ReactNode, useState } from 'react';
-import Boton from '../components/Boton';
-import Tarjeta from '../components/Tarjeta';
-import Slides from '../components/Slides';
+import Boton from '../../components/Boton';
+import Tarjeta from '../../components/Tarjeta';
+import Slides from '../../components/Slides';
 
 
 const WORKOUT = [

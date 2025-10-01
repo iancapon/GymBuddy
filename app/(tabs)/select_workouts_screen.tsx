@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList } from 'react-native';
 import { ReactNode, useState } from 'react';
-import Boton from '../components/Boton';
-import Tarjeta from '../components/Tarjeta';
-import Slides from '../components/Slides';
+import Boton from '../../components/Boton';
+import Tarjeta from '../../components/Tarjeta';
+import Slides from '../../components/Slides';
 import { useRouter } from "expo-router"
 
 
@@ -67,7 +67,7 @@ export default function SelectWorkout() {
                 renderItem={({ item }) => (
                     <Boton name={item.titulo}
                         onPress={() => {
-                            router.push("./workout_screen")// acá con la opcion del item.workout_id
+                            router.push("../(modals)/workout_screen")// acá con la opcion del item.workout_id
                         }}
                         viewStyle={[styles.tarjeta, { width: 300, height: 80 }]}
                         textStyle={[styles.titulo, styles.blanco]} />
