@@ -6,6 +6,64 @@ import Tarjeta from '../../components/Tarjeta';
 import Slides from '../../components/Slides';
 
 
+
+export default function WorkoutScreen() {
+  const [woIndex, setWoIndex] = useState(0)// current workout index
+
+  return (
+
+    <ImageBackground
+      source={{ uri: "https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww" }}
+      style={StyleSheet.absoluteFillObject}
+      resizeMode="cover"
+    >
+
+      <View style={[styles.container, { ...StyleSheet.absoluteFillObject, backgroundColor: "#72727273", flex: 1 }]}>
+        <Text style={[styles.blanco, styles.titulo, { flex: 2, textAlignVertical: "center" }]}> Workout "xyz" </Text>
+
+        <View style={{ flex: 10, backgroundColor: "transparent" }}>
+          <Slides
+            data={WORKOUT}
+            currentIndex={woIndex}
+            style={{ backgroundColor: "transparent" }}
+          />
+        </View>
+
+        <Text style={[styles.subtitulo, styles.blanco]}>~ {woIndex + 1} ~</Text>
+
+        <View style={[styles.container, { flex: 2, borderWidth: 0, flexDirection: 'row', backgroundColor: "transparent" }]}>
+
+          <Boton name='anterior'
+            onPress={() => {
+              if (woIndex > 0) {
+                setWoIndex(woIndex - 1)
+              }
+            }}
+            viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
+            textStyle={[styles.grande, styles.blanco]}>
+          </Boton>
+
+          <Boton name='siguiente'
+            onPress={() => {
+              if (woIndex < WORKOUT.length - 1) {
+                setWoIndex(woIndex + 1)
+              }
+            }}
+            viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
+            textStyle={[styles.grande, styles.blanco]}>
+          </Boton>
+
+
+        </View>
+
+        <View style={[{ flex: 1 }]}></View>
+      </View>
+      <StatusBar style="auto" />
+    </ImageBackground>
+  );
+}
+
+
 const WORKOUT = [
   {
     id: '1',
@@ -32,59 +90,6 @@ const WORKOUT = [
     info1: '10 x 5', info2: 'descanso de un minuto'
   }
 ]
-
-export default function WorkoutScreen() {
-  const [woIndex, setWoIndex] = useState(0)// current workout index
-
-  return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={{ uri: "https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww" }}
-        style={StyleSheet.absoluteFillObject}
-        resizeMode="cover"
-      />
-
-      <Text style={[styles.celeste, styles.titulo, { flex: 2, textAlignVertical: "center" }]}> Workout "xyz" </Text>
-
-      <View style={{ flex: 10, backgroundColor: "transparent" }}>
-        <Slides
-          data={WORKOUT}
-          currentIndex={woIndex}
-          style={{ backgroundColor: "transparent" }}
-        />
-      </View>
-
-      <Text style={[styles.grande, styles.celeste]}>~ {woIndex + 1} ~</Text>
-
-      <View style={[styles.container, { flex: 2, borderWidth: 0, flexDirection: 'row', backgroundColor: "transparent" }]}>
-
-        <Boton name='anterior'
-          onPress={() => {
-            if (woIndex > 0) {
-              setWoIndex(woIndex - 1)
-            }
-          }}
-          viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
-          textStyle={[styles.grande, styles.blanco]}>
-        </Boton>
-
-        <Boton name='siguiente'
-          onPress={() => {
-            if (woIndex < WORKOUT.length - 1) {
-              setWoIndex(woIndex + 1)
-            }
-          }}
-          viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
-          textStyle={[styles.grande, styles.blanco]}>
-        </Boton>
-
-      </View>
-
-      <StatusBar style="auto" />
-    </View >
-  );
-}
-
 
 
 const styles = StyleSheet.create({

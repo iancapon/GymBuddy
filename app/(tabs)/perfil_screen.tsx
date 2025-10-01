@@ -15,35 +15,11 @@ export default function PerfilScreen() {
                 style={StyleSheet.absoluteFillObject}
                 resizeMode="cover"
             />
-
-            <Text style={[styles.titulo, { flex: 2 }]}>Ian Capon</Text>
-
-            <Text style={[styles.medio, { flex: 1 }]}>fecha de admisión: 09/09/2025</Text>
-
-            <Text style={[styles.medio, { flex: 1 }]}>plan: básico</Text>
-
-            <View style={{ height: 400, flex: 6, borderWidth: 2, borderColor: "#26667F", justifyContent: "center", alignItems: "center" }}>
-
-                <Text>Algo habria que poner acá</Text>
-
+            <View style={[{ flex: 2, marginTop: 20, padding: 20, borderRadius:10 ,alignSelf: "center", width: "90%", backgroundColor: "#f7f7f7de" }]}>
+                <Text style={[styles.titulo, styles.celeste, {}]}>Ian Capon</Text>
             </View>
-
-            <View style={[styles.horizontalContainer, { flex: 2, backgroundColor: "transparent" }]}>
-
-                <View style={{ flex: 1 }}>
-
-                    <Boton name="volver atras" viewStyle={styles.button} textStyle={[styles.medio, styles.blanco]} onPress={() => router.back()} />
-
-                </View>
-
-                <View style={[styles.verticalContainer, { flex: 2, backgroundColor: "transparent" }]}>
-
-                    <Boton name="ingresar datos" viewStyle={styles.button} textStyle={[styles.medio, styles.blanco]} onPress={() => router.push("/modal")} />
-
-                    <Boton name="nuevo plan" viewStyle={styles.button} textStyle={[styles.medio, styles.blanco]} onPress={() => router.push("/modal")} />
-
-                </View>
-
+            <View style={[styles.verticalContainer, { backgroundColor: "transparent" }]}>
+                <Boton name="Cerrar Sesión" viewStyle={styles.button} textStyle={[styles.medio]} onPress={() => router.push("..//index")} />
             </View>
             <StatusBar style="auto" />
         </View>
@@ -56,19 +32,20 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 10,
         borderWidth: 0,
-        width: "96%",
-        justifyContent: "flex-end",
-        alignItems: "flex-end",
+        width: "90%",
+        maxHeight: 50,
+        justifyContent: "center",
+        alignItems: "center",
         alignSelf: "center",
         flex: 1,
-        backgroundColor: "#00b7ffff"
     },
     verticalContainer: {
         flex: 1,
         flexDirection: "column",
         backgroundColor: "white",
-        padding: 2,
-        //justifyContent:"space-between"
+
+        justifyContent: "space-around",
+
     },
     horizontalContainer: {
         flex: 1,
@@ -78,6 +55,9 @@ const styles = StyleSheet.create({
     },
     blanco: {
         color: "white"
+    },
+    negro: {
+        color: "black"
     },
     celeste: {
         color: "#00b7ffff"

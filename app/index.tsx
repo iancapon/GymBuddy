@@ -1,5 +1,5 @@
 import { Alert, ImageBackground, StyleSheet, Text, View } from 'react-native';
-import Boton from '../../components/Boton';
+import Boton from '../components/Boton';
 import { useRouter } from "expo-router"
 
 
@@ -8,6 +8,7 @@ export default function IndexScreen() {
 
   const handleSession = () => {
     Alert.alert("Inicio de sesion", "Has iniciado sesión correctamente ✅");
+    router.push("./(tabs)/index_tab")
   };
 
   const handleRegister = () => {

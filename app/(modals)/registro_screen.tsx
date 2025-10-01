@@ -1,8 +1,9 @@
 import { Text, View } from "react-native"
 import { useState } from "react";
-import { Alert, Button, ScrollView, StyleSheet, TextInput, StatusBar, ImageBackground } from "react-native";
+import { Alert, Button, ScrollView, StyleSheet, TextInput, ImageBackground } from "react-native";
 import { useRouter } from "expo-router"
 import Boton from "../../components/Boton";
+import { StatusBar } from "expo-status-bar";
 
 export default function RegistroScreen() {
   const router = useRouter()

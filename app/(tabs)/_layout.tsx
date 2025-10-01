@@ -1,27 +1,21 @@
 import { Tabs } from "expo-router";
-//import { Ionicons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
 
 export default function Layout() {
     return (
         <Tabs>
             <Tabs.Screen
-                name="index"
-                options={{ title: "Sesión" }}
+                name="index_tab"
+                options={{ title: "Workouts", tabBarIcon: ({ size }) => <Ionicons name="fitness" size={size} /> }}
             />
             <Tabs.Screen
                 name="calendario_screen"
-                options={{ title: "Calendario" }}
+                options={{ title: "Calendario", tabBarIcon: ({ size }) => <Ionicons name="calendar" size={size} /> }}
             />
-            <Tabs.Screen
-                name="select_workouts_screen"
-                /*options={{ title: "Galería", tabBarLabel: "Galería"
-                    , tabBarIcon:({size})=> <Ionicons name="camera" size={size}/>
-                 }}*/
-                options={{ title: "Workouts" }}
-            />
+
             <Tabs.Screen
                 name="perfil_screen"
-                options={{ title: "Mi Perfil" }}
+                options={{ title: "Mi Perfil", tabBarIcon: ({ size }) => <Ionicons name="person" size={size} /> }}
             />
 
         </Tabs>

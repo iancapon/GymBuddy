@@ -8,6 +8,8 @@ export default function RootLayout() {
     <ThemeProvider value={DefaultTheme}>
       <Stack>
 
+        <Stack.Screen name="index" options={{ headerShown: false, navigationBarHidden:true }} />
+
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
         <Stack.Screen name="(modals)" options={{ headerShown: false }} />
