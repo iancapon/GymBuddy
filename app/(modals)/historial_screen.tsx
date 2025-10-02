@@ -40,8 +40,7 @@ function WorkoutResumidoModal(props: resumenProps) {
     )
 }
 
-export default function Calendario() {
-    const hoy = new Date().toISOString().split("T")[0]
+export default function Historial() {
     const fechasMarcadas = WORKOUTS.reduce((fechas: any, programa: any) => {
         fechas[programa.fecha] = {
             selected: true,
@@ -49,10 +48,9 @@ export default function Calendario() {
         }
         return fechas
     }, {})
-    fechasMarcadas[hoy] = { selected: true, selectedColor: '#ffd000ff' }
     const [modal, setModal] = useState(false)
     const [tituloModal, setTituloModal] = useState("")
-    const [fechaModal, setFechaModal] = useState(hoy)
+    const [fechaModal, setFechaModal] = useState("")
 
     return (
         <View style={[{ flex: 1 }]}>
@@ -71,10 +69,6 @@ export default function Calendario() {
                 <Calendar
                     style={[styles.calendario, {}]}
                     markedDates={fechasMarcadas}
-                    current={hoy}
-                    onDayLongPress={(dia) =>{
-                        Alert.alert("Programar para este dia ==>","aún no está implementado" )
-                    }}
                     onDayPress={(dia) => {
                         const item = WORKOUTS.find(programa => programa.fecha == dia.dateString)
                         if (item != undefined) {
@@ -82,16 +76,11 @@ export default function Calendario() {
                             setFechaModal(item.fecha)
                             setModal(true)
                         }
-                        else if (dia.dateString == hoy) {
-                            Alert.alert(`Fecha de hoy: ${hoy}\n`,
-                                "No hay workouts programados para hoy"
-                            )
-                        }
                     }}
                 />
 
                 <Text style={[styles.subtitulo, styles.blanco, { alignSelf: "center" }]}>
-                    Workouts programados
+                    Historial de workouts
                 </Text>
 
                 <FlatList

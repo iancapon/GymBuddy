@@ -9,6 +9,10 @@ export default function ModalsLayout() {
                 options={{ presentation:"transparentModal", animation: "simple_push", title: "Workout"  }}
             />
             <Stack.Screen
+                name="historial_screen"
+                options={{ presentation:"transparentModal", animation: "simple_push", title: "Historial"  }}
+            />
+            <Stack.Screen
                 name="registro_screen"
                 options={{ presentation: "modal", animation: "fade", title: "Registro", navigationBarHidden: true }}
             />

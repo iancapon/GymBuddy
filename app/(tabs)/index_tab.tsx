@@ -43,7 +43,7 @@ export default function SelectWorkout() {
                 </Boton>
 
                 <Boton
-                    onPress={noImplementado}
+                    onPress={() => router.push("../(modals)/historial_screen")}
                     viewStyle={[styles.tarjeta, { flex: 1, height: "100%", backgroundColor: "orange" }]}
                 >
                     <Text style={[styles.subtitulo, styles.negro]}>historial</Text>
@@ -59,13 +59,13 @@ export default function SelectWorkout() {
                 style={[styles.list, {}]}
                 contentContainerStyle={{ justifyContent: "flex-start", alignItems: "flex-start" }}
                 renderItem={({ item }) => (
-                    <Boton 
+                    <Boton
                         onPress={noImplementado}// acá con la opcion del item.workout_id
                         viewStyle={[styles.tarjeta, { width: 300, height: "90%", backgroundColor: '#00b7ffff' }]}
                         textStyle={[styles.titulo, styles.negro]} >
-                            <Text style={[styles.titulo]}>{item.titulo}</Text>
-                            <Ionicons name="barbell" size={50} />
-                        </Boton>
+                        <Text style={[styles.titulo]}>{item.titulo}</Text>
+                        <Ionicons name="barbell" size={50} />
+                    </Boton>
                 )}
             />
             <StatusBar style="auto" />
