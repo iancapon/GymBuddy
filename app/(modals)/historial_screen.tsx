@@ -33,7 +33,7 @@ function WorkoutResumidoModal(props: resumenProps) {
                     <Text style={[styles.subtitulo, styles.negro, { alignSelf: "center" }]}>
                         {props.titulo}
                     </Text>
-                    <Boton name="cerrar" viewStyle={{ alignSelf: "flex-end" }} onPress={() => props.setVisible(false)}></Boton>
+                    <Boton name="cerrar" viewStyle={{}} onPress={() => props.setVisible(false)}></Boton>
                 </View>
             </View>
         </Modal>

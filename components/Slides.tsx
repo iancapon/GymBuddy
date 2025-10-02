@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, Animated } from 'react-native';
 import { ReactNode, useState } from 'react';
 import Boton from './Boton';
 import Tarjeta from './Tarjeta';
@@ -54,16 +54,37 @@ export default function Slides(props: myListProps) {
     const emptyCard = <Tarjeta viewStyle={[styles.tarjeta, { width: 300, height: 470, opacity: 0.5 }]} pressedOptions={[{ opacity: 0.45 }]} ></Tarjeta>
     const noCard = <Tarjeta viewStyle={[styles.tarjeta, { width: 300, height: 500, opacity: 0 }]} pressedOptions={[{ opacity: 0 }]} ></Tarjeta>
 
-    const previous = props.currentIndex - 1 < 0 ? noCard : emptyCard//card(props.currentIndex - 1)//, () => props.slider(props.currentIndex - 1))
+    const previous = props.currentIndex - 1 < 0 ? noCard : card(props.currentIndex - 1)
     const current = card(props.currentIndex)
-    const next = props.currentIndex + 1 > props.data.length - 1 ? noCard : emptyCard//card(props.currentIndex + 1)//, () => props.slider(props.currentIndex = 1))
+    const next = props.currentIndex + 1 > props.data.length - 1 ? noCard : card(props.currentIndex + 1)
+
+    const animation = new Animated.Value(0)
+
+    const startAnimation = (() => {
+        Animated.timing(animation, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true
+        }).start()
+    })()
+
+    const resetAnimation = () => {
+        animation.setValue(0)
+    }
+
+    const goForwardAnimationStyleProp: StyleProp<ViewStyle> = {
+        transform: [{
+            translateX: animation.interpolate({ inputRange: [0, 1], outputRange: [300, 0] })
+        }]
+    }
+
 
     return (
-        <View style={[styles.container, { borderWidth: 0, flexDirection: 'row' }, props.style]}>
+        <Animated.View style={[styles.container, goForwardAnimationStyleProp, { borderWidth: 0, flexDirection: 'row' }, props.style]}>
             {previous}
             {current}
             {next}
-        </View>
+        </Animated.View>
 
     )
 }
@@ -71,6 +92,7 @@ export default function Slides(props: myListProps) {
 
 
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
         backgroundColor: '#ffffffff',

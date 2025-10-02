@@ -29,30 +29,18 @@ export default function WorkoutScreen() {
           />
         </View>
 
-        <Text style={[styles.subtitulo, styles.blanco,{marginTop:20}]}>~ {woIndex + 1} ~</Text>
+        <Text style={[styles.subtitulo, styles.blanco, { marginTop: 20 }]}> {100 * (woIndex + 1) / WORKOUT.length}% </Text>
 
         <View style={[styles.container, { flex: 2, borderWidth: 0, flexDirection: 'row', backgroundColor: "transparent" }]}>
 
-          <Boton name='anterior'
-            onPress={() => {
-              if (woIndex > 0) {
-                setWoIndex(woIndex - 1)
-              }
-            }}
-            viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
-            textStyle={[styles.grande, styles.negro]}>
-          </Boton>
-
-          <Boton name='siguiente'
+          <Boton name={woIndex < WORKOUT.length - 1 ? 'SIGUIENTE' : 'TERMINASTE'}
             onPress={() => {
               if (woIndex < WORKOUT.length - 1) {
                 setWoIndex(woIndex + 1)
               }
             }}
-            viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
-            textStyle={[styles.grande, styles.negro]}>
-          </Boton>
-
+            viewStyle={[styles.tarjeta, { width: '60%', height: '70%', backgroundColor: "orange" }]}
+            textStyle={[styles.grande, styles.negro]} />
 
         </View>
 
