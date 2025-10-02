@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function SelectWorkout() {
     const router = useRouter()
-    const fechaDeHoy = "03/10/25"
+    const fechaDeHoy = new Date().toISOString().split("T")[0]
     const noImplementado = () => {
         Alert.alert("No implementado", "esto aún no ha sido implementado")
     }
@@ -21,54 +21,58 @@ export default function SelectWorkout() {
                 style={StyleSheet.absoluteFillObject}
                 resizeMode="cover"
             />
-
-            <Boton
-                onPress={() => {
-                    router.push("../(modals)/workout_screen")
-                }}
-                viewStyle={[styles.tarjeta, { width: "96%", height: 200, backgroundColor: "powderblue" }]}
-                textStyle={[styles.titulo, styles.blanco]} >
-                <Text style={[styles.titulo, styles.negro]}>para hoy</Text>
-                <Text style={[styles.subtitulo, styles.negro]}>{fechaDeHoy}</Text>
-                <Ionicons name="barbell" size={50} />
-            </Boton>
-
-            <View style={[{ flexDirection: "row", height: 160, paddingBottom: 20 }]}>
-                <Boton
-                    onPress={noImplementado}
-                    viewStyle={[styles.tarjeta, { flex: 1, height: "100%", backgroundColor: "lightgreen" }]}
-                    textStyle={[styles.subtitulo, styles.blanco]} >
-                    <Text style={[styles.subtitulo, styles.negro]}>crear</Text>
-                    <Ionicons name="create" size={50} />
-                </Boton>
+            <View style={[StyleSheet.absoluteFillObject, { flex: 1, backgroundColor: "#855c5c5e" }]}>
 
                 <Boton
-                    onPress={() => router.push("../(modals)/historial_screen")}
-                    viewStyle={[styles.tarjeta, { flex: 1, height: "100%", backgroundColor: "orange" }]}
-                >
-                    <Text style={[styles.subtitulo, styles.negro]}>historial</Text>
-                    <Ionicons name="book" size={50} />
+                    onPress={() => {
+                        router.push("../(modals)/workout_screen")
+                    }}
+                    viewStyle={[styles.tarjeta, { width: "96%", height: 200, backgroundColor: "powderblue" }]}
+                    textStyle={[styles.titulo, styles.blanco]} >
+                    <Text style={[styles.titulo, styles.negro]}>para hoy</Text>
+                    <Text style={[styles.subtitulo, styles.negro]}>{fechaDeHoy}</Text>
+                    <Ionicons name="barbell" size={50} />
                 </Boton>
 
-            </View>
-
-            <FlatList
-                horizontal
-                data={WORKOUTS}
-                keyExtractor={item => item.id}
-                style={[styles.list, {}]}
-                contentContainerStyle={{ justifyContent: "flex-start", alignItems: "flex-start" }}
-                renderItem={({ item }) => (
+                <View style={[{ flexDirection: "row", height: 160, paddingBottom: 20 }]}>
                     <Boton
-                        onPress={noImplementado}// acá con la opcion del item.workout_id
-                        viewStyle={[styles.tarjeta, { width: 300, height: "90%", backgroundColor: '#00b7ffff' }]}
-                        textStyle={[styles.titulo, styles.negro]} >
-                        <Text style={[styles.titulo]}>{item.titulo}</Text>
-                        <Ionicons name="barbell" size={50} />
+                        onPress={noImplementado}
+                        viewStyle={[styles.tarjeta, { flex: 1, height: "100%", backgroundColor: "lightgreen" }]}
+                        textStyle={[styles.subtitulo, styles.blanco]} >
+                        <Text style={[styles.subtitulo, styles.negro]}>crear</Text>
+                        <Ionicons name="create" size={50} />
                     </Boton>
-                )}
-            />
-            <StatusBar style="auto" />
+
+                    <Boton
+                        onPress={() => router.push("../(modals)/historial_screen")}
+                        viewStyle={[styles.tarjeta, { flex: 1, height: "100%", backgroundColor: "orange" }]}
+                    >
+                        <Text style={[styles.subtitulo, styles.negro]}>historial</Text>
+                        <Ionicons name="book" size={50} />
+                    </Boton>
+
+                </View>
+
+                <Text style={[styles.subtitulo, styles.blanco]}>Workouts creados</Text>
+
+                <FlatList
+                    horizontal
+                    data={WORKOUTS}
+                    keyExtractor={item => item.id}
+                    style={[styles.list, {}]}
+                    contentContainerStyle={{ justifyContent: "flex-start", alignItems: "flex-start" }}
+                    renderItem={({ item }) => (
+                        <Boton
+                            onPress={noImplementado}// acá con la opcion del item.workout_id
+                            viewStyle={[styles.tarjeta, { width: 300, height: "90%", backgroundColor: '#00b7ffff' }]}
+                            textStyle={[styles.titulo, styles.negro]} >
+                            <Text style={[styles.titulo]}>{item.titulo}</Text>
+                            <Ionicons name="barbell" size={50} />
+                        </Boton>
+                    )}
+                />
+                <StatusBar style="auto" />
+            </View>
         </View>
     );
 }
