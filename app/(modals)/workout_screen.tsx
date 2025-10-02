@@ -29,7 +29,7 @@ export default function WorkoutScreen() {
           />
         </View>
 
-        <Text style={[styles.subtitulo, styles.blanco]}>~ {woIndex + 1} ~</Text>
+        <Text style={[styles.subtitulo, styles.blanco,{marginTop:20}]}>~ {woIndex + 1} ~</Text>
 
         <View style={[styles.container, { flex: 2, borderWidth: 0, flexDirection: 'row', backgroundColor: "transparent" }]}>
 
@@ -40,7 +40,7 @@ export default function WorkoutScreen() {
               }
             }}
             viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
-            textStyle={[styles.grande, styles.blanco]}>
+            textStyle={[styles.grande, styles.negro]}>
           </Boton>
 
           <Boton name='siguiente'
@@ -50,7 +50,7 @@ export default function WorkoutScreen() {
               }
             }}
             viewStyle={[styles.tarjeta, { width: '30%', height: '60%' }]}
-            textStyle={[styles.grande, styles.blanco]}>
+            textStyle={[styles.grande, styles.negro]}>
           </Boton>
 
 
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     margin: 10,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: '#00b7ffff',
+    backgroundColor: "powderblue",//'#00b7ffff',
     borderRadius: 10,
   },
   amarillo: {

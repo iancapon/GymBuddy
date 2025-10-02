@@ -21,16 +21,16 @@ function Item(props: itemProps) {
             pressedOptions={[{ opacity: 0.9 }]}
         >
             <View style={[{ flex: 2, borderWidth: 0, margin: 10 }]}>
-                <Text style={[styles.blanco, styles.subtitulo, {}]}>{props.titulo}</Text>
+                <Text style={[styles.negro, styles.subtitulo, {}]}>{props.titulo}</Text>
             </View>
             <View style={[{ flex: 4, borderWidth: 1, margin: 10, width: "90%", height: "100%" }]}>
-                <Text style={[styles.blanco, {}]}>{props.media}</Text>
+                <Text style={[styles.negro, {}]}>{props.media}</Text>
             </View>
             <View style={[{ flex: 1, borderWidth: 0, margin: 10 }]}>
-                <Text style={[styles.blanco, styles.grande, {}]}>{props.info1}</Text>
+                <Text style={[styles.negro, styles.grande, {}]}>{props.info1}</Text>
             </View>
             <View style={[{ flex: 2, borderWidth: 0, margin: 10 }]}>
-                <Text style={[styles.blanco, styles.grande, {}]}>{props.info2}</Text>
+                <Text style={[styles.negro, styles.grande, {}]}>{props.info2}</Text>
             </View>
 
         </Tarjeta>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         margin: 10,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#00b7ffff',
+        backgroundColor: 'powderblue',
         borderRadius: 10,
     },
     amarillo: {
