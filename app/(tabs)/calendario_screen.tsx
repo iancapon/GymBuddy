@@ -68,12 +68,14 @@ export default function Calendario() {
                     titulo={tituloModal}
                     fecha={fechaModal}
                 />
+                <Text style={[styles.blanco, styles.medio, { paddingTop: 10, alignSelf: "center" }]}> Manten presionado en una fecha para programar</Text>
+                <Text style={[styles.blanco, styles.medio, { alignSelf: "center" }]}> un Workout</Text>
                 <Calendar
                     style={[styles.calendario, {}]}
                     markedDates={fechasMarcadas}
                     current={hoy}
-                    onDayLongPress={(dia) =>{
-                        Alert.alert("Programar para este dia ==>","aún no está implementado" )
+                    onDayLongPress={(dia) => {
+                        Alert.alert("Programar para este dia ==>", "aún no está implementado")
                     }}
                     onDayPress={(dia) => {
                         const item = WORKOUTS.find(programa => programa.fecha == dia.dateString)
