@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, Animated } from 'react-native';
+import { Image, StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, Animated } from 'react-native';
 import { ReactNode, useState } from 'react';
 import Boton from './Boton';
 import Tarjeta from './Tarjeta';
@@ -24,7 +24,10 @@ function Item(props: itemProps) {
                 <Text style={[styles.negro, styles.subtitulo, {}]}>{props.titulo}</Text>
             </View>
             <View style={[{ flex: 4, borderWidth: 1, margin: 10, width: "90%", height: "100%" }]}>
-                <Text style={[styles.negro, {}]}>{props.media}</Text>
+                <Image
+                    source={{ uri: props.media }}
+                    style={{ width: "100%", height: "100%", resizeMode: "stretch" }}
+                />
             </View>
             <View style={[{ flex: 1, borderWidth: 0, margin: 10 }]}>
                 <Text style={[styles.negro, styles.grande, {}]}>{props.info1}</Text>

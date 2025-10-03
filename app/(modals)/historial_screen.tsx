@@ -59,7 +59,7 @@ export default function Historial() {
                 style={StyleSheet.absoluteFillObject}
                 resizeMode="cover"
             />
-            <View style={[StyleSheet.absoluteFillObject, { flex: 1, backgroundColor: "#855c5c5e" }]}>
+            <View style={[StyleSheet.absoluteFillObject, { flex: 1, backgroundColor: "#855c5c7e" }]}>
                 <WorkoutResumidoModal
                     visible={modal}
                     setVisible={setModal}
@@ -80,7 +80,7 @@ export default function Historial() {
                 />
 
                 <Text style={[styles.subtitulo, styles.blanco, { alignSelf: "center" }]}>
-                    Historial de workouts
+                    Historial completo
                 </Text>
 
                 <FlatList

@@ -36,7 +36,7 @@ export default function SelectWorkout() {
 
                 <View style={[{ flexDirection: "row", height: 160, paddingBottom: 20 }]}>
                     <Boton
-                        onPress={noImplementado}
+                        onPress={() => router.push("../(modals)/crear_screen")}
                         viewStyle={[styles.tarjeta, { flex: 1, height: "100%", backgroundColor: "lightgreen" }]}
                         textStyle={[styles.subtitulo, styles.blanco]} >
                         <Text style={[styles.subtitulo, styles.negro]}>crear</Text>

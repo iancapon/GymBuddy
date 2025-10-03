@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 
 type resumenProps = {
-    visible: any
+    visible: boolean
     setVisible: any
     titulo: string
     fecha: string

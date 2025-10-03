@@ -1,14 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, ImageBackground } from 'react-native';
+import { Alert, StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, ImageBackground } from 'react-native';
 import { ReactNode, useState } from 'react';
 import Boton from '../../components/Boton';
 import Tarjeta from '../../components/Tarjeta';
 import Slides from '../../components/Slides';
-
+import { useRouter } from 'expo-router';
 
 
 export default function WorkoutScreen() {
   const [woIndex, setWoIndex] = useState(0)// current workout index
+  const titulo= "Ejemplo"
+  const ejercicios = DATA
+  const router = useRouter()
 
   return (
 
@@ -19,24 +22,28 @@ export default function WorkoutScreen() {
     >
 
       <View style={[styles.container, { ...StyleSheet.absoluteFillObject, backgroundColor: "#72727273", flex: 1 }]}>
-        <Text style={[styles.blanco, styles.titulo, { flex: 2, textAlignVertical: "center" }]}> Workout "xyz" </Text>
+        <Text style={[styles.blanco, styles.titulo, { flex: 2, textAlignVertical: "center" }]}> {titulo} </Text>
 
         <View style={{ flex: 10, backgroundColor: "transparent" }}>
           <Slides
-            data={WORKOUT}
+            data={ejercicios}
             currentIndex={woIndex}
             style={{ backgroundColor: "transparent" }}
           />
         </View>
 
-        <Text style={[styles.subtitulo, styles.blanco, { marginTop: 20 }]}> {100 * (woIndex + 1) / WORKOUT.length}% </Text>
+        <Text style={[styles.subtitulo, styles.blanco, { marginTop: 20 }]}> {100 * (woIndex + 1) / ejercicios.length}% </Text>
 
         <View style={[styles.container, { flex: 2, borderWidth: 0, flexDirection: 'row', backgroundColor: "transparent" }]}>
 
-          <Boton name={woIndex < WORKOUT.length - 1 ? 'SIGUIENTE' : 'TERMINASTE'}
+          <Boton name={woIndex < ejercicios.length - 1 ? 'SIGUIENTE' : 'TERMINASTE'}
             onPress={() => {
-              if (woIndex < WORKOUT.length - 1) {
+              if (woIndex < ejercicios.length - 1) {
                 setWoIndex(woIndex + 1)
+              }
+              else{
+                router.back()
+                Alert.alert("Felicidades!!!", "Terminaste con los ejercicios")
               }
             }}
             viewStyle={[styles.tarjeta, { width: '60%', height: '70%', backgroundColor: "orange" }]}
@@ -52,29 +59,29 @@ export default function WorkoutScreen() {
 }
 
 
-const WORKOUT = [
+const DATA = [
   {
     id: '1',
     titulo: 'Flexiones de brazo',
-    media: 'video o explicacion',
+    media: 'https://static.wikia.nocookie.net/gatopedia/images/2/2e/El_gatoo.png/revision/latest?cb=20230103150310&path-prefix=es',
     info1: '10 x 5', info2: 'descanso de un minuto'
   },
   {
     id: '2',
     titulo: 'Plancha',
-    media: 'video o explicacion',
+    media: 'https://www.patasencasa.com/sites/default/files/styles/article_detail_1200/public/2024-07/meme-del-gato-riendo_0.jpg.webp?itok=2QOszuKz',
     info1: '60 segundos x 5', info2: 'descanso de un minuto'
   },
   {
     id: '3',
     titulo: 'Abdominales',
-    media: 'video o explicacion',
+    media: 'https://i.pinimg.com/474x/58/9e/14/589e1409b4bc80e0b5ba99538251d66c.jpg',
     info1: '20 x 5', info2: 'descanso de un minuto'
   },
   {
     id: '4',
     titulo: 'Pecho',
-    media: 'video o explicacion',
+    media: 'https://preview.redd.it/3wlrfietzzq31.jpg?width=640&crop=smart&auto=webp&s=fac76e26c430a104b182b73389c5ca0d951d46d8',
     info1: '10 x 5', info2: 'descanso de un minuto'
   }
 ]
