@@ -1,0 +1,58 @@
+import { Router, Request, Response } from "express";
+import { prisma } from "./index";
+
+
+const router = Router();
+
+
+router.post("/register", async (req: Request, res: Response) => {
+  try {
+    const { nombre, apellido, dni, email, telefono, edad } = req.body;
+
+    // Validation
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: email },
+          { DNI: BigInt(dni) }
+        ]
+      }
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        error: "El usuario ya existe con ese email o DNI"
+      });
+    }
+
+    // Create user
+    const user = await prisma.user.create({
+      data: {
+        nombre,
+        apellido,
+        DNI: BigInt(dni),
+        email,
+        telefono: BigInt(telefono),
+        edad: parseInt(edad),
+      },
+    });
+
+    const userResponse = {
+      ...user,
+      DNI: user.DNI.toString(),
+      telefono: user.telefono.toString(),
+    };
+
+    res.status(201).json({
+      message: "Usuario registrado exitosamente",
+      user: userResponse
+    });
+  } catch (error) {
+    console.error("Error en registro:", error);
+    res.status(500).json({
+      error: "Error al registrar usuario"
+    });
+  }
+});
+
+export default router;
