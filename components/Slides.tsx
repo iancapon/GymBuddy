@@ -3,6 +3,8 @@ import { Image, StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatLis
 import { ReactNode, useState } from 'react';
 import Boton from './Boton';
 import Tarjeta from './Tarjeta';
+import * as Speech from 'expo-speech'
+
 
 
 type itemProps = {
@@ -54,7 +56,6 @@ export default function Slides(props: myListProps) {
 
     const card = (index: number, action?: () => void) => <Item onPress={action} titulo={props.data[index].titulo} media={props.data[index].media} info1={props.data[index].info1} info2={props.data[index].info2} />
 
-    const emptyCard = <Tarjeta viewStyle={[styles.tarjeta, { width: 300, height: 470, opacity: 0.5 }]} pressedOptions={[{ opacity: 0.45 }]} ></Tarjeta>
     const noCard = <Tarjeta viewStyle={[styles.tarjeta, { width: 300, height: 500, opacity: 0 }]} pressedOptions={[{ opacity: 0 }]} ></Tarjeta>
 
     const previous = props.currentIndex - 1 < 0 ? noCard : card(props.currentIndex - 1)
@@ -71,15 +72,19 @@ export default function Slides(props: myListProps) {
         }).start()
     })()
 
-    const resetAnimation = () => {
-        animation.setValue(0)
-    }
-
     const goForwardAnimationStyleProp: StyleProp<ViewStyle> = {
         transform: [{
             translateX: animation.interpolate({ inputRange: [0, 1], outputRange: [300, 0] })
         }]
     }
+
+    const descripcionTTS = `${props.data[props.currentIndex].titulo}. ${props.data[props.currentIndex].info1}. ${props.data[props.currentIndex].info2}`
+    
+    Speech.speak(descripcionTTS, {
+        language: "es-SP",
+        pitch: 1.0,
+        rate: 1.1
+    })
 
 
     return (

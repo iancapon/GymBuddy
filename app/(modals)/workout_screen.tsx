@@ -9,7 +9,7 @@ import { useRouter } from 'expo-router';
 
 export default function WorkoutScreen() {
   const [woIndex, setWoIndex] = useState(0)// current workout index
-  const titulo= "Ejemplo"
+  const titulo = "Ejemplo"
   const ejercicios = DATA
   const router = useRouter()
 
@@ -41,7 +41,7 @@ export default function WorkoutScreen() {
               if (woIndex < ejercicios.length - 1) {
                 setWoIndex(woIndex + 1)
               }
-              else{
+              else {
                 router.back()
                 Alert.alert("Felicidades!!!", "Terminaste con los ejercicios")
               }
