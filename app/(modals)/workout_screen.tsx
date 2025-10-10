@@ -70,7 +70,7 @@ const DATA = [
     id: '2',
     titulo: 'Plancha',
     media: 'https://www.patasencasa.com/sites/default/files/styles/article_detail_1200/public/2024-07/meme-del-gato-riendo_0.jpg.webp?itok=2QOszuKz',
-    info1: '60 segundos x 5', info2: 'descanso de un minuto'
+    info1: '60s x 5', info2: 'descanso de un minuto'
   },
   {
     id: '3',

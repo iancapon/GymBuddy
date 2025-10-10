@@ -80,6 +80,7 @@ export default function Slides(props: myListProps) {
 
     const descripcionTTS = `${props.data[props.currentIndex].titulo}. ${props.data[props.currentIndex].info1}. ${props.data[props.currentIndex].info2}`
     
+    Speech.stop()
     Speech.speak(descripcionTTS, {
         language: "es-SP",
         pitch: 1.0,
