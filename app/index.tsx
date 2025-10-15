@@ -7,8 +7,7 @@ export default function IndexScreen() {
   const router = useRouter()
 
   const handleSession = () => {
-    Alert.alert("Inicio de sesion", "Has iniciado sesión correctamente ✅");
-    router.push("./(tabs)/index_tab")
+    router.push("../(modals)/inicio_sesion_screen")
   };
 
   const handleRegister = () => {

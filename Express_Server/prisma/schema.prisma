@@ -17,6 +17,7 @@ model User {
   apellido     String   
   DNI          BigInt
   email        String
+  password     String
   telefono     BigInt
   edad         Int
   posts        Post[]
@@ -28,6 +29,7 @@ model Post {
   apellido    String
   DNI         BigInt
   email       String
+  password    String
   telefono    BigInt?
   edad        Int
   authorId    Int?

@@ -5,6 +5,7 @@ CREATE TABLE "User" (
     "apellido" TEXT NOT NULL,
     "DNI" BIGINT NOT NULL,
     "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "telefono" BIGINT NOT NULL,
     "edad" INTEGER NOT NULL
 );
@@ -16,6 +17,7 @@ CREATE TABLE "Post" (
     "apellido" TEXT NOT NULL,
     "DNI" BIGINT NOT NULL,
     "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "telefono" BIGINT,
     "edad" INTEGER NOT NULL,
     "authorId" INTEGER,

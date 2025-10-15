@@ -7,7 +7,7 @@ const router = Router();
 
 router.post("/register", async (req: Request, res: Response) => {
   try {
-    const { nombre, apellido, dni, email, telefono, edad } = req.body;
+    const { nombre, apellido, dni, email, password, telefono, edad } = req.body;
 
     // Validation
     const existingUser = await prisma.user.findFirst({
@@ -31,7 +31,8 @@ router.post("/register", async (req: Request, res: Response) => {
         nombre,
         apellido,
         DNI: BigInt(dni),
-        email,
+        email, 
+        password,
         telefono: BigInt(telefono),
         edad: parseInt(edad),
       },

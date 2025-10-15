@@ -2,10 +2,15 @@ import express, { Request, Response } from "express";
 import { PrismaClient } from "../generated/prisma";
 import cors from "cors";
 import registerRoute from "./register";
+import sessionRoute from "./session"
 
 export const prisma = new PrismaClient();
 const app = express();
 const PORT = 4000;
+
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
 app.use(express.json());
 app.use(cors());
@@ -15,38 +20,14 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 // llamo a register.ts
-app.use("/api", registerRoute);
+app.use("/register", registerRoute);
+app.use("/session", sessionRoute);
 
 async function main() {
   try {
     await prisma.$connect();
     console.log("==========Base de datos conectada============");
 
-    // opcional: puedo testear un seed
-    
-    const user = await prisma.user.create({
-      data: {
-        nombre: "Pedrito",
-        apellido: "Gomez",
-        DNI: 123456789,
-        email: "pedrito01@gmail.com",
-        telefono: 987654321,
-        edad: 25,
-        posts: {
-          create: {
-            nombre: "Pedrito",
-            apellido: "Gomez",
-            DNI: 123456789,
-            email: "pedrito01@gmail.com",
-            telefono: 987654321,
-            edad: 25,
-          },
-        },
-      },
-      include: { posts: true },
-    });
-    console.log("Usuario creado:", user);
-    
   } catch (error) {
     console.error("Error en main:", error);
   }

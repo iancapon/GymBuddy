@@ -8,24 +8,20 @@ import { StatusBar } from "expo-status-bar";
 
 // Reemplaza esta url por la IP de tu PC,
 //Ejemplo IP:PUERTO ---> 192.168.1.13:4000  poner el socket
-const API_URL = "http://172.29.149.60:4000/register";
+const API_URL = "http://172.29.149.60:4000/session";
 
 export default function RegistroScreen() {
   const router = useRouter();
-  
+
   // Estados para los campos
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [dni, setDni] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [edad, setEdad] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = async () => {
+  const handleSession = async () => {
     // Validación básica
-    if (!nombre || !apellido || !dni || !email || !password || !telefono || !edad) {
+    if (!email || !password) {
       Alert.alert("Error", "Por favor completa todos los campos");
       return;
     }
@@ -44,59 +40,40 @@ export default function RegistroScreen() {
       return;
     }
 
-    // Validación de edad
-    const edadNum = parseInt(edad);
-    if (isNaN(edadNum) || edadNum < 1 || edadNum > 120) {
-      Alert.alert("Error", "Por favor ingresa una edad válida");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/register`, {
+      const response = await fetch(`${API_URL}/session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nombre,
-          apellido,
-          dni,
           email,
-          password,
-          telefono,
-          edad: edadNum,
+          password
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        router.replace("../(tabs)/index_tab");
         Alert.alert(
-          "Registro exitoso ",
-          "Te has registrado correctamente",
+          "Inicio de sesion ",
+          "Has iniciado sesion correctamente 👽",
           [
             {
               text: "OK",
-              onPress: () => router.back(),
+              //onPress: () => router.replace("../(tabs)/index_tab"),
             },
           ]
         );
-        
-        // Limpiar formulario
-        setNombre("");
-        setApellido("");
-        setDni("");
-        setEmail("");
-        setPassword("");
-        setTelefono("");
-        setEdad("");
+
       } else {
-        Alert.alert("Error", data.error || "No se pudo completar el registro");
+        Alert.alert("Error", data.error || "No se pudo iniciar sesion");
       }
     } catch (error) {
-      console.error("Error al registrar:", error);
+      console.error("Error al iniciar sesion:", error);
       Alert.alert(
         "Error de conexión",
         "No se pudo conectar con el servidor. Asegúrate de que el servidor esté corriendo."
@@ -113,30 +90,9 @@ export default function RegistroScreen() {
         style={StyleSheet.absoluteFillObject}
         resizeMode="cover"
       />
-      <Text style={styles.title}>Formulario de Registro</Text>
+      <Text style={styles.title}>Inicio de sesión</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre"
-        value={nombre}
-        onChangeText={setNombre}
-        editable={!loading}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Apellido"
-        value={apellido}
-        onChangeText={setApellido}
-        editable={!loading}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="DNI"
-        keyboardType="numeric"
-        value={dni}
-        onChangeText={setDni}
-        editable={!loading}
-      />
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -151,25 +107,9 @@ export default function RegistroScreen() {
         placeholder="Contraseña"
         keyboardType="default"
         autoCapitalize="none"
+        secureTextEntry={true}
         value={password}
-        secureTextEntry = {true}
         onChangeText={setPassword}
-        editable={!loading}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Teléfono"
-        keyboardType="phone-pad"
-        value={telefono}
-        onChangeText={setTelefono}
-        editable={!loading}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Edad"
-        keyboardType="numeric"
-        value={edad}
-        onChangeText={setEdad}
         editable={!loading}
       />
 
@@ -178,10 +118,10 @@ export default function RegistroScreen() {
           <ActivityIndicator size="large" color="#fff" />
         ) : (
           <Boton
-            name="Registrarme"
+            name="Iniciar sesión"
             viewStyle={styles.boton}
             textStyle={{ color: "white", fontSize: 20, fontWeight: "700" }}
-            onPress={handleRegister}
+            onPress={handleSession}
           />
         )}
       </View>
@@ -198,13 +138,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    
+
   },
   title: {
     fontSize: 30,
     fontWeight: "bold",
     marginBottom: 20,
-    color:"#007eafff"
+    color: "#007eafff"
   },
   input: {
     width: "100%",
