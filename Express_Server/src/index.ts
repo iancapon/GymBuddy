@@ -53,7 +53,7 @@ async function main() {
 }
 
 app.listen(PORT, async () => {
-  console.log(`ervidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
   await main();
 });
 

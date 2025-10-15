@@ -8,7 +8,7 @@ import { StatusBar } from "expo-status-bar";
 
 // Reemplaza esta url por la IP de tu PC,
 //Ejemplo IP:PUERTO ---> 192.168.1.13:4000  poner el socket
-const API_URL = "http://192.168.1.13:4000/api";
+const API_URL = "http://172.29.149.60:4000/api";
 
 export default function RegistroScreen() {
   const router = useRouter();
