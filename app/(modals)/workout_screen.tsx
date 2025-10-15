@@ -9,7 +9,7 @@ import { useRouter } from 'expo-router';
 
 export default function WorkoutScreen() {
   const [woIndex, setWoIndex] = useState(0)// current workout index
-  const titulo = "Ejemplo"
+  const titulo= "Ejemplo"
   const ejercicios = DATA
   const router = useRouter()
 
@@ -41,7 +41,7 @@ export default function WorkoutScreen() {
               if (woIndex < ejercicios.length - 1) {
                 setWoIndex(woIndex + 1)
               }
-              else {
+              else{
                 router.back()
                 Alert.alert("Felicidades!!!", "Terminaste con los ejercicios")
               }
@@ -70,7 +70,7 @@ const DATA = [
     id: '2',
     titulo: 'Plancha',
     media: 'https://www.patasencasa.com/sites/default/files/styles/article_detail_1200/public/2024-07/meme-del-gato-riendo_0.jpg.webp?itok=2QOszuKz',
-    info1: '60s x 5', info2: 'descanso de un minuto'
+    info1: '60 segundos x 5', info2: 'descanso de un minuto'
   },
   {
     id: '3',
