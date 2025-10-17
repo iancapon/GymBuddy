@@ -1,58 +1,94 @@
-import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, Modal } from 'react-native';
 import Boton from '../../components/Boton';
-import { useRouter } from 'expo-router';
+import { useRouter, Router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useContext, useEffect, useState } from 'react';
 import { ContextoPerfil } from '../_layout';
+import { Ionicons } from '@expo/vector-icons';
 
-type userInfo = {
-    mail: string
-    password: string
+type resumenProps = {
+  visible: boolean;
+  setVisible: (v: boolean) => void;
+  router: Router
+  setSesion: any // xd
+
+};
+
+function CerrarSesionModal(props: resumenProps) {
+  return (
+    <Modal animationType="fade" transparent visible={props.visible} onRequestClose={() => props.setVisible(false)}>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalCard}>
+          <Text style={styles.modalTitle}>🏋️ Estas por cerrar sesión</Text>
+          <Text style={styles.modalSubtitle}> ¿Seguro que deseas continuar? </Text>
+          <Boton
+            name="Mantener sesión"
+            viewStyle={styles.modalButton}
+            textStyle={styles.modalButtonText}
+            onPress={() => props.setVisible(false)}
+          />
+          <Boton
+            name="Cerrar sesión"
+            viewStyle={styles.modalButton}
+            textStyle={styles.modalButtonText}
+            onPress={() => {
+              props.setVisible(false);
+              props.setSesion({ mail: "", password: "" }) // (a ver si esto es suficiente)
+              props.router.replace("/index"); // no anda muy bien
+
+            }}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
 }
 
-const API_URL = "http://192.168.0.5:4000/perfil";import { Ionicons } from '@expo/vector-icons';
+
+type userInfo = {
+  mail: string
+  password: string
+}
+
+const API_URL = "http://192.168.0.5:4000/perfil";
 
 export default function PerfilScreen() {
   const router = useRouter();
+  const contextoPerfil = useContext(ContextoPerfil);
 
-  // Datos del usuario (por ahora estáticos)
-  /*
-  const usuario = {
-    nombre: 'Ian Capon',
-    email: 'ian.capon@uca.edu.ar',
-    edad: 22,
-    telefono: '+54 11 6789-4321',
-  };*/
-    const contextoPerfil = useContext(ContextoPerfil);
+  const mail = contextoPerfil?.userContext.mail
+  const [nombre, setNombre] = useState("...")
+  const [apellido, setApellido] = useState("...")
+  const [edad, setEdad] = useState("...")
+  const [dni, setDNI] = useState<BigInt>(BigInt(-1))
+  const [telefono, setTelefono] = useState("...")
+  const [modal, setModal] = useState(false)
 
-    const mail = contextoPerfil?.userContext.mail
-    const [nombre, setNombre] = useState("...")
-    const [apellido, setApellido] = useState("...")
-    const [edad, setEdad] = useState("...")
-    const [dni, setDNI] = useState<BigInt>(BigInt(-1))
-    const [telefono, setTelefono] = useState("...")
+  const handleSession = (async () => {
+    const response = await fetch(`${API_URL}/perfil`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mail: contextoPerfil?.userContext.mail,
+        password: contextoPerfil?.userContext.password
+      })
+    });
 
-    const handleSession = (async () => {
-        const response = await fetch(`${API_URL}/perfil`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                mail: contextoPerfil?.userContext.mail,
-                password: contextoPerfil?.userContext.password
-            })
-        });
+    const data = await response.json();
 
-        const data = await response.json();
+    if (response.ok) {
+      setNombre(data.data.nombre)
+      setApellido(data.data.apellido)
+      setEdad(data.data.edad)
+      setDNI(data.data.DNI)
+      setTelefono(data.data.telefono)
+    }
 
-        setNombre(data.data.nombre)
-        setApellido(data.data.apellido)
-        setEdad(data.data.edad)
-        setDNI(data.data.DNI)
-        setTelefono(data.data.telefono)
 
-    })()
+
+  })()
 
   return (
     <View style={styles.container}>
@@ -63,6 +99,8 @@ export default function PerfilScreen() {
         style={StyleSheet.absoluteFillObject}
         resizeMode="cover"
       />
+      {/* Modal resumen */}
+      <CerrarSesionModal visible={modal} setVisible={setModal} router={router} setSesion={contextoPerfil?.setUserContext} />
       <View style={styles.overlay} />
 
       {/* Tarjeta de perfil */}
@@ -93,7 +131,7 @@ export default function PerfilScreen() {
           name="Cerrar Sesión"
           viewStyle={styles.logoutButton}
           textStyle={styles.logoutText}
-          onPress={() => router.push('../index')}
+          onPress={() => setModal(true)}
         />
       </View>
 
@@ -105,6 +143,7 @@ export default function PerfilScreen() {
 const COLORS = {
   overlay: 'rgba(0,0,0,0.55)',
   card: 'rgba(255,255,255,0.12)',
+  white: '#fff',
   border: 'rgba(255,255,255,0.2)',
   text: '#ffffff',
   textMuted: 'rgba(255,255,255,0.75)',
@@ -180,6 +219,48 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   logoutText: {
+    color: '#111',
+    fontWeight: '800',
+    fontSize: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalCard: {
+    width: '90%',
+    maxWidth: 380,
+    borderRadius: 18,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    backgroundColor: 'rgba(30,30,30,0.9)',
+  },
+  modalTitle: {
+    color: COLORS.white,
+    fontSize: 22,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  modalSubtitle: {
+    color: COLORS.textMuted,
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: COLORS.accent,
+    borderRadius: 12,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+  },
+  modalButtonText: {
     color: '#111',
     fontWeight: '800',
     fontSize: 16,

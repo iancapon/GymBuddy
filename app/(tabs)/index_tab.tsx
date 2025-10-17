@@ -4,12 +4,22 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Boton from '../../components/Boton';
 import { useMemo, useState } from 'react';
+import { ContextoPerfil } from '../_layout';
+import { useContext } from 'react';
+
+
+type userInfo = {
+  mail: string
+  password: string
+}
+
+const API_URL = "http://192.168.0.5:4000/perfil";
 
 // 🔤 Helper seguro para RN (sin Intl): 16 de Octubre del 2025
 function formatFechaES(fecha = new Date()) {
   const meses = [
-    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
   const dia = fecha.getDate();
   const mes = meses[fecha.getMonth()];
@@ -19,11 +29,34 @@ function formatFechaES(fecha = new Date()) {
 
 export default function SelectWorkout() {
   const router = useRouter();
+  const contextoPerfil = useContext(ContextoPerfil);
+  const [nombre, setNombre] = useState("...")
+  const [apellido, setApellido] = useState("...")
+
   const [mode, setMode] = useState<'image' | 'dark' | 'light'>('image');
-  const nombre = 'Ian';
 
   // 📅 Fecha con formato “16 de Octubre del 2025” (sin Intl)
   const fechaDeHoy = useMemo(() => formatFechaES(new Date()), []);
+
+  const handleSession = (async () => {
+    const response = await fetch(`${API_URL}/perfil`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mail: contextoPerfil?.userContext.mail,
+        password: contextoPerfil?.userContext.password
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setNombre(data.data.nombre)
+      setApellido(data.data.apellido)
+    }
+  })()
 
   const noImplementado = () => Alert.alert('No implementado', 'Esto aún no ha sido implementado');
 
@@ -67,7 +100,7 @@ export default function SelectWorkout() {
   const theme = THEMES[mode];
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.overlay }]}>
+    <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
       {mode === 'image' && (
         <ImageBackground
           source={{ uri: theme.bg }}
@@ -109,7 +142,7 @@ export default function SelectWorkout() {
       </View>
 
       {/* Contenido principal */}
-      <View style={styles.content}>
+      <View style={[styles.content, { width: "100%" }]}>
         <Boton
           onPress={() => router.push('../(modals)/workout_screen')}
           viewStyle={[
@@ -146,9 +179,10 @@ export default function SelectWorkout() {
           </Boton>
         </View>
 
+        {/* --- Tus rutinas --- */}
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Tus Rutinas</Text>
-
         <FlatList
+          style={{ width: "100%" }}
           horizontal
           showsHorizontalScrollIndicator={false}
           data={WORKOUTS}
@@ -184,7 +218,7 @@ const WORKOUTS = [
 ];
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, width: "100%" },
   overlay: { ...StyleSheet.absoluteFillObject },
   topBar: {
     marginTop: 50,

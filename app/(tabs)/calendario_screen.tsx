@@ -61,12 +61,14 @@ export default function Calendario() {
       <View style={styles.container}>
         <Text style={styles.instruction}>📅 Mantené presionado en una fecha para programar un workout</Text>
 
-        <View style={[styles.calendar, { backgroundColor: COLORS.card, borderColor: COLORS.border, borderWidth: 1 }]}>
+        <View style={[{ backgroundColor: '#ffffff34', borderColor: COLORS.border, borderWidth: 1, borderRadius: 14 }]}>
           <Calendar
             style={styles.calendar}
             markedDates={fechasMarcadas}
             current={hoy}
             theme={{
+              backgroundColor: 'transparent',
+              calendarBackground: 'transparent',
               dayTextColor: '#fff',
               monthTextColor: '#fff',
               textDisabledColor: 'rgba(255,255,255,0.3)',
