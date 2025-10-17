@@ -1,169 +1,261 @@
 import { StatusBar } from 'expo-status-bar';
-import { Alert, StyleSheet, StyleProp, ViewStyle, TextStyle, Text, View, FlatList, ImageBackground } from 'react-native';
-import { ReactNode, useState } from 'react';
-import Boton from '../../components/Boton';
-import Tarjeta from '../../components/Tarjeta';
-import Slides from '../../components/Slides';
-import { useRouter } from "expo-router"
+import { Alert, StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import Boton from '../../components/Boton';
+import { useMemo, useState } from 'react';
 
-
-export default function SelectWorkout() {
-    const router = useRouter()
-    const fechaDeHoy = new Date().toISOString().split("T")[0]
-    const noImplementado = () => {
-        Alert.alert("No implementado", "esto aún no ha sido implementado")
-    }
-    return (
-        <View style={styles.container}>
-            <ImageBackground
-                source={{ uri: "https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww" }}
-                style={StyleSheet.absoluteFillObject}
-                resizeMode="cover"
-            />
-            <View style={[StyleSheet.absoluteFillObject, { flex: 1, backgroundColor: "#855c5c5e" }]}>
-
-                <Boton
-                    onPress={() => {
-                        router.push("../(modals)/workout_screen")
-                    }}
-                    viewStyle={[styles.tarjeta, { width: "96%", height: 200, backgroundColor: "powderblue" }]}
-                    textStyle={[styles.titulo, styles.blanco]} >
-                    <Text style={[styles.titulo, styles.negro]}>para hoy</Text>
-                    <Text style={[styles.subtitulo, styles.negro]}>{fechaDeHoy}</Text>
-                    <Ionicons name="barbell" size={50} />
-                </Boton>
-
-                <View style={[{ flexDirection: "row", height: 160, paddingBottom: 20 }]}>
-                    <Boton
-                        onPress={() => router.push("../(modals)/crear_screen")}
-                        viewStyle={[styles.tarjeta, { flex: 1, height: "100%", backgroundColor: "lightgreen" }]}
-                        textStyle={[styles.subtitulo, styles.blanco]} >
-                        <Text style={[styles.subtitulo, styles.negro]}>crear</Text>
-                        <Ionicons name="create" size={50} />
-                    </Boton>
-
-                    <Boton
-                        onPress={() => router.push("../(modals)/historial_screen")}
-                        viewStyle={[styles.tarjeta, { flex: 1, height: "100%", backgroundColor: "orange" }]}
-                    >
-                        <Text style={[styles.subtitulo, styles.negro]}>historial</Text>
-                        <Ionicons name="book" size={50} />
-                    </Boton>
-
-                </View>
-
-                <Text style={[styles.subtitulo, styles.blanco]}>Workouts creados</Text>
-
-                <FlatList
-                    horizontal
-                    data={WORKOUTS}
-                    keyExtractor={item => item.id}
-                    style={[styles.list, {}]}
-                    contentContainerStyle={{ justifyContent: "flex-start", alignItems: "flex-start" }}
-                    renderItem={({ item }) => (
-                        <Boton
-                            onPress={noImplementado}// acá con la opcion del item.workout_id
-                            viewStyle={[styles.tarjeta, { width: 300, height: "90%", backgroundColor: '#00b7ffff' }]}
-                            textStyle={[styles.titulo, styles.negro]} >
-                            <Text style={[styles.titulo]}>{item.titulo}</Text>
-                            <Ionicons name="barbell" size={50} />
-                        </Boton>
-                    )}
-                />
-                <StatusBar style="auto" />
-            </View>
-        </View>
-    );
+// 🔤 Helper seguro para RN (sin Intl): 16 de Octubre del 2025
+function formatFechaES(fecha = new Date()) {
+  const meses = [
+    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+  ];
+  const dia = fecha.getDate();
+  const mes = meses[fecha.getMonth()];
+  const año = fecha.getFullYear();
+  return `${dia} de ${mes} del ${año}`;
 }
 
+export default function SelectWorkout() {
+  const router = useRouter();
+  const [mode, setMode] = useState<'image' | 'dark' | 'light'>('image');
+  const nombre = 'Ian';
+
+  // 📅 Fecha con formato “16 de Octubre del 2025” (sin Intl)
+  const fechaDeHoy = useMemo(() => formatFechaES(new Date()), []);
+
+  const noImplementado = () => Alert.alert('No implementado', 'Esto aún no ha sido implementado');
+
+  // 🎨 Paletas de color mejoradas
+  const THEMES = {
+    image: {
+      bg: 'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000',
+      overlay: 'rgba(0,0,0,0.55)',
+      text: '#fff',
+      textMuted: 'rgba(255,255,255,0.7)',
+      accent: '#4DB6FF',
+      success: '#43e97b',
+      warning: '#ffb74d',
+      cardBg: 'rgba(255,255,255,0.12)',
+      border: 'rgba(255,255,255,0.2)',
+    },
+    dark: {
+      bg: undefined,
+      overlay: '#0f1115',
+      text: '#e8f0ff',
+      textMuted: '#94a3b8',
+      accent: '#3BAFDA',
+      success: '#26A69A',
+      warning: '#FFB84D',
+      cardBg: '#1b1d23',
+      border: '#2b2e36',
+    },
+    light: {
+      bg: undefined,
+      overlay: '#f6f7fb',
+      text: '#212529',
+      textMuted: '#606770',
+      accent: '#FF7A00',
+      success: '#00C896',
+      warning: '#FFC107',
+      cardBg: '#ffffff',
+      border: '#e3e3e3',
+    },
+  };
+
+  const theme = THEMES[mode];
+
+  return (
+    <View style={[styles.container, { backgroundColor: theme.overlay }]}>
+      {mode === 'image' && (
+        <ImageBackground
+          source={{ uri: theme.bg }}
+          style={StyleSheet.absoluteFillObject}
+          resizeMode="cover"
+        />
+      )}
+      <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
+
+      {/* 🔝 Header con saludo y selector */}
+      <View style={styles.topBar}>
+        <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
+        <View style={styles.modeButtons}>
+          <TouchableOpacity onPress={() => setMode('image')}>
+            <Ionicons
+              name="image"
+              size={26}
+              color={mode === 'image' ? theme.accent : theme.textMuted}
+              style={styles.modeIcon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setMode('dark')}>
+            <Ionicons
+              name="moon"
+              size={26}
+              color={mode === 'dark' ? theme.accent : theme.textMuted}
+              style={styles.modeIcon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setMode('light')}>
+            <Ionicons
+              name="sunny"
+              size={26}
+              color={mode === 'light' ? theme.accent : theme.textMuted}
+              style={styles.modeIcon}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Contenido principal */}
+      <View style={styles.content}>
+        <Boton
+          onPress={() => router.push('../(modals)/workout_screen')}
+          viewStyle={[
+            styles.mainCard,
+            { backgroundColor: theme.accent, shadowColor: theme.text },
+          ]}
+        >
+          <Ionicons name="barbell" size={60} color="#fff" />
+          <Text style={[styles.mainTitle, { color: theme.text }]}>Entrenamiento de Hoy</Text>
+          <Text style={[styles.mainSubtitle, { color: theme.textMuted }]}>{fechaDeHoy}</Text>
+        </Boton>
+
+        <View style={styles.row}>
+          <Boton
+            onPress={() => router.push('../(modals)/crear_screen')}
+            viewStyle={[
+              styles.smallCard,
+              { backgroundColor: theme.success, shadowColor: theme.text },
+            ]}
+          >
+            <Ionicons name="create-outline" size={40} color="#fff" />
+            <Text style={[styles.smallTitle, { color: theme.text }]}>Crear</Text>
+          </Boton>
+
+          <Boton
+            onPress={() => router.push('../(modals)/historial_screen')}
+            viewStyle={[
+              styles.smallCard,
+              { backgroundColor: theme.warning, shadowColor: theme.text },
+            ]}
+          >
+            <Ionicons name="book-outline" size={40} color="#fff" />
+            <Text style={[styles.smallTitle, { color: theme.text }]}>Historial</Text>
+          </Boton>
+        </View>
+
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Tus Rutinas</Text>
+
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={WORKOUTS}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingHorizontal: 10 }}
+          renderItem={({ item }) => (
+            <Boton
+              onPress={noImplementado}
+              viewStyle={[
+                styles.workoutCard,
+                { backgroundColor: theme.cardBg, borderColor: theme.border },
+              ]}
+            >
+              <Ionicons name="barbell-outline" size={42} color={theme.text} />
+              <Text style={[styles.workoutTitle, { color: theme.text }]}>{item.titulo}</Text>
+            </Boton>
+          )}
+        />
+      </View>
+
+      <StatusBar style={mode === 'light' ? 'dark' : 'light'} />
+    </View>
+  );
+}
 
 const WORKOUTS = [
-    {
-        id: '2',
-        titulo: 'core',
-        workout_id: "chjbksc",
-    },
-    {
-        id: '3',
-        titulo: 'tren superior',
-        workout_id: "chjbksc",
-    },
-    {
-        id: '4',
-        titulo: 'core',
-        workout_id: "chjbksc",
-    },
-    {
-        id: '5',
-        titulo: 'tren inferior',
-        workout_id: "chjbksc",
-    },
-    {
-        id: '6',
-        titulo: 'custom 1',
-        workout_id: "chjbksc",
-    },
-    {
-        id: '7',
-        titulo: 'custom 2',
-        workout_id: "chjbksc",
-    },
-    {
-        id: '8',
-        titulo: 'custom 3',
-        workout_id: "chjbksc",
-    },
-    {
-        id: '9',
-        titulo: 'custom 4',
-        workout_id: "chjbksc",
-    },
-]
-
-
-
+  { id: '2', titulo: 'Core' },
+  { id: '3', titulo: 'Tren superior' },
+  { id: '4', titulo: 'Pecho' },
+  { id: '5', titulo: 'Piernas' },
+  { id: '6', titulo: 'Custom 1' },
+  { id: '7', titulo: 'Custom 2' },
+];
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#ffffffff',
-        flexDirection: "column",
-        alignItems: 'center',
-        justifyContent: 'space-around'
-    },
-    list: {
-        flex: 1,
-    },
-    tarjeta: {
-        padding: 10,
-        margin: 10,
-        justifyContent: "flex-end",
-        alignItems: "flex-end",
-        borderRadius: 10,
-    },
-    amarillo: {
-        color: 'rgba(201, 245, 6, 1)'
-    },
-    negro: {
-        color: 'rgba(0, 0, 0, 1)'
-    },
-    celeste: {
-        color: '#00b7ffff'
-    },
-    blanco: {
-        color: 'rgba(255, 255, 255, 1)'
-    },
-    titulo: {
-        fontWeight: 'bold',
-        fontSize: 40,
-    },
-    subtitulo: {
-        fontWeight: 'bold',
-        fontSize: 30
-    },
-    grande: {
-        fontWeight: 'bold',
-        fontSize: 20
-    }
+  container: { flex: 1 },
+  overlay: { ...StyleSheet.absoluteFillObject },
+  topBar: {
+    marginTop: 50,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  greeting: {
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  modeButtons: { flexDirection: 'row' },
+  modeIcon: { marginHorizontal: 6 },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 40,
+  },
+  mainCard: {
+    width: '100%',
+    height: 180,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  mainTitle: { fontSize: 26, fontWeight: '800', marginTop: 10 },
+  mainSubtitle: { fontSize: 16, marginTop: 4 },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 20,
+  },
+  smallCard: {
+    flex: 1,
+    height: 120,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 8,
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  smallTitle: { fontSize: 18, fontWeight: '600', marginTop: 6 },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginVertical: 10,
+    alignSelf: 'flex-start',
+  },
+  workoutCard: {
+    width: 160,
+    height: 120,
+    borderRadius: 16,
+    marginHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  workoutTitle: { fontSize: 16, fontWeight: '600', marginTop: 8 },
 });
