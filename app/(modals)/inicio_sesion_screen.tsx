@@ -1,17 +1,23 @@
 import { Text, View } from "react-native";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Alert, ScrollView, StyleSheet, TextInput, ImageBackground, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import Boton from "../../components/Boton";
 import { StatusBar } from "expo-status-bar";
+import { ContextoPerfil } from "../_layout";
 
+type userInfo = {
+  mail: string
+  password: string
+}
 
 // Reemplaza esta url por la IP de tu PC,
 //Ejemplo IP:PUERTO ---> 192.168.1.13:4000  poner el socket
-const API_URL = "http://172.29.149.60:4000/session";
+const API_URL = "http://192.168.0.5:4000/session";
 
 export default function RegistroScreen() {
   const router = useRouter();
+  const contextoPerfil = useContext(ContextoPerfil);
 
   // Estados para los campos
 
@@ -57,6 +63,7 @@ export default function RegistroScreen() {
       const data = await response.json();
 
       if (response.ok) {
+        contextoPerfil?.setUserContext({ mail: email, password: password }); // paso el contexto del usuario (deberia hacerlo más seguro)
         router.replace("../(tabs)/index_tab");
         Alert.alert(
           "Inicio de sesion ",
@@ -107,7 +114,7 @@ export default function RegistroScreen() {
         placeholder="Contraseña"
         keyboardType="default"
         autoCapitalize="none"
-        secureTextEntry={true}
+        //secureTextEntry={true}
         value={password}
         onChangeText={setPassword}
         editable={!loading}

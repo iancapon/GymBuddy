@@ -1,8 +1,31 @@
 import { Router, Request, Response } from "express";
 import { prisma } from "./index";
 
+
+
 const router = Router();
 
+router.post("/perfil", async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await prisma.user.findFirst({
+      where: { email, password },
+    });
+
+    if (user) return res.status(200).json({ ok: true, mensaje: "Usuario encontrado", data: user })
+
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error del servidor" });
+  }
+});
+
+
+/*
 
 router.post("/session", async (req: Request, res: Response) => {
   try {
@@ -39,5 +62,8 @@ router.post("/session", async (req: Request, res: Response) => {
     });
   }
 });
+
+*/
+
 
 export default router;

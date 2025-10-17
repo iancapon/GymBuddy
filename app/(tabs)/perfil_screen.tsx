@@ -2,10 +2,48 @@ import { StyleSheet, ScrollView, StyleProp, ViewStyle, TextStyle, Text, View, Fl
 import Boton from '../../components/Boton';
 import { useRouter } from "expo-router"
 import { StatusBar } from 'expo-status-bar';
+import { useContext, useEffect, useState } from 'react';
+import { ContextoPerfil } from '../_layout';
 
+type userInfo = {
+    mail: string
+    password: string
+}
+
+const API_URL = "http://192.168.0.5:4000/perfil";
 
 export default function PerfilScreen() {
     const router = useRouter()
+    const contextoPerfil = useContext(ContextoPerfil);
+
+    const mail = contextoPerfil?.userContext.mail
+    const [nombre, setNombre] = useState("...")
+    const [apellido, setApellido] = useState("...")
+    const [edad, setEdad] = useState("...")
+    const [dni, setDNI] = useState<BigInt>(BigInt(-1))
+    const [telefono, setTelefono] = useState("...")
+
+    const handleSession = (async () => {
+        const response = await fetch(`${API_URL}/perfil`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                mail: contextoPerfil?.userContext.mail,
+                password: contextoPerfil?.userContext.password
+            })
+        });
+
+        const data = await response.json();
+
+        setNombre(data.data.nombre)
+        setApellido(data.data.apellido)
+        setEdad(data.data.edad)
+        setDNI(data.data.DNI)
+        setTelefono(data.data.telefono)
+
+    })()
 
     return (
         <View style={[styles.verticalContainer, { flex: 1 }]}>
@@ -15,8 +53,12 @@ export default function PerfilScreen() {
                 style={StyleSheet.absoluteFillObject}
                 resizeMode="cover"
             />
-            <View style={[{ flex: 2, marginTop: 20, padding: 20, borderRadius:10 ,alignSelf: "center", width: "90%", backgroundColor: "#f7f7f7de" }]}>
-                <Text style={[styles.titulo, styles.celeste, {}]}>Ian Capon</Text>
+            <View style={[{ flex: 2, marginTop: 20, padding: 20, borderRadius: 10, alignSelf: "center", width: "90%", backgroundColor: "#f7f7f7de" }]}>
+                <Text style={[styles.subtitulo, styles.celeste, { flex: 0.9 }]}>{nombre + " " + apellido}</Text>
+                <Text style={[styles.grande, styles.celeste, {}]}>{edad + " años"}</Text>
+                <Text style={[styles.medio, styles.celeste, {}]}>{"DNI: " + dni}</Text>
+                <Text style={[styles.medio, styles.celeste, {}]}>{"Tel Nro: " + telefono}</Text>
+                <Text style={[styles.medio, styles.celeste, {}]}>{mail}</Text>
             </View>
             <View style={[styles.verticalContainer, { backgroundColor: "transparent" }]}>
                 <Boton name="Cerrar Sesión" viewStyle={styles.button} textStyle={[styles.medio]} onPress={() => router.push("..//index")} />

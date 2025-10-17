@@ -3,6 +3,7 @@ import { PrismaClient } from "../generated/prisma";
 import cors from "cors";
 import registerRoute from "./register";
 import sessionRoute from "./session"
+import profileRoute from "./profile"
 
 export const prisma = new PrismaClient();
 const app = express();
@@ -19,9 +20,10 @@ app.get("/", (_req: Request, res: Response) => {
   res.send("Servidor Express + Prisma + SQLite funcionando...");
 });
 
-// llamo a register.ts
+// llamo a quien tenga que llamar
 app.use("/register", registerRoute);
 app.use("/session", sessionRoute);
+app.use("/perfil", profileRoute)
 
 async function main() {
   try {
