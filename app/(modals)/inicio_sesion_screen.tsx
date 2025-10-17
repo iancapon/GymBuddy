@@ -4,8 +4,8 @@ import { useRouter } from "expo-router";
 import Boton from "../../components/Boton";
 import { StatusBar } from "expo-status-bar";
 
-// ⚙️ Conexión al backend (NO TOCAR)
-const API_URL = "http://172.29.128.171:4000/session";
+// ⚙️ Conexión al backend (NO TOCAR)(SI MAESTRO TENES QUE PONER TU IPV4)
+const API_URL = "http://192.168.0.5:4000/session";
 
 export default function LoginScreen() {
   const router = useRouter();

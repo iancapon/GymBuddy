@@ -61,37 +61,36 @@ export default function Calendario() {
       <View style={styles.container}>
         <Text style={styles.instruction}>📅 Mantené presionado en una fecha para programar un workout</Text>
 
-        <Calendar
-          style={styles.calendar}
-          markedDates={fechasMarcadas}
-          current={hoy}
-          theme={{
-            backgroundColor: 'transparent',
-            calendarBackground: 'transparent',
-            dayTextColor: '#fff',
-            monthTextColor: '#fff',
-            textDisabledColor: 'rgba(255,255,255,0.3)',
-            todayTextColor: '#FFB46B',
-            arrowColor: '#fff',
-            textSectionTitleColor: '#FFB46B',
-            selectedDayBackgroundColor: '#FF7A00',
-            selectedDayTextColor: '#111',
-          }}
-          onDayLongPress={(dia) => {
-            Alert.alert('Programar workout', 'Esta función aún no está implementada.');
-          }}
-          onDayPress={(dia) => {
-            const item = WORKOUTS.find((programa) => programa.fecha === dia.dateString);
-            if (item) {
-              setTituloModal(item.titulo);
-              setFechaModal(item.fecha);
-              setModal(true);
-            } else if (dia.dateString === hoy) {
-              Alert.alert('Hoy', 'No hay workouts programados para hoy.');
-            }
-          }}
-        />
-
+        <View style={[styles.calendar, { backgroundColor: COLORS.card, borderColor: COLORS.border, borderWidth: 1 }]}>
+          <Calendar
+            style={styles.calendar}
+            markedDates={fechasMarcadas}
+            current={hoy}
+            theme={{
+              dayTextColor: '#fff',
+              monthTextColor: '#fff',
+              textDisabledColor: 'rgba(255,255,255,0.3)',
+              todayTextColor: '#FFB46B',
+              arrowColor: '#fff',
+              textSectionTitleColor: '#FFB46B',
+              selectedDayBackgroundColor: '#FF7A00',
+              selectedDayTextColor: '#111',
+            }}
+            onDayLongPress={(dia) => {
+              Alert.alert('Programar workout', 'Esta función aún no está implementada.');
+            }}
+            onDayPress={(dia) => {
+              const item = WORKOUTS.find((programa) => programa.fecha === dia.dateString);
+              if (item) {
+                setTituloModal(item.titulo);
+                setFechaModal(item.fecha);
+                setModal(true);
+              } else if (dia.dateString === hoy) {
+                Alert.alert('Hoy', 'No hay workouts programados para hoy.');
+              }
+            }}
+          />
+        </View>
         <Text style={styles.sectionTitle}>Workouts Programados</Text>
 
         <FlatList

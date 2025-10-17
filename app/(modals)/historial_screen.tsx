@@ -56,30 +56,31 @@ export default function Historial() {
       <View style={styles.container}>
         <Text style={styles.title}>📅 Calendario de Workouts</Text>
 
-        <Calendar
-          style={styles.calendar}
-          markedDates={fechasMarcadas}
-          theme={{
-            backgroundColor: 'transparent',
-            calendarBackground: 'transparent',
-            dayTextColor: '#fff',
-            monthTextColor: '#fff',
-            textDisabledColor: 'rgba(255,255,255,0.4)',
-            todayTextColor: '#FFB46B',
-            arrowColor: '#fff',
-            textSectionTitleColor: '#FFB46B',
-            selectedDayBackgroundColor: '#FF7A00',
-            selectedDayTextColor: '#111',
-          }}
-          onDayPress={(dia) => {
-            const item = WORKOUTS.find((programa) => programa.fecha === dia.dateString);
-            if (item) {
-              setTituloModal(item.titulo);
-              setFechaModal(item.fecha);
-              setModal(true);
-            }
-          }}
-        />
+        <View style={[styles.calendar, { backgroundColor: COLORS.card, borderColor: COLORS.border, borderWidth: 1 }]}>
+          <Calendar
+            style={styles.calendar}
+            markedDates={fechasMarcadas}
+            theme={{
+              calendarBackground: "transparent",
+              dayTextColor: '#fff',
+              monthTextColor: '#fff',
+              textDisabledColor: 'rgba(255,255,255,0.4)',
+              todayTextColor: '#FFB46B',
+              arrowColor: '#fff',
+              textSectionTitleColor: '#FFB46B',
+              selectedDayBackgroundColor: '#FF7A00',
+              selectedDayTextColor: '#111',
+            }}
+            onDayPress={(dia) => {
+              const item = WORKOUTS.find((programa) => programa.fecha === dia.dateString);
+              if (item) {
+                setTituloModal(item.titulo);
+                setFechaModal(item.fecha);
+                setModal(true);
+              }
+            }}
+          />
+        </View>
 
         <Text style={styles.sectionTitle}>Historial completo</Text>
 
