@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Alert, StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Boton from '../../components/Boton';
@@ -189,7 +189,13 @@ export default function SelectWorkout() {
       </View>
 
       {/* Contenido principal */}
-      <View style={[styles.content, { width: "100%" }]}>
+      <ScrollView
+        contentContainerStyle={{ alignItems: "center" }}
+        style={[{ width: "100%", paddingHorizontal: 10}]}
+        
+      >
+
+
         <Boton
           onPress={() => router.push('../(modals)/workout_screen')}
           viewStyle={[
@@ -213,7 +219,7 @@ export default function SelectWorkout() {
             <Ionicons name="create-outline" size={40} color="#fff" />
             <Text style={[styles.smallTitle, { color: theme.text }]}>Crear</Text>
           </Boton>
-         
+
           <Boton
             onPress={() => router.push('../(modals)/programar_screen')}
             viewStyle={[
@@ -242,7 +248,7 @@ export default function SelectWorkout() {
         <FlatList
           style={{ width: "100%" }}
           horizontal
-          showsHorizontalScrollIndicator={false}
+          showsHorizontalScrollIndicator={true}
           data={routines}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingHorizontal: 10 }}
@@ -273,7 +279,8 @@ export default function SelectWorkout() {
             </Boton>
           )}
         />
-      </View>
+
+      </ScrollView>
 
       <StatusBar style={mode === 'light' ? 'dark' : 'light'} />
     </View>

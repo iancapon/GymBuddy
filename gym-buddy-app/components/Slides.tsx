@@ -4,6 +4,7 @@ import * as Speech from 'expo-speech';
 import Boton from './Boton';
 import { useRouter } from 'expo-router';
 import { time } from 'console';
+import { Ionicons } from '@expo/vector-icons';
 
 type itemProps = {
   id: number;
@@ -127,21 +128,26 @@ export default function Slides(props: myListProps) {
   }
 
   return (
+    
     <View >
+      {/* Slide nro */}
       <Text style={[{ color: COLORS.text }, styles.subtitle]}>
         {slideNo()}
       </Text>
+      <View style={{ padding: 5 }}></View>
+      {/* Slide */}
       <Slide
         titulo={ejercicioActual().titulo}
         media={ejercicioActual().media}
         info1={ejercicioActual().info1}
         info2={ejercicioActual().info2}
       />
-
-      {/* Boton bloqueado */}
-      <View style={{ padding: 5 }}></View>
-      <Animated.View style={[styles.primaryButton, { width: timeBarWidth, height: 20 }]} />
-
+      {/* Timer */}
+      <View style={{ alignItems: "center", marginTop:10 }}>
+        <Animated.View style={[styles.progressFill, styles.progressWrap, { width: timeBarWidth, height: 10,marginBottom:0 }]} />
+        <Ionicons name="stopwatch-outline" size={40} color={!siguiente ? COLORS.progressFill : "#b0f6ffff"} />
+      </View>
+      {/* Boton */}
       <Boton
         name={currentIndex + 1 < data.length ? 'SIGUIENTE' : 'SALIR'}
         onPress={() => {
@@ -240,7 +246,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   card: {
-    //padding: 16,
+    margin: 16,
+    padding: 16,
     borderRadius: 16,
     overflow: 'hidden',
     //backgroundColor: COLORS.bgCard,
@@ -250,7 +257,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 500,
+    height: 450,
     justifyContent: 'flex-end',
   },
   imageRadius: {
