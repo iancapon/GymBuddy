@@ -1,17 +1,15 @@
+import React, { useEffect, useRef } from 'react';
 import { ImageBackground, StyleSheet, StyleProp, ViewStyle, Text, View, Animated } from 'react-native';
-import Tarjeta from './Tarjeta';
 import * as Speech from 'expo-speech';
-import { useEffect, useRef } from 'react';
 
 type itemProps = {
   id: number;
   titulo: string;
-  media: string;
-  info1: string;
-  info2: string;
+  media: string;   // URL de imagen
+  info1: string;   // por ej: "10 x 5"
+  info2: string;   // por ej: "descanso 1 min"
   orden: number;
 };
-
 
 type myListProps = {
   data: Array<itemProps> | undefined;
@@ -19,171 +17,165 @@ type myListProps = {
   style?: StyleProp<ViewStyle>;
 };
 
+const COLORS = {
+  bgCard: '#141414',
+  text: '#FFFFFF',
+  textMuted: '#B8B8B8',
+  border: '#2A2A2A',
+  overlay: 'rgba(0,0,0,0.35)',
+};
+
 export default function Slides(props: myListProps) {
   const { data, currentIndex, style } = props;
+
   
-  if (data != undefined) {
-    if (data.length == 0) {
-      throw new Error("No data on the workout")
-    }
-    if (currentIndex < 0 || currentIndex >= data.length) {
-      throw new Error('Workout current index outside of bounds');
-    }
+  const animation = useRef(new Animated.Value(0)).current;
 
-    const animation = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (!data || data.length === 0) return;
+    animation.setValue(0);
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 280,
+      useNativeDriver: true,
+    }).start();
+  }, [currentIndex, data, animation]);
 
-    // 🔹 Animación de entrada con leve deslizamiento y fade
-    useEffect(() => {
-      animation.setValue(0);
-      Animated.timing(animation, {
-        toValue: 1,
-        duration: 650,
-        useNativeDriver: true,
-      }).start();
-    }, [currentIndex]);
-
-    const slideAnimStyle: StyleProp<ViewStyle> = {
-      transform: [
-        {
-          translateY: animation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [40, 0], // entra de abajo hacia arriba
-          }),
-        },
-        {
-          scale: animation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0.95, 1],
-          }),
-        },
-      ],
-      opacity: animation,
-    };
-
+ 
+  useEffect(() => {
+    if (!data || data.length === 0) return;
     const ejercicio = data[currentIndex];
+    if (!ejercicio) return;
 
-    // 🔊 Texto a voz
-    useEffect(() => {
-      const descripcionTTS = `${ejercicio.titulo}. ${ejercicio.info1}. ${ejercicio.info2}`;
-      Speech.stop();
-      Speech.speak(descripcionTTS, {
-        language: 'es-SP',
-        pitch: 1.0,
-        rate: 1.05,
-      });
-    }, [currentIndex]);
+    const descripcionTTS = `${ejercicio.titulo}. ${ejercicio.info1}. ${ejercicio.info2}`;
+    Speech.stop();
+    Speech.speak(descripcionTTS, {
+      language: 'es-ES',
+      pitch: 1.0,
+      rate: 1.05,
+    });
+  }, [currentIndex, data]);
 
+  
+  if (!data || data.length === 0) {
     return (
-      <View style={styles.wrapper}>
-        <Animated.View style={[styles.cardShadow, slideAnimStyle, style]}>
+      <View style={[styles.fallback, style]}>
+        <Text style={styles.fallbackText}>Sin ejercicios para mostrar</Text>
+      </View>
+    );
+  }
+
+  const ejercicio = data[currentIndex];
+  if (!ejercicio) {
+    return (
+      <View style={[styles.fallback, style]}>
+        <Text style={styles.fallbackText}>Índice fuera de rango ({currentIndex})</Text>
+      </View>
+    );
+  }
+
+  const animatedStyle = {
+    opacity: animation,
+    transform: [
+      {
+        translateY: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [10, 0],
+        }),
+      },
+    ],
+  };
+
+  const hasImage = !!ejercicio.media && /^https?:\/\//i.test(ejercicio.media);
+
+  return (
+    <View style={[styles.wrapper, style]}>
+      <Animated.View style={[styles.card, animatedStyle]}>
+        {hasImage ? (
           <ImageBackground
             source={{ uri: ejercicio.media }}
             resizeMode="cover"
-            style={styles.imageBg}
-            imageStyle={styles.image}
+            style={styles.image}
+            imageStyle={styles.imageRadius}
           >
-            {/* Overlay oscuro sobre la imagen */}
             <View style={styles.overlay} />
-
-            <View style={styles.cardContent}>
-              <Text style={styles.title}>{ejercicio.titulo}</Text>
-
-              <View style={styles.separator} />
-
+            <View style={styles.content}>
+              <Text style={styles.title} numberOfLines={2}>{ejercicio.titulo}</Text>
               <Text style={styles.info}>{ejercicio.info1}</Text>
               <Text style={[styles.info, styles.info2]}>{ejercicio.info2}</Text>
             </View>
           </ImageBackground>
-        </Animated.View>
-      </View>
-    );
-  }
-  else {
-    return (
-      <View style={{justifyContent:"center"}} >
-        <Text style={{color:COLORS.white}}>No ha cargado...</Text>
-      </View>
-    )
-  }
+        ) : (
+          <View style={[styles.image, styles.noImage]}>
+            <View style={styles.content}>
+              <Text style={styles.title} numberOfLines={2}>{ejercicio.titulo}</Text>
+              <Text style={styles.info}>{ejercicio.info1}</Text>
+              <Text style={[styles.info, styles.info2]}>{ejercicio.info2}</Text>
+            </View>
+          </View>
+        )}
+      </Animated.View>
+    </View>
+  );
 }
-
-const COLORS = {
-  white: '#FFFFFF',
-  textMuted: 'rgba(255,255,255,0.8)',
-  orange: '#FF7A00',
-  gradientDark: 'rgba(0,0,0,0.6)',
-  gradientLight: 'rgba(0,0,0,0.25)',
-  shadow: 'rgba(0,0,0,0.5)',
-  border: 'rgba(255,255,255,0.2)',
-};
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 12,
   },
-
-  cardShadow: {
-    width: 320,
-    height: 500,
-    borderRadius: 24,
+  card: {
+    borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#222',
-    shadowColor: COLORS.shadow,
-    shadowOpacity: 0.6,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 10,
-  },
-
-  imageBg: {
-    flex: 1,
-    justifyContent: 'flex-end',
+    backgroundColor: COLORS.bgCard,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   image: {
-    borderRadius: 24,
+    width: '100%',
+    height: 260,
+    justifyContent: 'flex-end',
+  },
+  imageRadius: {
+    borderRadius: 16,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: COLORS.gradientDark,
+    backgroundColor: COLORS.overlay,
   },
-
-  cardContent: {
-    padding: 22,
-    borderTopWidth: 1,
-    borderColor: COLORS.border,
+  content: {
+    padding: 16,
   },
-
   title: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: COLORS.white,
+    color: COLORS.text,
+    fontSize: 22,
+    fontWeight: '700',
     textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.4)',
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 6,
-    marginBottom: 14,
   },
-
-  separator: {
-    width: 50,
-    height: 3,
-    backgroundColor: COLORS.orange,
-    alignSelf: 'center',
-    borderRadius: 3,
-    marginBottom: 16,
-  },
-
   info: {
     color: COLORS.textMuted,
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },
-
   info2: {
     marginTop: 6,
     fontStyle: 'italic',
+  },
+  noImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fallback: {
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.bgCard,
+  },
+  fallbackText: {
+    color: COLORS.textMuted,
   },
 });
