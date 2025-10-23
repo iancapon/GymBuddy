@@ -191,8 +191,8 @@ export default function SelectWorkout() {
       {/* Contenido principal */}
       <ScrollView
         contentContainerStyle={{ alignItems: "center" }}
-        style={[{ width: "100%", paddingHorizontal: 10}]}
-        
+        style={[{ width: "100%", paddingHorizontal: 10 }]}
+
       >
 
 
@@ -279,6 +279,20 @@ export default function SelectWorkout() {
             </Boton>
           )}
         />
+
+        <View style={{paddingVertical:5}}></View>
+
+        <Boton
+          onPress={() => router.push('../(modals)/workout_screen')}
+          viewStyle={[
+            styles.mainCard,
+            { backgroundColor: theme.accent, shadowColor: theme.text },
+          ]}
+        >
+          <Ionicons name="newspaper" size={60} color="#fff" />
+          <Text style={[styles.mainTitle, { color: theme.text }]}>Noticias de la semana</Text>
+          <Text style={[styles.mainSubtitle, { color: theme.textMuted }]}>{fechaDeHoy}</Text>
+        </Boton>
 
       </ScrollView>
 
