@@ -1,4 +1,5 @@
-// Add this to your workout routes file (e.g., src/routes/workout.ts)
+// programar workout
+// agregar los workouts al calendario después...
 
 import { Router } from 'express';
 import { PrismaClient } from '../../generated/prisma';
@@ -6,14 +7,14 @@ import { PrismaClient } from '../../generated/prisma';
 const router = Router();
 const prisma = new PrismaClient();
 
-// POST /programar_workout/schedule - Schedule a routine for a specific date
+// POST programar una rutina para un dia en especifico
 router.post('/schedule', async (req, res) => {
   try {
     const { userId, routineId, fecha, cumplida } = req.body;
 
     console.log('Schedule request:', { userId, routineId, fecha, cumplida });
 
-    // Validate required fields
+    // valido si la request tiene problemitas
     if (!userId || !routineId || !fecha) {
       return res.status(400).json({
         success: false,
@@ -21,7 +22,7 @@ router.post('/schedule', async (req, res) => {
       });
     }
 
-    // Create scheduled routine
+    // Creo una rutina programada para un usuario
     const scheduledRoutine = await prisma.routineAt.create({
       data: {
         userId: parseInt(userId),
@@ -54,7 +55,8 @@ router.post('/schedule', async (req, res) => {
   }
 });
 
-// GET /programar_workout/schedule/:userId - Get all scheduled routines for a user
+// (usar mas adelante, no implementado)
+// GET para todas las rutinas de un usuario
 router.get('/schedule/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
@@ -89,7 +91,7 @@ router.get('/schedule/:userId', async (req, res) => {
   }
 });
 
-// DELETE /programar_workout/schedule/:scheduleId - Delete a scheduled routine
+// DELETE --> borro una rutina programada
 router.delete('/schedule/:scheduleId', async (req, res) => {
   try {
     const { scheduleId } = req.params;
@@ -114,7 +116,8 @@ router.delete('/schedule/:scheduleId', async (req, res) => {
   }
 });
 
-// PATCH /programar_workout/schedule/:scheduleId/complete - Mark routine as completed
+// (usar mas adelante, no implementado)
+// PATCH --> marco una rutina cuando es finalizada 
 router.patch('/schedule/:scheduleId/complete', async (req, res) => {
   try {
     const { scheduleId } = req.params;

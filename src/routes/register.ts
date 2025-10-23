@@ -9,7 +9,7 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const { nombre, apellido, dni, email, password, telefono, edad } = req.body;
 
-    // Validation
+    // Validaciones
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
@@ -25,7 +25,7 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
-    // Create user
+    // Crecion de usuario:
     const user = await prisma.user.create({
       data: {
         nombre,

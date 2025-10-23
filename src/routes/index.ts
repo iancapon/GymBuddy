@@ -10,7 +10,6 @@ router.use("/register", register)
 router.use("/profile", profile)
 router.use("/session", session)
 router.use("/workout", workout)
-
 router.use("/programar_workout", programar)
 
 export default router

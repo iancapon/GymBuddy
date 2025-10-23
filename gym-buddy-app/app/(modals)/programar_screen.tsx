@@ -41,12 +41,12 @@ const DAYS_OF_WEEK = [
 export default function ProgramarScreen() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
-  
+
   const [userId, setUserId] = useState<number | null>(null);
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
   const [savingSchedule, setSavingSchedule] = useState(false);
-  
+
   // Store day assignments
   const [dayAssignments, setDayAssignments] = useState<DayAssignment[]>(
     DAYS_OF_WEEK.map(day => ({
@@ -57,10 +57,10 @@ export default function ProgramarScreen() {
     }))
   );
 
-  // Selected day for assigning routine
+  // Seleccionador de dia para implementar una rutina
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
 
-  // Fetch user profile
+  // fetch para el user profile
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -85,7 +85,7 @@ export default function ProgramarScreen() {
     fetchUserProfile();
   }, []);
 
-  // Fetch user routines
+  // fetch para las rutinas de un determinado usuario
   useEffect(() => {
     const fetchUserRoutines = async () => {
       if (!userId) return;
@@ -112,7 +112,7 @@ export default function ProgramarScreen() {
     fetchUserRoutines();
   }, [userId]);
 
-  // Assign routine to a day
+  // Asigno rutina a un dia
   const assignRoutineToDay = (routineId: number, routineName: string) => {
     if (selectedDayIndex === null) return;
 
@@ -126,7 +126,7 @@ export default function ProgramarScreen() {
     setSelectedDayIndex(null);
   };
 
-  // Remove routine from day
+  // borro rutina a un dia
   const removeRoutineFromDay = (dayIndex: number) => {
     setDayAssignments(prev =>
       prev.map(day =>
@@ -137,24 +137,30 @@ export default function ProgramarScreen() {
     );
   };
 
-  // Calculate next occurrence of a day
+  // Modificar esto después para agregar las rutinas a todos los 
+  // dias específicos.
+  // tiene que quedar por ejemplo, todos los lunes --> rutina A, todos los martes --> rutina B
+  // Calculo el siguiente dia para la fecha de la rutina
   const getNextDateForDay = (dayIndex: number): Date => {
     const today = new Date();
     const currentDay = today.getDay();
     let daysUntilTarget = dayIndex - currentDay;
-    
+
     if (daysUntilTarget <= 0) {
       daysUntilTarget += 7;
     }
-    
+
     const targetDate = new Date(today);
     targetDate.setDate(today.getDate() + daysUntilTarget);
     targetDate.setHours(0, 0, 0, 0);
-    
+
     return targetDate;
   };
 
-  // Save schedule to database
+  // Guardo la programacion de la rutina en la base de datos
+  // modifico la tabla 'routineAT' 
+  // routineAT despues se convierte en historial
+
   const saveSchedule = async () => {
     if (!userId) {
       Alert.alert('Error', 'Usuario no identificado');
@@ -162,7 +168,7 @@ export default function ProgramarScreen() {
     }
 
     const assignedDays = dayAssignments.filter(day => day.routineId !== null);
-    
+
     if (assignedDays.length === 0) {
       Alert.alert('Atención', 'No has asignado ninguna rutina a los días');
       return;
@@ -171,10 +177,10 @@ export default function ProgramarScreen() {
     try {
       setSavingSchedule(true);
 
-      // Create RoutineAt entries for each assigned day
+      // Crea routineAt para cada dia asignado
       for (const day of assignedDays) {
         const fecha = getNextDateForDay(day.dayIndex);
-        
+
         console.log('Sending schedule request:', {
           userId,
           routineId: day.routineId,
@@ -203,7 +209,7 @@ export default function ProgramarScreen() {
         }
 
         const data = await response.json();
-        
+
         if (!response.ok || !data.success) {
           throw new Error(data.message || 'Error al guardar');
         }
@@ -217,7 +223,7 @@ export default function ProgramarScreen() {
     } catch (error) {
       console.error('Error saving schedule:', error);
       Alert.alert(
-        'Error', 
+        'Error',
         error instanceof Error ? error.message : 'No se pudo guardar la programación'
       );
     } finally {
@@ -300,8 +306,8 @@ export default function ProgramarScreen() {
           )}
         </TouchableOpacity>
       </ScrollView>
-
-      {/* Routine Selection Modal */}
+      
+      {/* Modal de seleccion de rutina */}
       {selectedDayIndex !== null && (
         <View style={styles.modal}>
           <View style={styles.modalContent}>
