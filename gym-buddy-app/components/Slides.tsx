@@ -17,8 +17,8 @@ type itemProps = {
 
 type myListProps = {
   data: Array<itemProps> | undefined;
-  currentIndex: number;
   style?: StyleProp<ViewStyle>;
+  theme: any
 };
 
 
@@ -27,6 +27,7 @@ type slideProps = {
   media: string;   // URL de imagen
   info1: string;   // por ej: "10 x 5"
   info2: string;   // por ej: "descanso 1 min"
+  theme: any
 };
 
 
@@ -128,10 +129,10 @@ export default function Slides(props: myListProps) {
   }
 
   return (
-    
+
     <View >
       {/* Slide nro */}
-      <Text style={[{ color: COLORS.text }, styles.subtitle]}>
+      <Text style={[styles.subtitle, { color: props.theme.text }]}>
         {slideNo()}
       </Text>
       <View style={{ padding: 5 }}></View>
@@ -141,11 +142,12 @@ export default function Slides(props: myListProps) {
         media={ejercicioActual().media}
         info1={ejercicioActual().info1}
         info2={ejercicioActual().info2}
+        theme={props.theme}
       />
       {/* Timer */}
-      <View style={{ alignItems: "center", marginTop:10 }}>
-        <Animated.View style={[styles.progressFill, styles.progressWrap, { width: timeBarWidth, height: 10,marginBottom:0 }]} />
-        <Ionicons name="stopwatch-outline" size={40} color={!siguiente ? COLORS.progressFill : "#b0f6ffff"} />
+      <View style={{ alignItems: "center", marginTop: 10 }}>
+        <Animated.View style={[styles.progressFill, { width: timeBarWidth, height: 10, marginBottom: 0, backgroundColor: props.theme.warning }]} />
+        <Ionicons name="stopwatch-outline" size={40} color={!siguiente ? props.theme.warning : props.theme.success} />
       </View>
       {/* Boton */}
       <Boton
@@ -162,16 +164,16 @@ export default function Slides(props: myListProps) {
             }
           }
         }}
-        viewStyle={[styles.primaryButton, { backgroundColor: !siguiente ? COLORS.brandDarkest : COLORS.brand }]}
-        textStyle={styles.primaryButtonText}
+        viewStyle={[styles.primaryButton, { backgroundColor: !siguiente ? props.theme.accentMuted : props.theme.accent }]}
+        textStyle={[styles.primaryButtonText, { color: props.theme.text }]}
       />
 
       {/* Progreso */}
       <View style={styles.progressWrap}>
-        <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${Math.round(progress() * 100)}%` }]} />
+        <View style={[styles.progressTrack, { backgroundColor: props.theme.progressTrack }]}>
+          <View style={[styles.progressFill, { width: `${Math.round(progress() * 100)}%`, backgroundColor: props.theme.progressFill }]} />
         </View>
-        <Text style={styles.progressText}>{Math.round(progress() * 100)}%</Text>
+        <Text style={[styles.progressText,{color:props.theme.textMuted}]}>{Math.round(progress() * 100)}%</Text>
       </View>
     </View>
   );

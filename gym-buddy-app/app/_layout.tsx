@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { useEffect, useContext, createContext, useState } from "react";
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { ThemeProvider } from '@react-navigation/native';
 
 type userInfo = {
   mail: string
@@ -12,11 +12,22 @@ export const ContextoPerfil = createContext<{
   setUserContext: React.Dispatch<React.SetStateAction<userInfo>>;
 } | null>(null);
 
+type customTheme = {
+  theme: 'image' | 'dark' | 'light'
+}
+
+export const ContextoTema = createContext<{
+  themeContext: customTheme
+  setThemeContext: React.Dispatch<React.SetStateAction<customTheme>>;
+} | null>(null)
+
 export default function RootLayout() {
   const [userContext, setUserContext] = useState<userInfo>({ mail: "", password: "" });
+  const [themeContext, setThemeContext] = useState<customTheme>({ theme: "light" })
   return (
-    <ContextoPerfil.Provider value={{ userContext, setUserContext }}>
-      <ThemeProvider value={DefaultTheme}>
+    <ContextoTema.Provider value={{ themeContext, setThemeContext }}>
+      <ContextoPerfil.Provider value={{ userContext, setUserContext }}>
+
         <Stack>
 
           <Stack.Screen name="index" options={{ headerShown: false, navigationBarHidden: true }} />
@@ -26,8 +37,9 @@ export default function RootLayout() {
           <Stack.Screen name="(modals)" options={{ headerShown: false }} />
 
         </Stack>
-      </ThemeProvider>
-    </ContextoPerfil.Provider>
+
+      </ContextoPerfil.Provider>
+    </ContextoTema.Provider>
 
   );
 }

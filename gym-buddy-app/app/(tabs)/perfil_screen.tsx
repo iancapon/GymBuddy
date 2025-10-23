@@ -3,9 +3,11 @@ import Boton from '../../components/Boton';
 import { useRouter, Router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useContext, useEffect, useState } from 'react';
-import { ContextoPerfil } from '../_layout';
 import { Ionicons } from '@expo/vector-icons';
 import ModalAlerta from '../../components/ModalAlerta';
+import THEMES from '../THEMES'
+import { ContextoPerfil, ContextoTema } from '../_layout';
+
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -22,6 +24,11 @@ export default function PerfilScreen() {
   const [dni, setDNI] = useState<BigInt>(BigInt(-1))
   const [telefono, setTelefono] = useState("...")
   const [modal, setModal] = useState(false)
+
+  const contextoTema = useContext(ContextoTema)
+  const mode = contextoTema?.themeContext.theme
+  const theme = THEMES()[mode != undefined ? mode : 'image'];
+
 
   const handleSession = (async () => {
     const response = await fetch(`${API_URL}/profile`, {
@@ -44,23 +51,23 @@ export default function PerfilScreen() {
       setDNI(data.DNI)
       setTelefono(data.telefono)
     }
-
-
-
   })()
 
+
+
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={{
-          uri: 'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww',
-        }}
-        style={StyleSheet.absoluteFillObject}
-        resizeMode="cover"
-      />
+    <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
+      {mode === 'image' && (
+        <ImageBackground
+          source={{ uri: theme.bg }}
+          style={StyleSheet.absoluteFillObject}
+          resizeMode="cover"
+        />
+      )}
       {/* Modal resumen */}
       {
-        <ModalAlerta visible={modal} setVisible={setModal}
+        <ModalAlerta
+          visible={modal} setVisible={setModal}
           titulo={'🏋️ Estas por cerrar sesión'}
           subtitulo={'¿Seguro que deseas continuar?'}
           botonA='Mantener sesion' botonAOnPress={() => setModal(false)}
@@ -71,26 +78,26 @@ export default function PerfilScreen() {
           }}
         />
       }
-      <View style={styles.overlay} />
+      <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
 
       {/* Tarjeta de perfil */}
-      <View style={styles.profileCard}>
-        <Text style={styles.name}>{nombre + " " + apellido}</Text>
-        <Text style={styles.subtitle}>Cliente</Text>
+      <View style={[styles.profileCard, { backgroundColor: theme.cardBg }]}>
+        <Text style={[styles.name, { color: theme.text }]}>{nombre + " " + apellido}</Text>
+        <Text style={[styles.subtitle, { color: theme.text }]}>Cliente</Text>
 
         {/* Datos personales */}
-        <View style={styles.infoSection}>
+        <View style={[styles.infoSection, { borderColor: theme.border }]}>
           <View style={styles.infoRow}>
-            <Ionicons name="mail-outline" size={22} color={COLORS.accent} />
-            <Text style={styles.infoText}>{mail}</Text>
+            <Ionicons name="mail-outline" size={22} color={theme.accent} />
+            <Text style={[styles.infoText, { color: theme.text }]}>{mail}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Ionicons name="calendar-outline" size={22} color={COLORS.accent} />
-            <Text style={styles.infoText}>{edad} años</Text>
+            <Ionicons name="calendar-outline" size={22} color={theme.accent} />
+            <Text style={[styles.infoText, { color: theme.text }]}>{edad} años</Text>
           </View>
           <View style={styles.infoRow}>
-            <Ionicons name="call-outline" size={22} color={COLORS.accent} />
-            <Text style={styles.infoText}>{telefono}</Text>
+            <Ionicons name="call-outline" size={22} color={theme.accent} />
+            <Text style={[styles.infoText, { color: theme.text }]}>{telefono}</Text>
           </View>
         </View>
       </View>
@@ -99,8 +106,8 @@ export default function PerfilScreen() {
       <View style={styles.buttonWrap}>
         <Boton
           name="Cerrar Sesión"
-          viewStyle={styles.logoutButton}
-          textStyle={styles.logoutText}
+          viewStyle={[styles.logoutButton, { backgroundColor: theme.warning }]}
+          textStyle={[styles.logoutText, { color: theme.text }]}
           onPress={() => setModal(true)}
         />
       </View>

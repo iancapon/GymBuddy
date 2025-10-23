@@ -5,7 +5,8 @@ import Boton from '../../components/Boton';
 import Slides from '../../components/Slides';
 import { useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
-import { ContextoPerfil } from '../_layout';
+import { ContextoPerfil, ContextoTema } from '../_layout';
+import THEMES from '../THEMES';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -27,7 +28,9 @@ type Routine = {
 };
 
 export default function WorkoutScreen() {
-  const [woIndex, setWoIndex] = useState(0); // current workout index
+  const contextoTema = useContext(ContextoTema)
+  const mode = contextoTema?.themeContext.theme
+  const theme = THEMES()[mode != undefined ? mode : 'image'];
 
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -79,46 +82,30 @@ export default function WorkoutScreen() {
   }, [routineId, API_URL]);
 
 
-  const progress = useMemo(
-    () => (routine?.exercises.length ? (woIndex + 1) / routine.exercises.length : 0),
-    [woIndex, routine?.exercises]
-  );
-  const progressPct = Math.round(progress * 100);
-
-  const terminaste = () => {
-    if (routine?.exercises == undefined) {
-      return true////
-    }
-    return woIndex < routine?.exercises.length - 1
-  }
-
-
   return (
-
     <ImageBackground
       source={{
         uri:
           'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww',
       }}
-      style={styles.bg}
+      style={[styles.bg, { backgroundColor: theme.bg }]}
       resizeMode="cover"
     >
       {/* Overlay para mejorar contraste */}
-      <View style={styles.overlay} />
+      <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
 
       <SafeAreaView style={styles.safe}>
 
-        <StatusBar style="light" />
+        <StatusBar style="auto" />
 
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>{routine?.nombre}</Text>
-          
+          <Text style={[styles.title,{color:theme.text}]}>{routine?.nombre}</Text>
         </View>
 
         {/* Slides */}
-        <View style={styles.slidesWrap}>
-          <Slides data={routine?.exercises} currentIndex={woIndex} style={styles.slides} />
+        <View style={[styles.slidesWrap, {backgroundColor:theme.cardBg}]}>
+          <Slides data={routine?.exercises} style={styles.slides} theme={theme} />
         </View>
 
       </SafeAreaView>
@@ -163,8 +150,9 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingBottom: 0,
     justifyContent: 'flex-start',
+
   },
 
   header: {

@@ -4,10 +4,11 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Boton from '../../components/Boton';
 import { useMemo, useState } from 'react';
-import { ContextoPerfil } from '../_layout';
+import { ContextoPerfil, ContextoTema } from '../_layout';
 import { useContext } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
+import THEMES from '../THEMES'
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -40,13 +41,16 @@ function formatFechaES(fecha = new Date()) {
 export default function SelectWorkout() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
+
   const [userId, setUserId] = useState()
   const [nombre, setNombre] = useState("...")
   const [apellido, setApellido] = useState("...")
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
 
-  const [mode, setMode] = useState<'image' | 'dark' | 'light'>('image');
+  const contextoTema = useContext(ContextoTema)
+  const mode = contextoTema?.themeContext.theme
+  const theme = THEMES()[mode != undefined ? mode : 'image'];
 
   // 📅 Fecha con formato “16 de Octubre del 2025” (sin Intl)
   const fechaDeHoy = useMemo(() => formatFechaES(new Date()), []);
@@ -72,7 +76,6 @@ export default function SelectWorkout() {
       setUserId(userdata.data.id)
     }
   }
-
 
   // Fetch user routines
   const fetchUserRoutines = async () => {
@@ -107,44 +110,7 @@ export default function SelectWorkout() {
 
   const noImplementado = () => Alert.alert('No implementado', 'Esto aún no ha sido implementado');
 
-  // 🎨 Paletas de color mejoradas
-  const THEMES = {
-    image: {
-      bg: 'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000',
-      overlay: 'rgba(0,0,0,0.55)',
-      text: '#fff',
-      textMuted: 'rgba(255,255,255,0.7)',
-      accent: '#4DB6FF',
-      success: '#43e97b',
-      warning: '#ffb74d',
-      cardBg: 'rgba(255,255,255,0.12)',
-      border: 'rgba(255,255,255,0.2)',
-    },
-    dark: {
-      bg: undefined,
-      overlay: '#0f1115',
-      text: '#e8f0ff',
-      textMuted: '#94a3b8',
-      accent: '#3BAFDA',
-      success: '#26A69A',
-      warning: '#FFB84D',
-      cardBg: '#1b1d23',
-      border: '#2b2e36',
-    },
-    light: {
-      bg: undefined,
-      overlay: '#f6f7fb',
-      text: '#212529',
-      textMuted: '#606770',
-      accent: '#FF7A00',
-      success: '#00C896',
-      warning: '#FFC107',
-      cardBg: '#ffffff',
-      border: '#e3e3e3',
-    },
-  };
 
-  const theme = THEMES[mode];
 
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
@@ -156,12 +122,13 @@ export default function SelectWorkout() {
         />
       )}
       <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
+      <StatusBar style="auto" />
 
       {/* 🔝 Header con saludo y selector */}
       <View style={styles.topBar}>
         <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
         <View style={styles.modeButtons}>
-          <TouchableOpacity onPress={() => setMode('image')}>
+          <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'image' })}>
             <Ionicons
               name="image"
               size={26}
@@ -169,7 +136,7 @@ export default function SelectWorkout() {
               style={styles.modeIcon}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setMode('dark')}>
+          <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'dark' })}>
             <Ionicons
               name="moon"
               size={26}
@@ -177,7 +144,7 @@ export default function SelectWorkout() {
               style={styles.modeIcon}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setMode('light')}>
+          <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'light' })}>
             <Ionicons
               name="sunny"
               size={26}
@@ -194,8 +161,6 @@ export default function SelectWorkout() {
         style={[{ width: "100%", paddingHorizontal: 10 }]}
 
       >
-
-
         <Boton
           onPress={() => router.push('../(modals)/workout_screen')}
           viewStyle={[
@@ -280,7 +245,7 @@ export default function SelectWorkout() {
           )}
         />
 
-        <View style={{paddingVertical:5}}></View>
+        <View style={{ paddingVertical: 5 }}></View>
 
         <Boton
           onPress={() => router.push('../(modals)/workout_screen')}

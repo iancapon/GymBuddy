@@ -1,0 +1,47 @@
+// 🎨 Paletas de color mejoradas
+const THEMES = {
+    image: {
+        bg: 'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000',
+        overlay: 'rgba(0,0,0,0.55)',
+        text: '#fff',
+        textMuted: 'rgba(255,255,255,0.7)',
+        accent: '#4DB6FF',
+        accentMuted: '#31709cff',
+        success: '#43e97b',
+        warning: '#ffb74d',
+        cardBg: 'rgba(255,255,255,0.12)',
+        border: 'rgba(255,255,255,0.2)',
+        progressTrack: 'rgba(255,255,255,0.18)',
+        progressFill: '#FFB46B',
+    },
+    dark: {
+        bg: undefined,
+        overlay: '#0f1115',
+        text: '#e8f0ff',
+        textMuted: '#94a3b8',
+        accent: '#3BAFDA',
+        accentMuted: '#1c5164ff',
+        success: '#26A69A',
+        warning: '#FFB84D',
+        cardBg: '#1b1d23',
+        border: '#2b2e36',
+        progressTrack: 'rgba(165, 165, 165, 0.18)',
+        progressFill: '#6b81ffff',
+    },
+    light: {
+        bg: undefined,
+        overlay: '#f6f7fb',
+        text: '#212529',
+        textMuted: '#606770',
+        accent: '#FF7A00',
+        accentMuted: '#8a4300ff',
+        success: '#00C896',
+        warning: '#FFC107',
+        cardBg: '#ffffff',
+        border: '#e3e3e3',
+        progressTrack: 'rgba(134, 134, 134, 0.18)',
+        progressFill: '#6babffff',
+    },
+};
+
+export default () => THEMES
