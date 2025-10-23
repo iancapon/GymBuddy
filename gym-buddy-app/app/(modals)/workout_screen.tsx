@@ -113,9 +113,7 @@ export default function WorkoutScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>{routine?.nombre}</Text>
-          <Text style={styles.subtitle}>
-            {woIndex + 1} / {routine?.exercises.length}
-          </Text>
+          
         </View>
 
         {/* Slides */}
@@ -123,30 +121,6 @@ export default function WorkoutScreen() {
           <Slides data={routine?.exercises} currentIndex={woIndex} style={styles.slides} />
         </View>
 
-        {/* Progreso */}
-        <View style={styles.progressWrap}>
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${progressPct}%` }]} />
-          </View>
-          <Text style={styles.progressText}>{progressPct}%</Text>
-        </View>
-
-        {/* Botón fijo abajo */}
-        <View style={styles.ctaWrap}>
-          <Boton
-            name={terminaste() ? 'SIGUIENTE' : 'TERMINASTE'}
-            onPress={() => {
-              if (terminaste()) {
-                setWoIndex(woIndex + 1);
-              } else {
-                router.back();
-                Alert.alert('¡Felicidades!', 'Terminaste con los ejercicios');
-              }
-            }}
-            viewStyle={styles.primaryButton}
-            textStyle={styles.primaryButtonText}
-          />
-        </View>
       </SafeAreaView>
     </ImageBackground>
   );
