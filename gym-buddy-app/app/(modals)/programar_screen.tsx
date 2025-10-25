@@ -16,9 +16,6 @@ import Boton from '../../components/Boton';
 import { StatusBar } from 'expo-status-bar';
 import THEMES from '../THEMES'
 
-
-
-
 const API_URL = api_url();
 
 type Routine = {

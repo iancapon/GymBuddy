@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { useMemo, useState, useCallback, useContext } from 'react';
+import { useMemo, useState, useCallback, useContext, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -31,6 +31,8 @@ export default function IndexTab() {
   const [nombre, setNombre] = useState("...")
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
+  const [loadingTodaysRoutine, setLTR] = useState(false)
+  const [todaysRoutine, setTodaysRoutine] = useState<Routine>()
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
@@ -82,14 +84,45 @@ export default function IndexTab() {
     }
   };
 
+
+
+  const fetchTodaysProgram = async () => {
+    if (!userId) return;
+    try {
+      setLTR(true)
+      const userResponse = await fetch(`${API_URL}/programar_workout/todayschedule?userId=${userId}`)
+
+      const datos = await userResponse.json()
+
+      if (!userResponse) {
+        return Alert.alert("Error:", "No llegaron datos de la rutina para hoy")
+      }
+
+      if (datos.assigned.length > 0) {
+        setTodaysRoutine(datos.assigned[0].Routine)
+      }
+      else {
+        setTodaysRoutine(undefined)
+      }
+
+    }
+    catch (error) {
+      console.error('Error fetching routines:', error);
+      Alert.alert('Error', 'No se pudo cargar la rutina de hoy');
+    }
+    finally {
+      setLTR(false)
+    }
+  }
+
   // Load data when screen is focused
   useFocusEffect(
     useCallback(() => {
       handleSession();
       fetchUserRoutines();
-    }, [userId, API_URL])
+      fetchTodaysProgram()
+    }, [userId, API_URL, todaysRoutine])
   );
-
 
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
@@ -126,15 +159,24 @@ export default function IndexTab() {
 
       >
         <Boton
-          onPress={() => router.push('../(modals)/workout_screen')}
+          onPress={() => {
+            todaysRoutine == undefined ? Alert.alert("Esperá! 👋👋", "Primero programá una rutina") :
+              router.push({
+                pathname: '../(modals)/workout_screen',
+                params: { routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
+              })
+          }}
           viewStyle={[
             styles.mainCard,
             { backgroundColor: theme.accent, shadowColor: theme.text },
           ]}
         >
           <Ionicons name="barbell" size={60} color="#fff" />
-          <Text style={[styles.mainTitle, { color: theme.text }]}>Entrenamiento de Hoy</Text>
+          <Text style={[styles.mainTitle, { color: theme.text }]}>Entrenamiento para Hoy</Text>
           <Text style={[styles.mainSubtitle, { color: theme.text }]}>{fechaDeHoy}</Text>
+          <Text style={[styles.smallTitle, { color: theme.text }]}>
+            {todaysRoutine == undefined ? "No tenes una rutina programada" : todaysRoutine?.nombre}
+          </Text>
         </Boton>
 
         <View style={styles.row}>
