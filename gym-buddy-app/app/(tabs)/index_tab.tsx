@@ -171,7 +171,7 @@ export default function IndexTab() {
             todaysRoutine == undefined ? Alert.alert("Esperá! 👋👋", "Primero programá una rutina") :
               router.push({
                 pathname: '../(modals)/workout_screen',
-                params: { routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
+                params: { userId: userId, routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
               })
           }}
           viewStyle={[
@@ -242,7 +242,7 @@ export default function IndexTab() {
             <Boton
               onPress={() => router.push({
                 pathname: '../(modals)/workout_screen',
-                params: { routineId: item.id, nombre: item.nombre }
+                params: { userId: userId, routineId: item.id, nombre: item.nombre }
               })}
               viewStyle={[
                 styles.workoutCard,
@@ -299,15 +299,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
-    paddingTop:40,
-    paddingBottom:30,
+    paddingTop: 40,
+    paddingBottom: 30,
     backgroundColor: '#1b1d23',
     elevation: 10,
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
-    height:100
+    height: 100
   },
   backButton: {
     padding: 12,

@@ -19,6 +19,7 @@ type myListProps = {
   data: Array<itemProps> | undefined;
   style?: StyleProp<ViewStyle>;
   theme: any
+  uploadToHistory: () => void/////////////////////////////////////////////////////////////////7
 };
 
 
@@ -159,6 +160,7 @@ export default function Slides(props: myListProps) {
               restartAnimation()
             }
             else {
+              props.uploadToHistory()
               router.back()
               Alert.alert("Felicidades!", "Terminaste con el ejercicio")
             }

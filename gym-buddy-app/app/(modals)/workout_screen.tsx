@@ -38,9 +38,11 @@ export default function WorkoutScreen() {
   const contexto = useContext(ContextoPerfil);
 
   const routineId = params.routineId as string;
+  const userId = params.userId as string
 
   const [routine, setRoutine] = useState<Routine>();
   const [loading, setLoading] = useState(true);
+
 
   const fetchRoutineDetails = async () => {
     try {
@@ -71,6 +73,30 @@ export default function WorkoutScreen() {
     }
   };
 
+  const handleUploadToHistory = async () => {
+    try {
+
+      const history = await fetch(`${API_URL}/history`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: Number(userId),
+          routineId: Number(routineId)
+        })
+      });
+
+      const response = await history.json()
+
+      if (!history.ok) {
+        Alert.alert("Error", response?.message || "No se subió a la historia");
+      }
+      return response
+    }
+    catch (error) {
+      Alert.alert("Error", error instanceof Error ? error.message : "Ocurrió un error inesperado");
+    }
+  }
+
 
   useEffect(() => {
     if (!routineId || !API_URL) {
@@ -94,7 +120,7 @@ export default function WorkoutScreen() {
           viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
           <Ionicons name="arrow-back" size={24} color={theme.text} />
         </Boton>
-        
+
         <View style={{}}>
           <Text style={[styles.headerTitle, { color: theme.text }]}>Workout</Text>
         </View>
@@ -102,15 +128,18 @@ export default function WorkoutScreen() {
 
       <View style={[styles.safe, { flex: 1, height: "100%", backgroundColor: theme.overlay }]}>
         {/* Header */}
-        <View style={[{paddingVertical:10, backgroundColor: theme.overlay }]}>
+        <View style={[{ paddingVertical: 10, backgroundColor: theme.overlay }]}>
           <Text style={[styles.title, { color: theme.text }]}>{routine?.nombre}</Text>
         </View>
 
         {/* Slides */}
         <View style={[styles.slidesWrap, { backgroundColor: theme.cardBg }]}>
-          <Slides data={routine?.exercises} style={styles.slides} theme={theme} />
+          <Slides
+            uploadToHistory={handleUploadToHistory}
+            data={routine?.exercises}
+            style={styles.slides}
+            theme={theme} />
         </View>
-
       </View>
 
     </View>

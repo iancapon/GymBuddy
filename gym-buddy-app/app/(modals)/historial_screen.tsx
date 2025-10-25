@@ -11,9 +11,18 @@ import { Ionicons } from '@expo/vector-icons';
 import api_url from "../API_URL"
 const API_URL = api_url()
 
+type History = {
+  id: number
+  userId: number
+  routineId: number
+  fecha: Date
+  Routine: any//Routine
+}
+
 export default function Historial() {
   const router = useRouter()
   const contextoPerfil = useContext(ContextoPerfil);
+  const [userId, setUserId] = useState(0)
   const [modal, setModal] = useState(false);
   const [tituloModal, setTituloModal] = useState('');
   const [fechaModal, setFechaModal] = useState('');
@@ -26,6 +35,30 @@ export default function Historial() {
     fechas[programa.fecha] = { selected: true, selectedColor: theme.accent };
     return fechas;
   }, {});
+
+  const [history, setHistory] = useState<History[]>([]);
+
+
+////////////// falta trabajo esto
+  const fetchUserHistory = async () => {
+    if (!userId || !API_URL) return;
+
+    try {
+      const response = await fetch(`${API_URL}/history?userId:${userId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.routines) {
+        set(data.routines);
+      }
+    } catch (error) {
+      console.error('Error fetching routines:', error);
+      Alert.alert('Error', 'No se pudieron cargar las rutinas');
+    }
+  };
 
 
 
@@ -244,7 +277,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
-    height:100
+    height: 100
   },
   backButton: {
     padding: 12,
