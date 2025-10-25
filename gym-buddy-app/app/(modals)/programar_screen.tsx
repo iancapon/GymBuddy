@@ -137,14 +137,11 @@ export default function ProgramarScreen() {
 
         const loaded = dayAssignments.map(day => {
           const match = programa.find(dia => dia.dayIndex === day.dayIndex)
-          const rName = routines.find(r => r.id === match.routineId)
-          //Alert.alert("match:",JSON.stringify(match))
-          //Alert.alert("rname", JSON.stringify(rName?.nombre))
           return match
             ? {
               ...day,
-              routineId: match.routineId,
-              routineName: rName != undefined ? rName.nombre : "---"
+              routineId: match.Routine.id,
+              routineName: match.Routine.nombre
             } : day
         })
 
@@ -155,7 +152,7 @@ export default function ProgramarScreen() {
     }
     fetchAlreadyAssignedDays()
 
-  }, [userId, routines, dayAssignments])
+  }, [userId, routines,])
 
   // Asigno rutina a un dia
   const assignRoutineToDay = (routineId: number, routineName: string) => {
@@ -202,11 +199,11 @@ export default function ProgramarScreen() {
       for (const day of dayAssignments) {
 
         if (day.routineId != null) { // Si tiene una rutina asignada
-          console.log('Sending schedule request:', {
+          /*console.log('Sending schedule request:', {
             userId,
             routineId: day.routineId,
             dia: day.dayIndex
-          });
+          });*/
 
           const response = await fetch(`${API_URL}/programar_workout/schedule`, {
             method: 'POST',
@@ -226,10 +223,10 @@ export default function ProgramarScreen() {
         }
 
         else { // si no tiene una rutina asignada
-          console.log('Sending unschedule request:', {
+          /*console.log('Sending unschedule request:', {
             userId,
             dia: day.dayIndex
-          });
+          });*/
 
           const response = await fetch(`${API_URL}/programar_workout/unschedule`, {
             method: 'POST',

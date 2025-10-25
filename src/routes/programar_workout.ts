@@ -21,7 +21,7 @@ router.post('/schedule', async (req, res) => {
   try {
     const { userId, dayIndex, routineId } = req.body
 
-    console.log('Schedule request:', { userId, routineId, dayIndex });
+    //console.log('Schedule request:', { userId, routineId, dayIndex });
 
     // valido si la request tiene problemitas
     /*
@@ -90,7 +90,7 @@ router.post('/unschedule', async (req, res) => {
   try {
     const { userId, dayIndex } = req.body
 
-    console.log('Un-Schedule request:', { userId, dayIndex });
+    //console.log('Un-Schedule request:', { userId, dayIndex });
 
     // valido si la request tiene problemitas
     /*
@@ -149,6 +149,9 @@ router.get('/findschedule', async (req, res) => {
 
     const assigned = await prisma.dayAssignment.findMany({
       where: { userId: Number(userId) },
+      include: {
+        Routine: true
+      }
     });
 
     if (!assigned) {
