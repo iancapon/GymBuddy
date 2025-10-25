@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 450,
+    height: 380,
     justifyContent: 'flex-end',
   },
   imageRadius: {

@@ -6,7 +6,7 @@ export default function ModalsLayout() {
         <Stack>
             <Stack.Screen
                 name="workout_screen"
-                options={{ presentation: "transparentModal", animation: "simple_push", title: "Workout", navigationBarHidden: true }}
+                options={{ presentation: "transparentModal", animation: "simple_push", headerShown: false }}
             />
             <Stack.Screen
                 name="historial_screen"

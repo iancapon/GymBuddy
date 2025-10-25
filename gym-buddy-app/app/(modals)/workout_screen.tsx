@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import { ContextoPerfil, ContextoTema } from '../_layout';
 import THEMES from '../THEMES';
+import { Ionicons } from '@expo/vector-icons';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -30,7 +31,7 @@ type Routine = {
 export default function WorkoutScreen() {
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
-  const theme = THEMES()[mode != undefined ? mode : 'image'];
+  const theme = THEMES()[mode != undefined ? mode : 'light'];
 
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -83,33 +84,37 @@ export default function WorkoutScreen() {
 
 
   return (
-    <ImageBackground
-      source={{
-        uri:
-          'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww',
-      }}
-      style={[styles.bg, { backgroundColor: theme.bg }]}
-      resizeMode="cover"
-    >
-      {/* Overlay para mejorar contraste */}
-      <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
+    <View style={[styles.bg, styles.overlay, { backgroundColor: theme.overlay }]}>
+      <StatusBar style={mode == "light" ? "dark" : "light"} />
 
-      <SafeAreaView style={styles.safe}>
+      {/* Header */}
+      <View style={[{ paddingTop: 20, backgroundColor: theme.header }]}>
+        <View style={[styles.header, { flexDirection: "row", alignItems: "center", backgroundColor: theme.header }]}>
+          <Boton
+            onPress={() => router.back()}
+            viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
+            <Ionicons name="arrow-back" size={24} color={theme.text} />
+          </Boton>
+          <View >
+            <Text style={[styles.headerTitle, { color: theme.text }]}>Workout</Text>
+          </View>
+        </View>
+      </View>
 
-        <StatusBar style="auto" />
-
+      <View style={[styles.safe, { flex: 1, height: "100%", backgroundColor: theme.overlay }]}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.title,{color:theme.text}]}>{routine?.nombre}</Text>
+          <Text style={[styles.title, { color: theme.text }]}>{routine?.nombre}</Text>
         </View>
 
         {/* Slides */}
-        <View style={[styles.slidesWrap, {backgroundColor:theme.cardBg}]}>
+        <View style={[styles.slidesWrap, { backgroundColor: theme.cardBg }]}>
           <Slides data={routine?.exercises} style={styles.slides} theme={theme} />
         </View>
 
-      </SafeAreaView>
-    </ImageBackground>
+      </View>
+
+    </View>
   );
 }
 
@@ -128,6 +133,28 @@ const COLORS = {
 };
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    backgroundColor: '#1b1d23',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    height: 200
+  },
+  backButton: {
+    padding: 12,
+    borderRadius: 100
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#0f1115',

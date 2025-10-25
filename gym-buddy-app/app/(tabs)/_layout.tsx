@@ -6,7 +6,7 @@ export default function Layout() {
         <Tabs>
             <Tabs.Screen
                 name="index_tab"
-                options={{ title: "GymBuddy", tabBarIcon: ({ size }) => <Ionicons name="fitness" size={size} /> }}
+                options={{ headerShown: false, tabBarIcon: ({ size }) => <Ionicons name="fitness" size={size} /> }}
             />
             <Tabs.Screen
                 name="calendario_screen"

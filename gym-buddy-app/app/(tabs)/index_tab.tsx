@@ -128,10 +128,16 @@ export default function IndexTab() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
-      <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
-      <StatusBar style="dark" />
 
-      {/* 🔝 Header con saludo y selector */}
+      <StatusBar style={mode == "light" ? "dark" : "light"} />
+
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: theme.header }]}>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>GymBuddy</Text>
+      </View>
+
+
+      {/* 🔝 sub Header con saludo y selector */}
       <View style={styles.topBar}>
         <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
         <View style={styles.modeButtons}>
@@ -270,7 +276,6 @@ export default function IndexTab() {
 
       </ScrollView>
 
-      <StatusBar style={mode === 'light' ? 'dark' : 'light'} />
     </View>
   );
 }
@@ -290,6 +295,29 @@ function formatFechaES(fecha = new Date()) {
 
 
 const styles = StyleSheet.create({
+  header: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop:40,
+    paddingBottom:30,
+    backgroundColor: '#1b1d23',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    height:100
+  },
+  backButton: {
+    padding: 12,
+    borderRadius: 100
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#fff',
+  },
   container: { flex: 1, width: "100%" },
   overlay: { ...StyleSheet.absoluteFillObject },
   topBar: {
