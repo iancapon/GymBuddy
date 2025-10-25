@@ -88,22 +88,21 @@ export default function WorkoutScreen() {
       <StatusBar style={mode == "light" ? "dark" : "light"} />
 
       {/* Header */}
-      <View style={[{ paddingTop: 20, backgroundColor: theme.header }]}>
-        <View style={[styles.header, { flexDirection: "row", alignItems: "center", backgroundColor: theme.header }]}>
-          <Boton
-            onPress={() => router.back()}
-            viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
-            <Ionicons name="arrow-back" size={24} color={theme.text} />
-          </Boton>
-          <View >
-            <Text style={[styles.headerTitle, { color: theme.text }]}>Workout</Text>
-          </View>
+      <View style={[styles.header, { backgroundColor: theme.header }]}>
+        <Boton
+          onPress={() => router.back()}
+          viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
+          <Ionicons name="arrow-back" size={24} color={theme.text} />
+        </Boton>
+        
+        <View style={{}}>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Workout</Text>
         </View>
       </View>
 
       <View style={[styles.safe, { flex: 1, height: "100%", backgroundColor: theme.overlay }]}>
         {/* Header */}
-        <View style={styles.header}>
+        <View style={[{paddingVertical:10, backgroundColor: theme.overlay }]}>
           <Text style={[styles.title, { color: theme.text }]}>{routine?.nombre}</Text>
         </View>
 
@@ -136,15 +135,16 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: "flex-start",
     paddingHorizontal: 20,
+    paddingTop: 20,
     backgroundColor: '#1b1d23',
     elevation: 10,
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
-    height: 200
+    height: 100
   },
   backButton: {
     padding: 12,
@@ -180,11 +180,6 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     justifyContent: 'flex-start',
 
-  },
-
-  header: {
-    paddingTop: 8,
-    paddingBottom: 12,
   },
   title: {
     color: COLORS.text,
