@@ -139,6 +139,19 @@ export default function LoginScreen() {
         />
       </View>
 
+      {/* iniciar sesion de una (desarrolladores) */}
+      <View style={[styles.buttonContainer, { flex: 1 }]}>
+        <Boton
+          name="inicio -p desarrolladores"
+          onPress={() => {
+            setEmail("prueba@gmail.com")
+            setPassword("prueba1234")
+            handleSession()
+          }}
+          viewStyle={styles.boton}
+          textStyle={styles.botonText}
+        />
+      </View>
       <StatusBar style="dark" />
     </ScrollView>
   );

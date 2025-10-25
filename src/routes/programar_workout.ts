@@ -143,18 +143,22 @@ router.post('/unschedule', async (req, res) => {
 
 
 // GET para todas las rutinas programadas de un usuario
-router.post('/findschedule', async (req, res) => {
+router.get('/findschedule', async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId } = req.query
 
-    const user = await prisma.dayAssignment.findMany({
-      where: { id: userId },
+    const assigned = await prisma.dayAssignment.findMany({
+      where: { userId: Number(userId) },
     });
 
-    return res.status(200).json({
-      success: true,
-      data: user,
-    });
+    if (!assigned) {
+      return res.status(404).json({ success: false, message: "Rutinas asignadas no encontradas" });
+    }
+
+    res.json({ success: true, assigned });
+    console.log(assigned)
+    console.log(req.query)
+
   } catch (error) {
     console.error('Error fetching scheduled routines:', error);
     return res.status(500).json({

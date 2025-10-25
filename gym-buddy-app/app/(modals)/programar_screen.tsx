@@ -45,6 +45,7 @@ export default function ProgramarScreen() {
   const [userId, setUserId] = useState<number | null>(null);
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
+  const [loadingSchedule, setLoadingSchedule] = useState(false)
   const [savingSchedule, setSavingSchedule] = useState(false);
 
   // Store day assignments
@@ -74,37 +75,8 @@ export default function ProgramarScreen() {
 
         const userdata = await userResponse.json();
         if (userResponse.ok) {
-          const { id } = userdata.data;
+          const id = 1//userdata.data.id;
           setUserId(id);
-
-          const userResponse = await fetch(`${API_URL}/findscheme`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: userId
-            }),
-          })
-
-          const programa = (await userResponse.json()).data
-
-          if (Array.isArray(programa)) {
-            Alert.alert("es un arreglo")
-            setDayAssignments(prev =>
-              prev.map(day => {
-                const match = programa.find(p => p.dayIndex === day.dayIndex);
-                return match
-                  ? {
-                    ...day,
-                    routineId: match.routineId,
-                    routineName: match.routineName,
-                  }
-                  : day;
-              })
-            );
-          } else {
-            Alert.alert("no es un arreglo")
-          }
-
 
         }
       } catch (error) {
@@ -139,8 +111,51 @@ export default function ProgramarScreen() {
       }
     };
 
+
+
     fetchUserRoutines();
   }, [userId]);
+
+  // fetch para las rutinas asignadas del usuario
+  useEffect(() => {
+
+    const fetchAlreadyAssignedDays = async () => {
+      if (!userId) return;
+      setLoadingSchedule(true)
+      try {
+        const userResponse = await fetch(`${API_URL}/programar_workout/findschedule?userId=${userId}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+        )
+
+        const datos = await userResponse.json()
+
+        const programa = datos.assigned
+
+        const loaded = dayAssignments.map(day => {
+          const match = programa.find(dia => dia.dayIndex === day.dayIndex)
+          const rName = routines.find(r => r.id === match.routineId)
+          //Alert.alert("match:",JSON.stringify(match))
+          //Alert.alert("rname", JSON.stringify(rName?.nombre))
+          return match
+            ? {
+              ...day,
+              routineId: match.routineId,
+              routineName: rName != undefined ? rName.nombre : "---"
+            } : day
+        })
+
+        setDayAssignments(loaded);
+        setLoadingSchedule(false)
+      }
+      catch (error) { }
+    }
+    fetchAlreadyAssignedDays()
+
+  }, [userId, routines, dayAssignments])
 
   // Asigno rutina a un dia
   const assignRoutineToDay = (routineId: number, routineName: string) => {
