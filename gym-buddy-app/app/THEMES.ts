@@ -16,6 +16,7 @@ const THEMES = {
     },
     dark: {
         bg: undefined,
+        header:"#252a35ff",
         overlay: '#0f1115',
         text: '#e8f0ff',
         textMuted: '#94a3b8',
@@ -30,6 +31,7 @@ const THEMES = {
     },
     light: {
         bg: undefined,
+        header:"#ffffffff",
         overlay: '#f6f7fb',
         text: '#212529',
         textMuted: '#606770',

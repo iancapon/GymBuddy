@@ -20,6 +20,11 @@ export default function ModalsLayout() {
                 name="crear_screen"
                 options={{ presentation: "modal", animation: "fade", title: "Crear Workout" }}
             />
+
+            <Stack.Screen
+                name="programar_screen"
+                options={{ presentation: "modal", animation: "simple_push", headerShown: false }}
+            />
         </Stack>
     );
 }

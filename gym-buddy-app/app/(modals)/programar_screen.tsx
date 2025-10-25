@@ -10,8 +10,14 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { ContextoPerfil } from '../_layout';
+import { ContextoPerfil, ContextoTema } from '../_layout';
 import api_url from '../API_URL';
+import Boton from '../../components/Boton';
+import { StatusBar } from 'expo-status-bar';
+import THEMES from '../THEMES'
+
+
+
 
 const API_URL = api_url();
 
@@ -39,6 +45,10 @@ const DAYS_OF_WEEK = [
 ];
 
 export default function ProgramarScreen() {
+  const contextoTema = useContext(ContextoTema)
+  const mode = contextoTema?.themeContext.theme
+  const theme = THEMES()[mode != undefined ? mode : 'light'];
+
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
 
@@ -110,9 +120,6 @@ export default function ProgramarScreen() {
         setLoadingRoutines(false);
       }
     };
-
-
-
     fetchUserRoutines();
   }, [userId]);
 
@@ -146,9 +153,13 @@ export default function ProgramarScreen() {
         })
 
         setDayAssignments(loaded);
+      }
+      catch (error) {
+        console.error('Error fetching routines:', error);
+        Alert.alert('Error', 'No se pudieron cargar las rutinas programadas');
+      } finally {
         setLoadingSchedule(false)
       }
-      catch (error) { }
     }
     fetchAlreadyAssignedDays()
 
@@ -189,9 +200,6 @@ export default function ProgramarScreen() {
 
     const unassignedDays = dayAssignments.filter(day => day.routineId === null);
 
-    //Alert.alert("asignados "+assignedDays)
-    //Alert.alert("no asignados "+unassignedDays)
-
     try {
       setSavingSchedule(true);
 
@@ -199,11 +207,6 @@ export default function ProgramarScreen() {
       for (const day of dayAssignments) {
 
         if (day.routineId != null) { // Si tiene una rutina asignada
-          /*console.log('Sending schedule request:', {
-            userId,
-            routineId: day.routineId,
-            dia: day.dayIndex
-          });*/
 
           const response = await fetch(`${API_URL}/programar_workout/schedule`, {
             method: 'POST',
@@ -222,12 +225,7 @@ export default function ProgramarScreen() {
           }
         }
 
-        else { // si no tiene una rutina asignada
-          /*console.log('Sending unschedule request:', {
-            userId,
-            dia: day.dayIndex
-          });*/
-
+        else {
           const response = await fetch(`${API_URL}/programar_workout/unschedule`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -244,11 +242,11 @@ export default function ProgramarScreen() {
           }
         }
       }
-
+      router.back()
       Alert.alert(
         '¡Éxito!',
         'Tu programación semanal ha sido guardada correctamente',
-        [{ text: 'OK', onPress: () => router.back() }]
+        [{ text: 'OK' }]
       );
     } catch (error) {
       console.error('Error saving schedule:', error);
@@ -262,13 +260,18 @@ export default function ProgramarScreen() {
   };
 
   return (
-    <View style={styles.container}>
+
+    <View style={[styles.container, { backgroundColor: theme.overlay }]}>
+      <StatusBar style={mode == "light" ? "dark" : "light"} />
+
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Programar Semana</Text>
+      <View style={[styles.header, { backgroundColor: theme.header }]}>
+        <Boton
+          onPress={() => router.back()}
+          viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
+          <Ionicons name="arrow-back" size={24} color={theme.text} />
+        </Boton>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>Programar Semana</Text>
         <View style={{ width: 24 }} />
       </View>
 
@@ -276,17 +279,17 @@ export default function ProgramarScreen() {
         {/* Instructions */}
         <View style={styles.instructionCard}>
           <Ionicons name="information-circle-outline" size={24} color="#4DB6FF" />
-          <Text style={styles.instructionText}>
+          <Text style={[styles.instructionText, { color: theme.textMuted }]}>
             Toca un día para asignarle una rutina. Luego guarda tu programación.
           </Text>
         </View>
 
         {/* Days List */}
-        <Text style={styles.sectionTitle}>Días de la Semana</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Días de la Semana</Text>
         {dayAssignments.map((day) => (
-          <View key={day.dayIndex} style={styles.dayCard}>
-            <View style={styles.dayInfo}>
-              <Text style={styles.dayName}>{day.dayName}</Text>
+          <View key={day.dayIndex} style={[styles.dayCard, { backgroundColor: theme.overlay, borderColor: theme.border }]}>
+            <View style={[styles.dayInfo, { backgroundColor: theme.overlay }]}>
+              <Text style={[styles.dayName, { color: theme.text }]}>{day.dayName}</Text>
               {day.routineName ? (
                 <View style={styles.assignedRoutine}>
                   <Ionicons name="barbell" size={16} color="#43e97b" />
@@ -316,26 +319,31 @@ export default function ProgramarScreen() {
             </View>
           </View>
         ))}
-
-        {/* Save Button */}
-        <TouchableOpacity
-          style={[
-            styles.saveButton,
-            savingSchedule && styles.saveButtonDisabled,
-          ]}
-          onPress={saveSchedule}
-          disabled={savingSchedule}
-        >
-          {savingSchedule ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <>
-              <Ionicons name="checkmark-circle" size={24} color="#fff" />
-              <Text style={styles.saveButtonText}>Guardar Programación</Text>
-            </>
-          )}
-        </TouchableOpacity>
+        <View style={{ paddingBottom: 20 }}></View>
       </ScrollView>
+
+      {/* Save Button */}
+      <Boton
+        viewStyle={[
+          styles.saveButton,
+          savingSchedule && styles.saveButtonDisabled,
+          { marginTop: 0, marginBottom: 60, backgroundColor: theme.success }
+        ]}
+        onPress={() => {
+          if (!savingSchedule) {
+            saveSchedule()
+          }
+        }}
+      >
+        {savingSchedule ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <>
+            <Ionicons name="checkmark-circle" size={24} color="#fff" />
+            <Text style={styles.saveButtonText}>Guardar Programación</Text>
+          </>
+        )}
+      </Boton>
 
       {/* Modal de seleccion de rutina */}
       {selectedDayIndex !== null && (
@@ -394,12 +402,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 20,
+    paddingTop: 30,
+    paddingBottom: 10,
     backgroundColor: '#1b1d23',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
   },
   backButton: {
-    padding: 8,
+    padding: 12,
+    borderRadius: 100
   },
   headerTitle: {
     fontSize: 20,

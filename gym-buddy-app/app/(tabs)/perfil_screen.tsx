@@ -27,7 +27,7 @@ export default function PerfilScreen() {
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
-  const theme = THEMES()[mode != undefined ? mode : 'image'];
+  const theme = THEMES()[mode != undefined ? mode : 'light'];
 
 
   const handleSession = (async () => {
