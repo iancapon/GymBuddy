@@ -12,16 +12,26 @@ datasource db {
 }
 
 model User {
-  id       Int             @id @default(autoincrement())
-  nombre   String
-  apellido String
-  DNI      BigInt
-  email    String
-  password String
-  telefono BigInt
-  edad     Int
-  rutinas  Routine[]
-  programa DayAssignment[]
+  id        Int             @id @default(autoincrement())
+  nombre    String
+  apellido  String
+  DNI       BigInt
+  email     String
+  password  String
+  telefono  BigInt
+  edad      Int
+  rutinas   Routine[]
+  programa  DayAssignment[]
+  historial History[]
+}
+
+model History {
+  id        Int      @id @default(autoincrement())
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  Routine   Routine  @relation(fields: [routineId], references: [id])
+  routineId Int
+  fecha     DateTime
 }
 
 model DayAssignment {
@@ -41,6 +51,7 @@ model Routine {
   exercises     Exercise[]
   createdAt     DateTime        @default(now())
   DayAssignment DayAssignment[]
+  History       History[]
 }
 
 model Exercise {

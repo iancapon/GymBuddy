@@ -124,6 +124,8 @@ export default function IndexTab() {
     }, [userId, API_URL, todaysRoutine])
   );
 
+
+
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
       <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />

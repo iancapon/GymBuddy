@@ -10,7 +10,7 @@ export default function ModalsLayout() {
             />
             <Stack.Screen
                 name="historial_screen"
-                options={{ presentation: "transparentModal", animation: "simple_push", title: "Historial" }}
+                options={{ presentation: "transparentModal", animation: "simple_push", headerShown: false }}
             />
             <Stack.Screen
                 name="registro_screen"

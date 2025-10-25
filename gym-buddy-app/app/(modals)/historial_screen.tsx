@@ -1,32 +1,36 @@
-import { StyleSheet, Modal, Text, View, FlatList, ImageBackground } from 'react-native';
+import { StyleSheet, ScrollView, Modal, Text, View, FlatList, ImageBackground } from 'react-native';
 import Boton from '../../components/Boton';
 import { Calendar } from 'react-native-calendars';
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import ModalAlerta from '../../components/ModalAlerta';
+import { ContextoPerfil, ContextoTema } from '../_layout';
+import THEMES from '../THEMES';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
 
 export default function Historial() {
-  const fechasMarcadas = WORKOUTS.reduce((fechas: any, programa: any) => {
-    fechas[programa.fecha] = { selected: true, selectedColor: '#FF7A00' };
-    return fechas;
-  }, {});
-
+  const router = useRouter()
+  const contextoPerfil = useContext(ContextoPerfil);
   const [modal, setModal] = useState(false);
   const [tituloModal, setTituloModal] = useState('');
   const [fechaModal, setFechaModal] = useState('');
 
+  const contextoTema = useContext(ContextoTema)
+  const mode = contextoTema?.themeContext.theme
+  const theme = THEMES()[mode != undefined ? mode : 'light'];
+
+  const fechasMarcadas = WORKOUTS.reduce((fechas: any, programa: any) => {
+    fechas[programa.fecha] = { selected: true, selectedColor: theme.accent };
+    return fechas;
+  }, {});
+
+
+
   return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={{
-          uri: 'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww',
-        }}
-        style={StyleSheet.absoluteFillObject}
-        resizeMode="cover"
-      />
-      <View style={styles.overlay} />
+    <View style={[styles.overlay, { flex: 1, backgroundColor: theme.overlay }]}>
 
       {/* Modal resumen */}
       {
@@ -36,45 +40,58 @@ export default function Historial() {
       }
 
       <View style={styles.container}>
-        <Text style={styles.title}>📅 Calendario de Workouts</Text>
-
-        <View style={[styles.calendar, { backgroundColor: COLORS.card, borderColor: COLORS.border, borderWidth: 1 }]}>
-          <Calendar
-            style={styles.calendar}
-            markedDates={fechasMarcadas}
-            theme={{
-              calendarBackground: "transparent",
-              dayTextColor: '#fff',
-              monthTextColor: '#fff',
-              textDisabledColor: 'rgba(255,255,255,0.4)',
-              todayTextColor: '#FFB46B',
-              arrowColor: '#fff',
-              textSectionTitleColor: '#FFB46B',
-              selectedDayBackgroundColor: '#FF7A00',
-              selectedDayTextColor: '#111',
-            }}
-            onDayPress={(dia) => {
-              const item = WORKOUTS.find((programa) => programa.fecha === dia.dateString);
-              if (item) {
-                setTituloModal(item.titulo);
-                setFechaModal(item.fecha);
-                setModal(true);
-              }
-            }}
-          />
+        {/* Header */}
+        <View style={[styles.header, { backgroundColor: theme.header }]}>
+          <Boton
+            onPress={() => router.back()}
+            viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
+            <Ionicons name="arrow-back" size={24} color={theme.text} />
+          </Boton>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>📅 Historial Completo</Text>
+          <View style={{ width: 24 }} />
         </View>
 
-        <Text style={styles.sectionTitle}>Historial completo</Text>
-
         <FlatList
+          style={{ paddingHorizontal: 20, paddingVertical: 20 }}
+          ListHeaderComponent={
+            <View>
+              <View style={[styles.calendar, { backgroundColor: "transparent", borderColor: theme.textMuted, borderWidth: 1 }]}>
+                <Calendar
+                  style={styles.calendar}
+                  markedDates={fechasMarcadas}
+                  theme={{
+                    calendarBackground: "transparent",
+                    dayTextColor: theme.text,
+                    monthTextColor: theme.text,
+                    textDisabledColor: theme.textMuted,
+                    todayTextColor: theme.accent,
+                    arrowColor: theme.text,
+                    textSectionTitleColor: theme.success,
+                    selectedDayBackgroundColor: theme.success,
+                    selectedDayTextColor: theme.text,
+                  }}
+                  onDayPress={(dia) => {
+                    const item = WORKOUTS.find((programa) => programa.fecha === dia.dateString);
+                    if (item) {
+                      setTituloModal(item.titulo);
+                      setFechaModal(item.fecha);
+                      setModal(true);
+                    }
+                  }}
+                />
+              </View>
+
+              <Text style={[styles.sectionTitle, { color: theme.text }]}>Historial completo</Text>
+            </View>
+          }
           data={WORKOUTS}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 40 }}
           renderItem={({ item }) => (
-            <View style={styles.listItem}>
+            <View style={[styles.listItem, { backgroundColor: theme.cardBg }]}>
               <View>
-                <Text style={styles.listTitle}>{item.titulo}</Text>
-                <Text style={styles.listDate}>{item.fecha}</Text>
+                <Text style={[styles.listTitle, { color: theme.text }]}>{item.titulo}</Text>
+                <Text style={[styles.listDate, { color: theme.text }]}>{item.fecha}</Text>
               </View>
               <Boton
                 name="Ver"
@@ -83,12 +100,13 @@ export default function Historial() {
                   setFechaModal(item.fecha);
                   setModal(true);
                 }}
-                viewStyle={styles.listButton}
-                textStyle={styles.listButtonText}
+                viewStyle={[styles.listButton, { backgroundColor: theme.accent }]}
+                textStyle={[styles.listButtonText, { color: theme.overlay }]}
               />
             </View>
           )}
         />
+
       </View>
     </View>
   );
@@ -113,8 +131,6 @@ const styles = StyleSheet.create({
   overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: COLORS.darkOverlay },
   container: {
     flex: 1,
-    paddingTop: 60,
-    paddingHorizontal: 20,
   },
   title: {
     color: COLORS.white,
@@ -127,6 +143,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: 20,
+
   },
   sectionTitle: {
     color: COLORS.white,
@@ -213,5 +230,166 @@ const styles = StyleSheet.create({
     color: '#111',
     fontWeight: '800',
     fontSize: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 30,
+    paddingBottom: 10,
+    backgroundColor: '#1b1d23',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  backButton: {
+    padding: 12,
+    borderRadius: 100
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  instructionCard: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(77, 182, 255, 0.1)',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(77, 182, 255, 0.3)',
+  },
+  instructionText: {
+    flex: 1,
+    marginLeft: 12,
+    color: '#e8f0ff',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  dayCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#1b1d23',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#2b2e36',
+  },
+  dayInfo: {
+    flex: 1,
+  },
+  dayName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  assignedRoutine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  routineName: {
+    fontSize: 14,
+    color: '#43e97b',
+    marginLeft: 6,
+  },
+  noRoutine: {
+    fontSize: 14,
+    color: '#94a3b8',
+    fontStyle: 'italic',
+  },
+  dayActions: {
+    marginLeft: 12,
+  },
+  addButton: {
+    padding: 4,
+  },
+  removeButton: {
+    padding: 4,
+  },
+  saveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#43e97b',
+    padding: 18,
+    borderRadius: 12,
+    marginTop: 24,
+    marginBottom: 40,
+  },
+  saveButtonDisabled: {
+    backgroundColor: '#94a3b8',
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
+    marginLeft: 8,
+  },
+  modal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '70%',
+    paddingBottom: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e3e3e3',
+  },
+  routineList: {
+    paddingHorizontal: 20,
+  },
+  routineItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  routineItemInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  routineItemName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  routineItemExercises: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 2,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 40,
   },
 });
