@@ -22,7 +22,7 @@ type Routine = {
 };
 
 type DayAssignment = {
-  dayName: string;
+  dayName: string
   dayIndex: number;
   routineId: number | null;
   routineName: string | null;
@@ -64,18 +64,48 @@ export default function ProgramarScreen() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch(`${API_URL}/profile`, {
+        const userResponse = await fetch(`${API_URL}/profile`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            mail: contextoPerfil?.userContext.mail,
-            password: contextoPerfil?.userContext.password,
+            id: contextoPerfil?.userContext.id
           }),
         });
 
-        const userdata = await response.json();
-        if (response.ok) {
-          setUserId(userdata.data.id);
+        const userdata = await userResponse.json();
+        if (userResponse.ok) {
+          const { id } = userdata.data;
+          setUserId(id);
+
+          const userResponse = await fetch(`${API_URL}/findscheme`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: userId
+            }),
+          })
+
+          const programa = (await userResponse.json()).data
+
+          if (Array.isArray(programa)) {
+            Alert.alert("es un arreglo")
+            setDayAssignments(prev =>
+              prev.map(day => {
+                const match = programa.find(p => p.dayIndex === day.dayIndex);
+                return match
+                  ? {
+                    ...day,
+                    routineId: match.routineId,
+                    routineName: match.routineName,
+                  }
+                  : day;
+              })
+            );
+          } else {
+            Alert.alert("no es un arreglo")
+          }
+
+
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -137,30 +167,6 @@ export default function ProgramarScreen() {
     );
   };
 
-  // Modificar esto después para agregar las rutinas a todos los 
-  // dias específicos.
-  // tiene que quedar por ejemplo, todos los lunes --> rutina A, todos los martes --> rutina B
-  // Calculo el siguiente dia para la fecha de la rutina
-  const getNextDateForDay = (dayIndex: number): Date => {
-    const today = new Date();
-    const currentDay = today.getDay();
-    let daysUntilTarget = dayIndex - currentDay;
-
-    if (daysUntilTarget <= 0) {
-      daysUntilTarget += 7;
-    }
-
-    const targetDate = new Date(today);
-    targetDate.setDate(today.getDate() + daysUntilTarget);
-    targetDate.setHours(0, 0, 0, 0);
-
-    return targetDate;
-  };
-
-  // Guardo la programacion de la rutina en la base de datos
-  // modifico la tabla 'routineAT' 
-  // routineAT despues se convierte en historial
-
   const saveSchedule = async () => {
     if (!userId) {
       Alert.alert('Error', 'Usuario no identificado');
@@ -169,49 +175,61 @@ export default function ProgramarScreen() {
 
     const assignedDays = dayAssignments.filter(day => day.routineId !== null);
 
-    if (assignedDays.length === 0) {
-      Alert.alert('Atención', 'No has asignado ninguna rutina a los días');
-      return;
-    }
+    const unassignedDays = dayAssignments.filter(day => day.routineId === null);
+
+    //Alert.alert("asignados "+assignedDays)
+    //Alert.alert("no asignados "+unassignedDays)
 
     try {
       setSavingSchedule(true);
 
-      // Crea routineAt para cada dia asignado
-      for (const day of assignedDays) {
-        const fecha = getNextDateForDay(day.dayIndex);
+      // Crea y borrar para cada dia
+      for (const day of dayAssignments) {
 
-        console.log('Sending schedule request:', {
-          userId,
-          routineId: day.routineId,
-          fecha: fecha.toISOString(),
-        });
-
-        const response = await fetch(`${API_URL}/programar_workout/schedule`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+        if (day.routineId != null) { // Si tiene una rutina asignada
+          console.log('Sending schedule request:', {
             userId,
             routineId: day.routineId,
-            fecha: fecha.toISOString(),
-            cumplida: false,
-          }),
-        });
+            dia: day.dayIndex
+          });
 
-        const contentType = response.headers.get('content-type');
-        console.log('Response status:', response.status);
-        console.log('Response content-type:', contentType);
+          const response = await fetch(`${API_URL}/programar_workout/schedule`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId,
+              routineId: day.routineId,
+              dayIndex: day.dayIndex
+            }),
+          });
 
-        if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text();
-          console.error('Non-JSON response:', text);
-          throw new Error('El servidor no respondió correctamente. Verifica que el endpoint /workout/schedule esté configurado.');
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Error al guardar');
+          }
         }
 
-        const data = await response.json();
+        else { // si no tiene una rutina asignada
+          console.log('Sending unschedule request:', {
+            userId,
+            dia: day.dayIndex
+          });
 
-        if (!response.ok || !data.success) {
-          throw new Error(data.message || 'Error al guardar');
+          const response = await fetch(`${API_URL}/programar_workout/unschedule`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId,
+              dayIndex: day.dayIndex
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Error al guardar');
+          }
         }
       }
 
@@ -306,7 +324,7 @@ export default function ProgramarScreen() {
           )}
         </TouchableOpacity>
       </ScrollView>
-      
+
       {/* Modal de seleccion de rutina */}
       {selectedDayIndex !== null && (
         <View style={styles.modal}>

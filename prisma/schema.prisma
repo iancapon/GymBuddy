@@ -12,7 +12,7 @@ datasource db {
 }
 
 model User {
-  id       Int         @id @default(autoincrement())
+  id       Int             @id @default(autoincrement())
   nombre   String
   apellido String
   DNI      BigInt
@@ -21,30 +21,26 @@ model User {
   telefono BigInt
   edad     Int
   rutinas  Routine[]
-  programa RoutineAt[] // Tanto programadas, como historial...
+  programa DayAssignment[]
 }
 
-
-
-model RoutineAt {
-  id        Int      @id @default(autoincrement())
-  User      User?    @relation(fields: [userId], references: [id])
+model DayAssignment {
+  id        Int     @id @default(autoincrement())
+  User      User?   @relation(fields: [userId], references: [id])
   userId    Int?
-  rutina    Routine  @relation(fields: [routineId], references: [id])
+  dayIndex  Int
+  Routine   Routine @relation(fields: [routineId], references: [id])
   routineId Int
-  orden     Int      @default(0) // Para ordenar ejercicios
-  fecha     DateTime @default(now())
-  cumplida  Boolean  @default(false) // Si pasó la fecha y se pone cumplida como true, se vuelve historial
 }
 
 model Routine {
-  id        Int         @id @default(autoincrement())
-  nombre    String
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  exercises Exercise[]
-  createdAt DateTime    @default(now())
-  RoutineAt RoutineAt[]
+  id            Int             @id @default(autoincrement())
+  nombre        String
+  userId        Int
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises     Exercise[]
+  createdAt     DateTime        @default(now())
+  DayAssignment DayAssignment[]
 }
 
 model Exercise {
