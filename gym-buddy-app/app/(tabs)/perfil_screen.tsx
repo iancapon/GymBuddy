@@ -17,7 +17,7 @@ export default function PerfilScreen() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
 
-  const mail = contextoPerfil?.userContext.mail
+  const [mail, setMail] = useState("...")
   const [nombre, setNombre] = useState("...")
   const [apellido, setApellido] = useState("...")
   const [edad, setEdad] = useState("...")
@@ -37,8 +37,7 @@ export default function PerfilScreen() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        mail: contextoPerfil?.userContext.mail,
-        password: contextoPerfil?.userContext.password
+        id: contextoPerfil?.userContext.id
       })
     });
 
@@ -50,6 +49,7 @@ export default function PerfilScreen() {
       setEdad(data.edad)
       setDNI(data.DNI)
       setTelefono(data.telefono)
+      setMail(data.email)
     }
   })()
 
@@ -57,27 +57,21 @@ export default function PerfilScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
-      {mode === 'image' && (
-        <ImageBackground
-          source={{ uri: theme.bg }}
-          style={StyleSheet.absoluteFillObject}
-          resizeMode="cover"
-        />
-      )}
+
       {/* Modal resumen */}
-      {
-        <ModalAlerta
-          visible={modal} setVisible={setModal}
-          titulo={'🏋️ Estas por cerrar sesión'}
-          subtitulo={'¿Seguro que deseas continuar?'}
-          botonA='Mantener sesion' botonAOnPress={() => setModal(false)}
-          botonB={'Cerrar sesion'} botonBOnPress={() => {
-            setModal(false);
-            contextoPerfil?.setUserContext({ mail: "", password: "" }) // (a ver si esto es suficiente)
-            router.replace("../../"); // creo que es suficiente
-          }}
-        />
-      }
+
+      <ModalAlerta
+        visible={modal} setVisible={setModal}
+        titulo={'🏋️ Estas por cerrar sesión'}
+        subtitulo={'¿Seguro que deseas continuar?'}
+        botonA='Mantener sesion' botonAOnPress={() => setModal(false)}
+        botonB={'Cerrar sesion'} botonBOnPress={() => {
+          setModal(false);
+          contextoPerfil?.setUserContext({ id: 0 }) // (a ver si esto es suficiente)
+          router.replace("../../"); // creo que es suficiente
+        }}
+      />
+
       <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
 
       {/* Tarjeta de perfil */}
@@ -112,7 +106,7 @@ export default function PerfilScreen() {
         />
       </View>
 
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </View>
   );
 }

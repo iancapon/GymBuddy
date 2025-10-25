@@ -54,17 +54,12 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        contextoPerfil?.setUserContext({ mail: email, password: password }); // paso el contexto del usuario (deberia hacerlo más seguro)
+        contextoPerfil?.setUserContext({ id: data.id });
         router.push("./(tabs)/index_tab"); // antes era replace
         Alert.alert(
           "Inicio de sesion ",
           "Has iniciado sesion correctamente 👽",
-          [
-            {
-              text: "OK",
-              //onPress: () => router.replace("../(tabs)/index_tab"),
-            },
-          ]
+          [{ text: "OK" }]
         );
 
       } else {
@@ -144,7 +139,7 @@ export default function LoginScreen() {
         />
       </View>
 
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </ScrollView>
   );
 }

@@ -45,7 +45,7 @@ function Slide(ejercicio: slideProps) {
         style={styles.image}
         imageStyle={styles.imageRadius}
       >
-        <View style={styles.overlay} />
+        <View style={[styles.overlay, { borderRadius: 16 }]} />
         <View style={styles.card}>
           <Text style={styles.title} numberOfLines={2}>{ejercicio.titulo}</Text>
           <Text style={styles.info}>{ejercicio.info1}</Text>
@@ -173,7 +173,7 @@ export default function Slides(props: myListProps) {
         <View style={[styles.progressTrack, { backgroundColor: props.theme.progressTrack }]}>
           <View style={[styles.progressFill, { width: `${Math.round(progress() * 100)}%`, backgroundColor: props.theme.progressFill }]} />
         </View>
-        <Text style={[styles.progressText,{color:props.theme.textMuted}]}>{Math.round(progress() * 100)}%</Text>
+        <Text style={[styles.progressText, { color: props.theme.textMuted }]}>{Math.round(progress() * 100)}%</Text>
       </View>
     </View>
   );

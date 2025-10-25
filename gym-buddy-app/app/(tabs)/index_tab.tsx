@@ -1,16 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
 import { Alert, StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useMemo, useState, useCallback, useContext } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
-import Boton from '../../components/Boton';
-import { useMemo, useState } from 'react';
-import { ContextoPerfil, ContextoTema } from '../_layout';
-import { useContext } from 'react';
-import { useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
-import THEMES from '../THEMES'
 
+import { ContextoPerfil, ContextoTema } from '../_layout';
+import THEMES from '../THEMES'
+import Boton from '../../components/Boton';
 import api_url from "../API_URL"
+
 const API_URL = api_url()
 
 type Routine = {
@@ -25,32 +23,18 @@ type userInfo = {
   password: string
 }
 
-
-// 🔤 Helper seguro para RN (sin Intl): 16 de Octubre del 2025
-function formatFechaES(fecha = new Date()) {
-  const meses = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ];
-  const dia = fecha.getDate();
-  const mes = meses[fecha.getMonth()];
-  const año = fecha.getFullYear();
-  return `${dia} de ${mes} del ${año}`;
-}
-
-export default function SelectWorkout() {
+export default function IndexTab() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
 
   const [userId, setUserId] = useState()
   const [nombre, setNombre] = useState("...")
-  const [apellido, setApellido] = useState("...")
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
-  const theme = THEMES()[mode != undefined ? mode : 'image'];
+  const theme = THEMES()[mode != undefined ? mode : 'light'];
 
   // 📅 Fecha con formato “16 de Octubre del 2025” (sin Intl)
   const fechaDeHoy = useMemo(() => formatFechaES(new Date()), []);
@@ -63,8 +47,7 @@ export default function SelectWorkout() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        mail: contextoPerfil?.userContext.mail,
-        password: contextoPerfil?.userContext.password
+        id: contextoPerfil?.userContext.id
       })
     });
 
@@ -72,7 +55,6 @@ export default function SelectWorkout() {
 
     if (response.ok) {
       setNombre(userdata.data.nombre)
-      setApellido(userdata.data.apellido)
       setUserId(userdata.data.id)
     }
   }
@@ -108,34 +90,16 @@ export default function SelectWorkout() {
     }, [userId, API_URL])
   );
 
-  const noImplementado = () => Alert.alert('No implementado', 'Esto aún no ha sido implementado');
-
-
 
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
-      {mode === 'image' && (
-        <ImageBackground
-          source={{ uri: theme.bg }}
-          style={StyleSheet.absoluteFillObject}
-          resizeMode="cover"
-        />
-      )}
       <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
 
       {/* 🔝 Header con saludo y selector */}
       <View style={styles.topBar}>
         <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
         <View style={styles.modeButtons}>
-          <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'image' })}>
-            <Ionicons
-              name="image"
-              size={26}
-              color={mode === 'image' ? theme.accent : theme.textMuted}
-              style={styles.modeIcon}
-            />
-          </TouchableOpacity>
           <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'dark' })}>
             <Ionicons
               name="moon"
@@ -170,7 +134,7 @@ export default function SelectWorkout() {
         >
           <Ionicons name="barbell" size={60} color="#fff" />
           <Text style={[styles.mainTitle, { color: theme.text }]}>Entrenamiento de Hoy</Text>
-          <Text style={[styles.mainSubtitle, { color: theme.textMuted }]}>{fechaDeHoy}</Text>
+          <Text style={[styles.mainSubtitle, { color: theme.text }]}>{fechaDeHoy}</Text>
         </Boton>
 
         <View style={styles.row}>
@@ -213,6 +177,7 @@ export default function SelectWorkout() {
         <FlatList
           style={{ width: "100%" }}
           horizontal
+          inverted
           showsHorizontalScrollIndicator={true}
           data={routines}
           keyExtractor={(item) => item.id.toString()}
@@ -256,7 +221,7 @@ export default function SelectWorkout() {
         >
           <Ionicons name="newspaper" size={60} color="#fff" />
           <Text style={[styles.mainTitle, { color: theme.text }]}>Noticias de la semana</Text>
-          <Text style={[styles.mainSubtitle, { color: theme.textMuted }]}>{fechaDeHoy}</Text>
+          <Text style={[styles.mainSubtitle, { color: theme.text }]}>{fechaDeHoy}</Text>
         </Boton>
 
       </ScrollView>
@@ -266,14 +231,19 @@ export default function SelectWorkout() {
   );
 }
 
-const WORKOUTS = [
-  { id: '2', titulo: 'Core' },
-  { id: '3', titulo: 'Tren superior' },
-  { id: '4', titulo: 'Pecho' },
-  { id: '5', titulo: 'Piernas' },
-  { id: '6', titulo: 'Custom 1' },
-  { id: '7', titulo: 'Custom 2' },
-];
+
+// 🔤 Helper seguro para RN (sin Intl): 16 de Octubre del 2025
+function formatFechaES(fecha = new Date()) {
+  const meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  const dia = fecha.getDate();
+  const mes = meses[fecha.getMonth()];
+  const año = fecha.getFullYear();
+  return `${dia} de ${mes} del ${año}`;
+}
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, width: "100%" },

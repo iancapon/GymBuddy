@@ -24,6 +24,8 @@ model User {
   programa RoutineAt[] // Tanto programadas, como historial...
 }
 
+
+
 model RoutineAt {
   id        Int      @id @default(autoincrement())
   User      User?    @relation(fields: [userId], references: [id])

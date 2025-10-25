@@ -26,6 +26,11 @@ interface CreateExerciseRequest extends Request {
 router.post('/routine', async (req, res) => {
   const { userId, nombre } = req.body;
   try {
+    /*const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(400).json({ error: "El usuario no existe" });
+    }*/
     const rutina = await prisma.routine.create({
       data: { userId: Number(userId), nombre },
     });

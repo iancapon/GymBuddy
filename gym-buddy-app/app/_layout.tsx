@@ -3,8 +3,7 @@ import { useEffect, useContext, createContext, useState } from "react";
 import { ThemeProvider } from '@react-navigation/native';
 
 type userInfo = {
-  mail: string
-  password: string
+  id: Number
 }
 
 export const ContextoPerfil = createContext<{
@@ -13,7 +12,8 @@ export const ContextoPerfil = createContext<{
 } | null>(null);
 
 type customTheme = {
-  theme: 'image' | 'dark' | 'light'
+  theme: 'light' | 'dark'
+  // theme: 'image' | 'dark' | 'light'
 }
 
 export const ContextoTema = createContext<{
@@ -22,15 +22,16 @@ export const ContextoTema = createContext<{
 } | null>(null)
 
 export default function RootLayout() {
-  const [userContext, setUserContext] = useState<userInfo>({ mail: "", password: "" });
+  const [userContext, setUserContext] = useState<userInfo>({ id: 0 });
   const [themeContext, setThemeContext] = useState<customTheme>({ theme: "light" })
+
   return (
     <ContextoTema.Provider value={{ themeContext, setThemeContext }}>
       <ContextoPerfil.Provider value={{ userContext, setUserContext }}>
 
         <Stack>
 
-          <Stack.Screen name="index" options={{ headerShown: false, navigationBarHidden: true }} />
+          <Stack.Screen name="index" options={{ headerShown: false, navigationBarHidden: true, }} />
 
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 

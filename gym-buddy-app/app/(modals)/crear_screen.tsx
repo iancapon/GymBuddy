@@ -15,9 +15,6 @@ export default function CrearScreen() {
   const router = useRouter();
 
   const contexto = useContext(ContextoPerfil);
-  const mail = contexto?.userContext.mail
-  const password = contexto?.userContext.password
-  //const USER_ID = contexto?.userContext?.id;
 
   const [titulo, setTitulo] = useState('');
   const [ejercicios, setEjercicios] = useState<ejercicio[]>([]);
@@ -39,33 +36,34 @@ export default function CrearScreen() {
     setSavingRoutine(true);
 
     try {
-      //0. find user ID
-      const userResponse = await fetch(`${API_URL}/profile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ mail, password })
-      });
 
-      const userData = (await userResponse.json());
+      // 0. findUser
+      const userResponse = await fetch(`${API_URL}/profile`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: contexto?.userContext.id
+      })
+    });
+
+      // para confirmar bien que encuentra el usuario
+      const user_Id = (await userResponse.json()).data.id
 
       if (!userResponse.ok) {
-        /////
-        Alert.alert("No se encontró al usuario")
-        //router.back()
+        Alert.alert('Error', 'No se encontró el usuario');
         setSavingRoutine(false);
         return;
       }
-      const USER_ID = Number(userData.data.id)
-
+      
       // 1. Create routine
       const routineResponse = await fetch(`${API_URL}/workout/routine`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: USER_ID,
           nombre: titulo.trim(),
+          userId: user_Id
         }),
       });
 
@@ -73,7 +71,7 @@ export default function CrearScreen() {
 
       if (!routineData.success) {
         Alert.alert('Error', routineData.error || 'No se pudo crear la rutina');
-        setSavingRoutine(false);
+       // setSavingRoutine(false);
         return;
       }
 
@@ -118,7 +116,7 @@ export default function CrearScreen() {
       <View style={styles.overlay} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          <StatusBar style="light" />
+          <StatusBar style="dark" />
 
           <NuevaTarjeta
             ejercicios={ejercicios}
@@ -243,7 +241,7 @@ function NuevaTarjeta(props: NuevaTarjetaProp) {
       };
       props.setEjercicios([...props.ejercicios, nuevo]);
 
-      Alert.alert('Éxito', 'Ejercicio agregado');
+      //Alert.alert('Éxito', 'Ejercicio agregado');
 
       setTitulo('');
       setMedia(PLACEHOLDER_IMG);
@@ -429,7 +427,7 @@ const styles = StyleSheet.create({
   /* Card de ejercicio */
   exerciseCard: {
     width: 300,
-    height: 480,
+    height: 450,
     marginHorizontal: 8,
     backgroundColor: PALETTE.card,
     borderRadius: 18,
@@ -474,7 +472,7 @@ const styles = StyleSheet.create({
   /* Row de acciones */
   actionsRow: {
     flexDirection: 'row',
-    marginBottom: 14,
+    marginBottom: 60,
   },
 
   /* Modal creación */
@@ -508,6 +506,7 @@ const styles = StyleSheet.create({
   previewWrap: {
     flexGrow: 1,
     minWidth: 280,
+    maxHeight: 350
   },
   previewCard: {
     width: '100%',
@@ -523,7 +522,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   previewImageWrap: {
-    flex: 1,
+    flex: 0.8,
     marginTop: 8,
     marginHorizontal: 10,
     borderRadius: 12,
@@ -553,7 +552,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   input: {
-    height: 52,
+    height: 40,
     borderRadius: 12,
     paddingHorizontal: 12,
     marginBottom: 12,
