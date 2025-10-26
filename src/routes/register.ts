@@ -42,6 +42,7 @@ router.post("/", async (req: Request, res: Response) => {
       ...user,
       DNI: user.DNI.toString(),
       telefono: user.telefono.toString(),
+      userId : user.id
     };
 
     res.status(201).json({

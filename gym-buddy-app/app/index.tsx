@@ -8,12 +8,6 @@ import { ContextoPerfil } from "./_layout";
 import api_url from "./API_URL"
 const API_URL = api_url()
 
-type userInfo = {
-  mail: string
-  password: string
-}
-
-
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -134,20 +128,6 @@ export default function LoginScreen() {
         <Boton
           name="Registrarme"
           onPress={() => router.push("./(modals)/registro_screen")}
-          viewStyle={styles.boton}
-          textStyle={styles.botonText}
-        />
-      </View>
-
-      {/* iniciar sesion de una (desarrolladores) */}
-      <View style={[styles.buttonContainer, { flex: 1 }]}>
-        <Boton
-          name="inicio -p desarrolladores"
-          onPress={() => {
-            setEmail("prueba@gmail.com")
-            setPassword("prueba1234")
-            handleSession()
-          }}
           viewStyle={styles.boton}
           textStyle={styles.botonText}
         />

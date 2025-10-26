@@ -137,9 +137,9 @@ export default function Historial() {
           <View style={{ width: 24 }} />
         </View>
         <FlatList
-          style={{ paddingHorizontal: 20, paddingVertical: 20 }}
-          inverted
-          ListFooterComponent={ // es el footer porque la lista está invertida, para aparecer lo más reciente primero
+          style={{ paddingHorizontal: 20, paddingVertical: 0, top:0 }}
+          //inverted
+          ListHeaderComponent={ 
             <View>
               <View style={[styles.calendar, { backgroundColor: "transparent", borderColor: theme.textMuted, borderWidth: 1 }]}>
                 <Calendar

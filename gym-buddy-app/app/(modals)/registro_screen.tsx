@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import Boton from "../../components/Boton";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
+import workoutsBase from "../workoutsBase";
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -11,7 +12,6 @@ const API_URL = api_url()
 
 export default function RegistroScreen() {
   const router = useRouter();
-
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [dni, setDni] = useState("");
@@ -57,6 +57,7 @@ export default function RegistroScreen() {
       const data = await response.json();
 
       if (response.ok) {
+        handleGuardarRutinas(data.user.id)
         Alert.alert("✅ Registro exitoso", "Tu cuenta fue creada correctamente", [
           { text: "OK", onPress: () => router.back() },
         ]);
@@ -77,6 +78,54 @@ export default function RegistroScreen() {
       setLoading(false);
     }
   };
+
+  const handleGuardarRutinas = (userId: number) => {
+    const nuevaRutina = async (rutina: any) => {
+      try {
+        // 1. Create routine
+        const routineResponse = await fetch(`${API_URL}/workout/routine`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: rutina.nombre,
+            userId: userId
+          }),
+        });
+
+        const routineData = await routineResponse.json();
+
+        if (!routineData.success) {
+          Alert.alert('Error', routineData.error || 'No se pudo crear la rutina');
+          return;
+        }
+
+        const routineId = routineData.routine.id;
+
+        // 2. Create all exercises for this routine
+        for (const ejercicio of rutina.exercises) {
+          await fetch(`${API_URL}/workout/exercise`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              routineId,
+              titulo: ejercicio.titulo,
+              media: ejercicio.media,
+              info1: ejercicio.info1,
+              info2: ejercicio.info2,
+            }),
+          });
+        }
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
+        Alert.alert('Error de conexión', errorMsg);
+        console.error('Error al guardar rutina:', error);
+      }
+    }
+
+    workoutsBase().forEach(wk => {
+      nuevaRutina(wk)
+    })
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -100,7 +149,7 @@ export default function RegistroScreen() {
         <InputField icon="person-outline" placeholder="Apellido" value={apellido} onChangeText={setApellido} editable={!loading} />
         <InputField icon="id-card-outline" placeholder="DNI" keyboardType="numeric" value={dni} onChangeText={setDni} editable={!loading} />
         <InputField icon="mail-outline" placeholder="Email" keyboardType="email-address" autoCapitalize="none" value={email} onChangeText={setEmail} editable={!loading} />
-        <InputField icon="lock-closed-outline" placeholder="Contraseña" secureTextEntry value={password} onChangeText={setPassword} editable={!loading} />
+        <InputField icon="lock-closed-outline" placeholder="Contraseña" secureTextEntry value={password} autoCapitalize="none" onChangeText={setPassword} editable={!loading} />
         <InputField icon="call-outline" placeholder="Teléfono" keyboardType="phone-pad" value={telefono} onChangeText={setTelefono} editable={!loading} />
         <InputField icon="calendar-outline" placeholder="Edad" keyboardType="numeric" value={edad} onChangeText={setEdad} editable={!loading} />
 

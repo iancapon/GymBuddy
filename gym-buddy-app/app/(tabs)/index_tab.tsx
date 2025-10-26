@@ -224,7 +224,7 @@ export default function IndexTab() {
         <FlatList
           style={{ width: "100%" }}
           horizontal
-          inverted
+          //inverted
           showsHorizontalScrollIndicator={true}
           data={routines}
           keyExtractor={(item) => item.id.toString()}
