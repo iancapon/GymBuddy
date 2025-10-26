@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Modal, Text, View, FlatList, ImageBackground } from 'react-native';
+import { StyleSheet, ScrollView, Modal, Text, View, FlatList, ImageBackground, Alert } from 'react-native';
 import Boton from '../../components/Boton';
 import { Calendar } from 'react-native-calendars';
 import { useState, useEffect, useCallback, useContext } from 'react';
@@ -11,12 +11,32 @@ import { Ionicons } from '@expo/vector-icons';
 import api_url from "../API_URL"
 const API_URL = api_url()
 
+type Routine = {
+  id: number;
+  nombre: string;
+  userId: number;
+  exercises: Array<any>;
+};
 type History = {
   id: number
   userId: number
+  Routine: Routine
   routineId: number
   fecha: Date
-  Routine: any//Routine
+}
+
+// 🔤 Helper seguro para RN (sin Intl): 16 de Octubre del 2025
+function formatFechaES(fecha = new Date()) {
+  const meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  const minutos = fecha.getMinutes()
+  const hora = fecha.getHours()
+  const dia = fecha.getDate();
+  const mes = meses[fecha.getMonth()];
+  const año = fecha.getFullYear();
+  return `🗓️ ${dia}/${mes}/${año}           🕑${hora}:${minutos}`;
 }
 
 export default function Historial() {
@@ -31,35 +51,68 @@ export default function Historial() {
   const mode = contextoTema?.themeContext.theme
   const theme = THEMES()[mode != undefined ? mode : 'light'];
 
-  const fechasMarcadas = WORKOUTS.reduce((fechas: any, programa: any) => {
-    fechas[programa.fecha] = { selected: true, selectedColor: theme.accent };
-    return fechas;
-  }, {});
+  const fechasMarcadas = () => {
+    if (!history) return
+    const wk = history.map(h => new Date(h.fecha))
 
-  const [history, setHistory] = useState<History[]>([]);
+    return wk.reduce((fechas: any, programa: Date) => {
+      fechas[programa.toISOString().split("T")[0]] = { selected: true, selectedColor: theme.accent };
+      return fechas;
+    }, {})
+  }
+
+  const [history, setHistory] = useState<Array<History>>([]);
 
 
-////////////// falta trabajo esto
+  //fetch user profile data
+  const handleSession = async () => {
+    const response = await fetch(`${API_URL}/profile`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: contextoPerfil?.userContext.id
+      })
+    });
+
+    const userdata = await response.json();
+
+    if (response.ok) {
+      setUserId(userdata.data.id)
+    }
+  }
+
+  ////////////// falta trabajo esto
   const fetchUserHistory = async () => {
     if (!userId || !API_URL) return;
 
     try {
-      const response = await fetch(`${API_URL}/history?userId:${userId}`, {
+      const response = await fetch(`${API_URL}/history?userId=${userId}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
 
       const data = await response.json();
 
-      if (data.success && data.routines) {
-        set(data.routines);
+      if (response.ok && data.data) {
+        setHistory(data.data);
+        //Alert.alert("historia", `${history[0].fecha}`)
       }
-    } catch (error) {
+
+    }
+    catch (error) {
       console.error('Error fetching routines:', error);
-      Alert.alert('Error', 'No se pudieron cargar las rutinas');
+      //Alert.alert('Error', 'No se pudieron cargar las rutinas');
     }
   };
 
+  useEffect(() => {
+    handleSession()
+    fetchUserHistory()
+  }, [userId, history])
+
+  //Alert.alert(":", JSON.stringify(fechasMarcadas()))
 
 
   return (
@@ -68,7 +121,7 @@ export default function Historial() {
       {/* Modal resumen */}
       {
         <ModalAlerta visible={modal} setVisible={setModal}
-          titulo={'🏋️ Workout para el ' + fechaModal}
+          titulo={fechaModal}
           subtitulo={tituloModal} botonA='cerrar' botonAOnPress={() => setModal(false)} />
       }
 
@@ -83,15 +136,15 @@ export default function Historial() {
           <Text style={[styles.headerTitle, { color: theme.text }]}>📅 Historial Completo</Text>
           <View style={{ width: 24 }} />
         </View>
-
         <FlatList
           style={{ paddingHorizontal: 20, paddingVertical: 20 }}
-          ListHeaderComponent={
+          inverted
+          ListFooterComponent={ // es el footer porque la lista está invertida, para aparecer lo más reciente primero
             <View>
               <View style={[styles.calendar, { backgroundColor: "transparent", borderColor: theme.textMuted, borderWidth: 1 }]}>
                 <Calendar
                   style={styles.calendar}
-                  markedDates={fechasMarcadas}
+                  markedDates={fechasMarcadas()}
                   theme={{
                     calendarBackground: "transparent",
                     dayTextColor: theme.text,
@@ -103,11 +156,17 @@ export default function Historial() {
                     selectedDayBackgroundColor: theme.success,
                     selectedDayTextColor: theme.text,
                   }}
-                  onDayPress={(dia) => {
-                    const item = WORKOUTS.find((programa) => programa.fecha === dia.dateString);
+                  onDayPress={(date) => {
+                    const item = history.find((programa) => {
+                      const fecha = new Date(programa.fecha)
+                      const dia = fecha.getDay()
+                      const mes = fecha.getMonth()
+                      const anio = fecha.getFullYear()
+                      return (dia == date.day && mes == date.month && anio == date.year)
+                    })
                     if (item) {
-                      setTituloModal(item.titulo);
-                      setFechaModal(item.fecha);
+                      setTituloModal(item.Routine.nombre);
+                      setFechaModal(formatFechaES(new Date(item.fecha)));
                       setModal(true);
                     }
                   }}
@@ -117,20 +176,20 @@ export default function Historial() {
               <Text style={[styles.sectionTitle, { color: theme.text }]}>Historial completo</Text>
             </View>
           }
-          data={WORKOUTS}
-          keyExtractor={(item) => item.id}
+          data={history}
+          keyExtractor={(item) => String(item.id)}
           contentContainerStyle={{ paddingBottom: 40 }}
           renderItem={({ item }) => (
             <View style={[styles.listItem, { backgroundColor: theme.cardBg }]}>
               <View>
-                <Text style={[styles.listTitle, { color: theme.text }]}>{item.titulo}</Text>
-                <Text style={[styles.listDate, { color: theme.text }]}>{item.fecha}</Text>
+                <Text style={[styles.listTitle, { color: theme.text }]}>{item.Routine.nombre}</Text>
+                <Text style={[styles.listDate, { color: theme.text }]}>{formatFechaES(new Date(item.fecha))}</Text>
               </View>
               <Boton
                 name="Ver"
                 onPress={() => {
-                  setTituloModal(item.titulo);
-                  setFechaModal(item.fecha);
+                  setTituloModal(item.Routine.nombre);
+                  setFechaModal(formatFechaES(new Date(item.fecha)));
                   setModal(true);
                 }}
                 viewStyle={[styles.listButton, { backgroundColor: theme.accent }]}

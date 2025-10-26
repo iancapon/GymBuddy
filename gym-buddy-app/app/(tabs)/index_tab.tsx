@@ -18,10 +18,6 @@ type Routine = {
   exercises: Array<any>;
 };
 
-type userInfo = {
-  mail: string
-  password: string
-}
 
 export default function IndexTab() {
   const router = useRouter();
@@ -29,10 +25,11 @@ export default function IndexTab() {
 
   const [userId, setUserId] = useState()
   const [nombre, setNombre] = useState("...")
-  const [routines, setRoutines] = useState<Routine[]>([]);
+
   const [loadingRoutines, setLoadingRoutines] = useState(false);
   const [loadingTodaysRoutine, setLTR] = useState(false)
   const [todaysRoutine, setTodaysRoutine] = useState<Routine>()
+  const [routines, setRoutines] = useState<Array<Routine>>([])
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
@@ -78,7 +75,7 @@ export default function IndexTab() {
       }
     } catch (error) {
       console.error('Error fetching routines:', error);
-      Alert.alert('Error', 'No se pudieron cargar las rutinas');
+      //Alert.alert('Error', 'No se pudieron cargar las rutinas');
     } finally {
       setLoadingRoutines(false);
     }
@@ -95,7 +92,7 @@ export default function IndexTab() {
       const datos = await userResponse.json()
 
       if (!userResponse) {
-        return Alert.alert("Error:", "No llegaron datos de la rutina para hoy")
+        //return Alert.alert("Error:", "No llegaron datos de la rutina para hoy")
       }
 
       if (datos.assigned.length > 0) {
@@ -108,7 +105,7 @@ export default function IndexTab() {
     }
     catch (error) {
       console.error('Error fetching routines:', error);
-      Alert.alert('Error', 'No se pudo cargar la rutina de hoy');
+      //Alert.alert('Error', 'No se pudo cargar la rutina de hoy');
     }
     finally {
       setLTR(false)

@@ -9,19 +9,19 @@ router.get("/", async (req: Request, res: Response) => {
     try {
         const { userId } = req.query
 
-        const historia = await prisma.history.findMany({
+        const data = await prisma.history.findMany({
             where: { userId: Number(userId) },
             include: {
                 Routine: true
             }
         });
 
-        if (!historia) {
+        if (!data) {
             return res.status(404).json({ success: false, message: "Historial no encontrado" });
         }
 
-        res.json({ ok: true, historia });
-        console.log(historia)
+        res.json({ ok: true, data });
+        console.log(history)
         console.log(req.query)
 
     } catch (error) {
