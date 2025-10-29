@@ -36,7 +36,7 @@ function formatFechaES(fecha = new Date()) {
   const dia = fecha.getDate();
   const mes = meses[fecha.getMonth()];
   const año = fecha.getFullYear();
-  return `🗓️ ${dia}/${mes}/${año}           🕑${hora}:${minutos}`;
+  return `🗓️ ${dia}/${mes}/${año} 🕑${hora}:${minutos}`;
 }
 
 export default function Historial() {
@@ -46,6 +46,7 @@ export default function Historial() {
   const [modal, setModal] = useState(false);
   const [tituloModal, setTituloModal] = useState('');
   const [fechaModal, setFechaModal] = useState('');
+  const [rutinaModal, setRutinaModal] = useState<Routine>()
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
@@ -66,20 +67,36 @@ export default function Historial() {
 
   //fetch user profile data
   const handleSession = async () => {
-    const response = await fetch(`${API_URL}/profile`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: contextoPerfil?.userContext.id
-      })
-    });
+    try {
+      const response = await fetch(`${API_URL}/profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: contextoPerfil?.userContext.id
+        })
+      });
 
-    const userdata = await response.json();
+      const userdata = await response.json();
 
-    if (response.ok) {
-      setUserId(userdata.data.id)
+      if (!response.ok) {
+        let errorMsg = `Error ${response.status}`;
+        try {
+          const errData = userdata//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
+
+      if (response.ok) {
+        setUserId(userdata.data.id)
+      }
+    } catch (error: any) {
+      console.error("❌ fetch user info error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
     }
   }
 
@@ -95,15 +112,25 @@ export default function Historial() {
 
       const data = await response.json();
 
+      if (!response.ok) {
+        let errorMsg = `Error ${response.status}`;
+        try {
+          const errData = data//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
+
       if (response.ok && data.data) {
         setHistory(data.data);
-        //Alert.alert("historia", `${history[0].fecha}`)
       }
 
     }
-    catch (error) {
-      console.error('Error fetching routines:', error);
-      //Alert.alert('Error', 'No se pudieron cargar las rutinas');
+    catch (error: any) {
+      console.error("❌ fetch user history error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
     }
   };
 
@@ -112,7 +139,55 @@ export default function Historial() {
     fetchUserHistory()
   }, [userId, history])
 
-  //Alert.alert(":", JSON.stringify(fechasMarcadas()))
+  const fetchRoutineDetails = async (rutinaId: Number) => {
+    try {
+      const response = await fetch(`${API_URL}/workout/routine/${rutinaId}/exercises`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        let errorMsg = `Error ${response.status}`;
+        try {
+          const errData = data//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
+      if (data.success && data.exercises) {
+        setRutinaModal({
+          id: data.id,
+          nombre: data.nombre,
+          userId: 0,
+          exercises: data.exercises,
+        });
+      } else {
+        throw new Error("")
+      }
+    } catch (error) {
+      console.error('Error fetching routine:', error);
+      Alert.alert('Error de conexión', 'No se pudo conectar con el servidor');
+    }
+  };
+
+
+
+  const textoModal = () => {
+    if (!rutinaModal) return "~~~"
+    let texto = ""
+    fechaModal.split(" ").forEach(f => texto += f + "\n")
+    texto += '\n'
+    if (rutinaModal?.exercises) {
+      rutinaModal?.exercises.forEach(ej => texto += `* ${ej.titulo}\n`)
+    }
+    else {
+      texto += "~~~"
+    }
+    return texto
+  }
+
 
 
   return (
@@ -121,8 +196,8 @@ export default function Historial() {
       {/* Modal resumen */}
       {
         <ModalAlerta visible={modal} setVisible={setModal}
-          titulo={fechaModal}
-          subtitulo={tituloModal} botonA='cerrar' botonAOnPress={() => setModal(false)} />
+          titulo={tituloModal}
+          subtitulo={textoModal()} botonA='cerrar' botonAOnPress={() => setModal(false)} />
       }
 
       <View style={styles.container}>
@@ -136,44 +211,16 @@ export default function Historial() {
           <Text style={[styles.headerTitle, { color: theme.text }]}>📅 Historial Completo</Text>
           <View style={{ width: 24 }} />
         </View>
-        <FlatList
-          style={{ paddingHorizontal: 20, paddingVertical: 0, top:0 }}
-          //inverted
-          ListHeaderComponent={ 
-            <View>
-              <View style={[styles.calendar, { backgroundColor: "transparent", borderColor: theme.textMuted, borderWidth: 1 }]}>
-                <Calendar
-                  style={styles.calendar}
-                  markedDates={fechasMarcadas()}
-                  theme={{
-                    calendarBackground: "transparent",
-                    dayTextColor: theme.text,
-                    monthTextColor: theme.text,
-                    textDisabledColor: theme.textMuted,
-                    todayTextColor: theme.accent,
-                    arrowColor: theme.text,
-                    textSectionTitleColor: theme.success,
-                    selectedDayBackgroundColor: theme.success,
-                    selectedDayTextColor: theme.text,
-                  }}
-                  onDayPress={(date) => {
-                    const item = history.find((programa) => {
-                      const fecha = new Date(programa.fecha)
-                      const dia = fecha.getDay()
-                      const mes = fecha.getMonth()
-                      const anio = fecha.getFullYear()
-                      return (dia == date.day && mes == date.month && anio == date.year)
-                    })
-                    if (item) {
-                      setTituloModal(item.Routine.nombre);
-                      setFechaModal(formatFechaES(new Date(item.fecha)));
-                      setModal(true);
-                    }
-                  }}
-                />
-              </View>
 
-              <Text style={[styles.sectionTitle, { color: theme.text }]}>Historial completo</Text>
+        {/* Historial completo */}
+        <FlatList
+          style={{ paddingHorizontal: 20, paddingVertical: 0, top: 0 }}
+          ListHeaderComponent={
+            < View style={styles.instructionCard}>
+              <Ionicons name="information-circle-outline" size={24} color="#4DB6FF" />
+              <Text style={[styles.instructionText, { color: theme.textMuted }]}>
+                Toca "Ver" para más información sobre ese entrenamiento.
+              </Text>
             </View>
           }
           data={history}
@@ -188,8 +235,9 @@ export default function Historial() {
               <Boton
                 name="Ver"
                 onPress={() => {
-                  setTituloModal(item.Routine.nombre);
+                  fetchRoutineDetails(item.Routine.id)
                   setFechaModal(formatFechaES(new Date(item.fecha)));
+                  setTituloModal(item.Routine.nombre)
                   setModal(true);
                 }}
                 viewStyle={[styles.listButton, { backgroundColor: theme.accent }]}
@@ -198,17 +246,12 @@ export default function Historial() {
             </View>
           )}
         />
-
       </View>
-    </View>
+    </View >
   );
 }
 
-const WORKOUTS = [
-  { id: '2', titulo: 'Core', fecha: '2025-10-08' },
-  { id: '3', titulo: 'Tren Superior', fecha: '2025-10-10' },
-  { id: '4', titulo: 'Piernas', fecha: '2025-10-12' },
-];
+
 
 const COLORS = {
   orange: '#FF7A00',
@@ -357,7 +400,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(77, 182, 255, 0.1)',
     padding: 16,
     borderRadius: 12,
-    marginBottom: 24,
+    marginTop: 12,
+    marginBottom: 5,
     borderWidth: 1,
     borderColor: 'rgba(77, 182, 255, 0.3)',
   },

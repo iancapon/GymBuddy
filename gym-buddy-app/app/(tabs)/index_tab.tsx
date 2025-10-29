@@ -12,11 +12,28 @@ import api_url from "../API_URL"
 const API_URL = api_url()
 
 type Routine = {
+  userId: number;
   id: number;
   nombre: string;
-  userId: number;
   exercises: Array<any>;
 };
+
+type DayAssignment = {
+  dayName: string
+  dayIndex: number;
+  routineId: number | null;
+  routineName: string | null;
+};
+
+const DAYS_OF_WEEK = [
+  { name: 'Lunes', index: 1 },
+  { name: 'Martes', index: 2 },
+  { name: 'Miércoles', index: 3 },
+  { name: 'Jueves', index: 4 },
+  { name: 'Viernes', index: 5 },
+  { name: 'Sábado', index: 6 },
+  { name: 'Domingo', index: 0 },
+];
 
 
 export default function IndexTab() {
@@ -28,8 +45,17 @@ export default function IndexTab() {
 
   const [loadingRoutines, setLoadingRoutines] = useState(false);
   const [loadingTodaysRoutine, setLTR] = useState(false)
+  const [loadingProgram, setLoadingProgram] = useState(false)
   const [todaysRoutine, setTodaysRoutine] = useState<Routine>()
   const [routines, setRoutines] = useState<Array<Routine>>([])
+  const [dayAssignments, setDayAssignments] = useState<DayAssignment[]>(
+    DAYS_OF_WEEK.map(day => ({
+      dayName: day.name,
+      dayIndex: day.index,
+      routineId: null,
+      routineName: null,
+    }))
+  );
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
@@ -40,27 +66,43 @@ export default function IndexTab() {
 
   //fetch user profile data
   const handleSession = async () => {
-    const response = await fetch(`${API_URL}/profile`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: contextoPerfil?.userContext.id
-      })
-    });
+    try {
+      const response = await fetch(`${API_URL}/profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: contextoPerfil?.userContext.id
+        })
+      });
 
-    const userdata = await response.json();
+      const userdata = await response.json();
 
-    if (response.ok) {
-      setNombre(userdata.data.nombre)
-      setUserId(userdata.data.id)
+      if (!response.ok) {
+        let errorMsg = `Error ${response.status}`;
+        try {
+          const errData = userdata//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
+
+      if (response.ok) {
+        setNombre(userdata.data.nombre)
+        setUserId(userdata.data.id)
+      }
+    } catch (error: any) {
+      console.error("❌ fetch user info error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
     }
   }
 
-  // Fetch user routines
+
   const fetchUserRoutines = async () => {
-    if (!userId || !API_URL) return;
+    if (!userId) return;
 
     try {
       setLoadingRoutines(true);
@@ -68,18 +110,77 @@ export default function IndexTab() {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-
       const data = await response.json();
+      if (!response.ok) {
+        let errorMsg = `Error ${response.status}`;
+        try {
+          const errData = data//await response.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
       if (data.success && data.routines) {
         setRoutines(data.routines);
       }
-    } catch (error) {
-      console.error('Error fetching routines:', error);
-      //Alert.alert('Error', 'No se pudieron cargar las rutinas');
+    } catch (error: any) {
+      console.error("❌ fetch user routines error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
     } finally {
       setLoadingRoutines(false);
     }
   };
+
+  const fetchAlreadyAssignedDays = async () => {
+    if (!userId) return;
+    setLoadingProgram(true)
+    try {
+      const userResponse = await fetch(`${API_URL}/programar_workout/findschedule?userId=${userId}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+      )
+      const datos = await userResponse.json()
+      if (!userResponse.ok) {
+        let errorMsg = `Error ${userResponse.status}`;
+        try {
+          const errData = datos//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
+      const programa = datos.assigned
+
+      const loaded = DAYS_OF_WEEK.map(day => ({
+        dayName: day.name,
+        dayIndex: day.index,
+        routineId: null,
+        routineName: null,
+      }))
+
+      setDayAssignments(loaded.map(day => {
+        const match = programa.find((dia: { dayIndex: number; }) => dia.dayIndex === day.dayIndex)
+        return match
+          ? {
+            ...day,
+            routineId: match.Routine.id,
+            routineName: match.Routine.nombre
+          } : day
+      }))
+
+    }
+    catch (error: any) {
+      console.error("❌ fetch assingned days error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
+    } finally {
+      setLoadingProgram(false)
+    }
+  }
 
 
 
@@ -91,8 +192,15 @@ export default function IndexTab() {
 
       const datos = await userResponse.json()
 
-      if (!userResponse) {
-        //return Alert.alert("Error:", "No llegaron datos de la rutina para hoy")
+      if (!userResponse.ok) {
+        let errorMsg = `Error ${userResponse.status}`;
+        try {
+          const errData = datos//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
       }
 
       if (datos.assigned.length > 0) {
@@ -103,9 +211,9 @@ export default function IndexTab() {
       }
 
     }
-    catch (error) {
-      console.error('Error fetching routines:', error);
-      //Alert.alert('Error', 'No se pudo cargar la rutina de hoy');
+    catch (error: any) {
+      console.error("❌ fetch todays program error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
     }
     finally {
       setLTR(false)
@@ -115,10 +223,11 @@ export default function IndexTab() {
   // Load data when screen is focused
   useFocusEffect(
     useCallback(() => {
-      handleSession();
-      fetchUserRoutines();
+      handleSession()
+      fetchUserRoutines()
+      fetchAlreadyAssignedDays()
       fetchTodaysProgram()
-    }, [userId, API_URL, todaysRoutine])
+    }, [userId])
   );
 
 
@@ -163,6 +272,7 @@ export default function IndexTab() {
         style={[{ width: "100%", paddingHorizontal: 10 }]}
 
       >
+        {/*-- Rutina de hoy -- */}
         <Boton
           onPress={() => {
             todaysRoutine == undefined ? Alert.alert("Esperá! 👋👋", "Primero programá una rutina") :
@@ -184,6 +294,50 @@ export default function IndexTab() {
           </Text>
         </Boton>
 
+        {/* --- Programa de la semana --- */}
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Esta semana</Text>
+        <FlatList
+          style={{ width: "100%" }}
+          horizontal
+          showsHorizontalScrollIndicator={true}
+          data={dayAssignments.filter(day => day.routineId)}
+          keyExtractor={(item) => item.dayIndex.toString()}
+          contentContainerStyle={{ paddingHorizontal: 10 }}
+          ListEmptyComponent={
+            <Boton
+              viewStyle={[
+                styles.programCard,
+                { backgroundColor: theme.cardBg, borderColor: theme.border },
+              ]}
+            >
+              <Ionicons name="calendar-outline" size={42} color={theme.text} />
+              <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
+                {loadingProgram ? 'Cargando...' : 'No tienes rutinas programadas'}
+              </Text>
+            </Boton>
+          }
+
+          renderItem={({ item }) => (
+
+            <Boton
+              viewStyle={[
+                styles.programCard,
+                { backgroundColor: theme.cardBg, borderColor: theme.border },
+              ]}
+            >
+              <Ionicons name="calendar-outline" size={42} color={theme.text} />
+              <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
+                {item.routineName}
+              </Text>
+              <Text style={{ color: theme.textMuted, fontSize: 12 }}>
+                {item.dayName}
+              </Text>
+            </Boton>
+          )}
+        />
+
+        {/*-- Acciones -- */}
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Acciones</Text>
         <View style={styles.row}>
           <Boton
             onPress={() => router.push('../(modals)/crear_screen')}
@@ -193,7 +347,7 @@ export default function IndexTab() {
             ]}
           >
             <Ionicons name="create-outline" size={40} color="#fff" />
-            <Text style={[styles.smallTitle, { color: theme.text }]}>Crear</Text>
+            <Text style={[styles.smallTitle, { color: theme.text }]}>Crear Rutina</Text>
           </Boton>
 
           <Boton
@@ -204,7 +358,7 @@ export default function IndexTab() {
             ]}
           >
             <Ionicons name="create-outline" size={40} color="#fff" />
-            <Text style={[styles.smallTitle, { color: theme.text }]}>Programar un entrenamiento</Text>
+            <Text style={[styles.smallTitle, { color: theme.text }]}>Programar entrenamiento</Text>
           </Boton>
 
           <Boton
@@ -224,15 +378,22 @@ export default function IndexTab() {
         <FlatList
           style={{ width: "100%" }}
           horizontal
-          //inverted
           showsHorizontalScrollIndicator={true}
           data={routines}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingHorizontal: 10 }}
           ListEmptyComponent={
-            <Text style={{ color: theme.textMuted, marginLeft: 10 }}>
-              {loadingRoutines ? 'Cargando...' : 'No tienes rutinas creadas'}
-            </Text>
+            <Boton
+              viewStyle={[
+                styles.programCard,
+                { backgroundColor: theme.cardBg, borderColor: theme.border },
+              ]}
+            >
+              <Ionicons name="calendar-outline" size={42} color={theme.text} />
+              <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
+                {loadingRoutines ? 'Cargando...' : 'No tienes rutinas creadas'}
+              </Text>
+            </Boton>
           }
           renderItem={({ item }) => (
 
@@ -257,10 +418,10 @@ export default function IndexTab() {
           )}
         />
 
-        <View style={{ paddingVertical: 5 }}></View>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Noticias..</Text>
 
         <Boton
-          onPress={() => router.push('../(modals)/workout_screen')}
+          onPress={() => Alert.alert("Perdón 😭", "Esto aún no está implementado")}
           viewStyle={[
             styles.mainCard,
             { backgroundColor: theme.accent, shadowColor: theme.text },
@@ -318,7 +479,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, width: "100%" },
   overlay: { ...StyleSheet.absoluteFillObject },
   topBar: {
-    marginTop: 50,
+    marginTop: 20,
     paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -372,10 +533,22 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: '700',
-    marginVertical: 10,
     alignSelf: 'flex-start',
   },
   workoutCard: {
+    width: 160,
+    height: 120,
+    borderRadius: 16,
+    marginHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  programCard: {
     width: 160,
     height: 120,
     borderRadius: 16,

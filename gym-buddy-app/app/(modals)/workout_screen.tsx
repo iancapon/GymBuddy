@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   slidesWrap: {
     flex: 1,
     marginTop: 10,
-    marginBottom: 40,
+    marginBottom: 80,
     backgroundColor: COLORS.card,
     borderRadius: 16,
     borderWidth: 1,

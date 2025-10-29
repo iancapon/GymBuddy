@@ -16,6 +16,7 @@ const API_URL = api_url()
 export default function PerfilScreen() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
+  const [userId, setUserId] = useState<Number | null>(null)
 
   const [mail, setMail] = useState("...")
   const [nombre, setNombre] = useState("...")
@@ -30,7 +31,7 @@ export default function PerfilScreen() {
   const theme = THEMES()[mode != undefined ? mode : 'light'];
 
 
-  const handleSession = (async () => {
+  const fetchUserInfo = async () => {
     const response = await fetch(`${API_URL}/profile`, {
       method: "POST",
       headers: {
@@ -43,7 +44,19 @@ export default function PerfilScreen() {
 
     const data = (await response.json()).data;
 
+    if (!response.ok) {
+      let errorMsg = `Error ${response.status}`;
+      try {
+        const errData = data//await userResponse.json();
+        errorMsg = errData.message || errorMsg;
+      } catch {
+        // si no hay body JSON, deja el mensaje por defecto
+      }
+      throw new Error(errorMsg);
+    }
+
     if (response.ok) {
+      setUserId(data.id)
       setNombre(data.nombre)
       setApellido(data.apellido)
       setEdad(data.edad)
@@ -51,9 +64,11 @@ export default function PerfilScreen() {
       setTelefono(data.telefono)
       setMail(data.email)
     }
-  })()
+  }
 
-
+  useEffect(() => {
+    fetchUserInfo()
+  }, [userId])
 
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>

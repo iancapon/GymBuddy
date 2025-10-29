@@ -76,7 +76,7 @@ router.get('/routines/:userId', async (req: Request, res: Response) => {
       where: { userId: parseInt(userId) },
       include: {
         exercises: {
-          orderBy: { orden: 'asc' },
+          orderBy: { createdAt: 'desc' },
         },
       },
     });

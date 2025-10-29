@@ -135,9 +135,10 @@ router.get('/todayschedule', async (req, res) => {
       return res.status(404).json({ success: false, message: "Rutinas asignadas no encontradas" });
     }
 
-    res.json({ success: true, assigned });
     console.log(assigned)
     console.log(req.query)
+    return res.json({ success: true, assigned });
+
 
   } catch (error) {
     console.error('Error fetching scheduled routines:', error);
@@ -165,9 +166,9 @@ router.get('/findschedule', async (req, res) => {
       return res.status(404).json({ success: false, message: "Rutinas asignadas no encontradas" });
     }
 
-    res.json({ success: true, assigned });
     console.log(assigned)
     console.log(req.query)
+    return res.json({ success: true, assigned });
 
   } catch (error) {
     console.error('Error fetching scheduled routines:', error);

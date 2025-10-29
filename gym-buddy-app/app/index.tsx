@@ -47,6 +47,19 @@ export default function LoginScreen() {
 
       const data = await response.json();
 
+      /*
+      if(!response.ok){
+        let errorMsg = `Error ${response.status}`;
+        try {
+          const errData = data//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
+        */
+
       if (response.ok) {
         contextoPerfil?.setUserContext({ id: data.id });
         router.push("./(tabs)/index_tab"); // antes era replace
@@ -59,9 +72,9 @@ export default function LoginScreen() {
       } else {
         Alert.alert("Error", data.error || "No se pudo iniciar sesión");
       }
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      Alert.alert("Error de conexión", "No se pudo conectar con el servidor. Verificá que esté activo.");
+    } catch (error: any) {
+      console.error("❌ login error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
     } finally {
       setLoading(false);
     }

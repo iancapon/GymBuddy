@@ -13,16 +13,17 @@ router.get("/", async (req: Request, res: Response) => {
             where: { userId: Number(userId) },
             include: {
                 Routine: true
-            }
+            },
+            orderBy: { fecha: "desc" }
         });
 
         if (!data) {
             return res.status(404).json({ success: false, message: "Historial no encontrado" });
         }
 
-        res.json({ ok: true, data });
-        console.log(history)
+        console.log(data)
         console.log(req.query)
+        return res.json({ ok: true, data });
 
     } catch (error) {
         console.error('Error fetching routine history:', error);
