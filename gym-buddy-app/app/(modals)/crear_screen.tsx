@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import Boton from '../../components/Boton';
 import Tarjeta from '../../components/Tarjeta';
 import { ContextoPerfil } from '../_layout'
+import { Ionicons } from '@expo/vector-icons';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -37,7 +38,7 @@ export default function CrearScreen() {
     setSavingRoutine(true);
 
     try {
-      
+
       // 1. Create routine
       const routineResponse = await fetch(`${API_URL}/workout/routine`, {
         method: 'POST',
@@ -52,7 +53,7 @@ export default function CrearScreen() {
 
       if (!routineData.success) {
         Alert.alert('Error', routineData.error || 'No se pudo crear la rutina');
-       // setSavingRoutine(false);
+        // setSavingRoutine(false);
         return;
       }
 
@@ -99,6 +100,7 @@ export default function CrearScreen() {
         <View style={styles.container}>
           <StatusBar style="dark" />
 
+
           <NuevaTarjeta
             ejercicios={ejercicios}
             setEjercicios={setEjercicios}
@@ -136,10 +138,20 @@ export default function CrearScreen() {
               }
               renderItem={({ item }) => (
                 <Tarjeta viewStyle={styles.exerciseCard} pressedOptions={[{ opacity: 0.95 }]}>
-                  <View style={{ paddingHorizontal: 12, paddingTop: 12 }}>
-                    <Text style={styles.exerciseTitle} numberOfLines={1}>
+                  <View style={{ paddingHorizontal: 12, paddingTop: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Text style={[styles.exerciseTitle, {}]} numberOfLines={1}>
                       {item.titulo}
                     </Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+                      {/* -- editar -- */}
+                      <Boton viewStyle={[styles.secondaryButton, { width: 40, height: 40 }]}>
+                        <Ionicons name="pencil-outline" size={20} color="white" />
+                      </Boton>
+                      {/* -- eliminar -- */}
+                      <Boton viewStyle={[styles.secondaryButton, { width: 40, height: 40 }]}>
+                        <Ionicons name="trash" size={20} color="white" />
+                      </Boton>
+                    </View>
                   </View>
                   <View style={styles.exerciseImageWrap}>
                     <Image

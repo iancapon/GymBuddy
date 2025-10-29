@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
+import { Alert, StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useMemo, useState, useCallback, useContext, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
@@ -384,6 +384,7 @@ export default function IndexTab() {
 
         {/* --- Tus rutinas --- */}
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Tus Rutinas</Text>
+
         <FlatList
           style={{ width: "100%" }}
           horizontal
@@ -411,21 +412,43 @@ export default function IndexTab() {
                 pathname: '../(modals)/workout_screen',
                 params: { userId: userId.toString(), routineId: item.id, nombre: item.nombre }
               })}
+              onLongPress={() => Alert.alert("oops 🙈", "esto aún no está implementado..")}
               viewStyle={[
                 styles.workoutCard,
                 { backgroundColor: theme.cardBg, borderColor: theme.border },
               ]}
             >
-              <Ionicons name="barbell-outline" size={42} color={theme.text} />
-              <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
-                {item.nombre}
-              </Text>
-              <Text style={{ color: theme.textMuted, fontSize: 12 }}>
-                {item.exercises.length} ejercicio{item.exercises.length > 1 ? "s" : ""}
-              </Text>
+              <View style={{ flexDirection: "row-reverse" }}>
+
+                {/* //editar | eliminar 
+                <View style={{ flexDirection: "column", alignItems: "center", right: 0 }}>
+                  <Ionicons name="pencil-outline" size={15} color={theme.text} />
+                  <Ionicons name="trash" size={15} color={theme.text} />
+                </View>
+                */}
+
+                <View style={{}} >
+                  <Ionicons name="barbell-outline" size={42} color={theme.text} />
+                  <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
+                    {item.nombre}
+                  </Text>
+                  <Text style={{ color: theme.textMuted, fontSize: 12 }}>
+                    {item.exercises.length} ejercicio{item.exercises.length > 1 ? "s" : ""}
+                  </Text>
+                </View>
+              </View>
+
+
             </Boton>
           )}
         />
+        {/* Instructions */}
+        <View style={styles.instructionCard}>
+          <Ionicons name="information-circle-outline" size={24} color="#4DB6FF" />
+          <Text style={[styles.instructionText, { color: theme.textMuted }]}>
+            Manten apretado sobre una rutina para editarla o eliminarla.
+          </Text>
+        </View>
 
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Noticias..</Text>
 
@@ -462,6 +485,37 @@ function formatFechaES(fecha = new Date()) {
 
 
 const styles = StyleSheet.create({
+  instructionCard: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(77, 182, 255, 0.1)',
+    padding: 16,
+    marginVertical: 10,
+    borderRadius: 12,
+    height: 70,
+    borderWidth: 1,
+    borderColor: 'rgba(77, 182, 255, 0.3)',
+  },
+  instructionText: {
+    flex: 1,
+    marginLeft: 12,
+    color: '#e8f0ff',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  secondaryButton: {
+    height: 54,
+    borderRadius: 14,
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.35)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryButtonText: {
+    fontWeight: '700',
+    fontSize: 16,
+    letterSpacing: 0.4,
+  },
   header: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -545,7 +599,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   workoutCard: {
-    width: 140,
+    width: 160,
     height: 120,
     borderRadius: 16,
     marginHorizontal: 8,
