@@ -1,5 +1,5 @@
 import { ActivityIndicator, Image, Alert, Keyboard, Platform, FlatList, ImageBackground, Modal, TouchableWithoutFeedback, KeyboardAvoidingView, StyleSheet, Text, TextInput, View, } from 'react-native';
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Boton from '../../components/Boton';
@@ -9,8 +9,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
-
-
 
 export default function CrearScreen() {
   const router = useRouter();
@@ -22,6 +20,19 @@ export default function CrearScreen() {
   const [ejercicios, setEjercicios] = useState<ejercicio[]>([]);
   const [nuevaTarjetaVisible, setNuevaTarjetaVisible] = useState(false);
   const [savingRoutine, setSavingRoutine] = useState(false);
+
+  const [editar, setEditar] = useState(false)
+  const [itemAeditar, setItemAeditar] = useState<ejercicio | undefined>(undefined)
+
+  const [eliminar, setEliminar] = useState(false)
+
+  useEffect(() => {
+    if (eliminar) {
+      const nuevoArray = ejercicios.filter(ej => ej.id != itemAeditar?.id)
+      setEjercicios(nuevoArray)
+      setEliminar(false)
+    }
+  }, [eliminar])
 
 
   const handleGuardarRutina = async () => {
@@ -87,6 +98,17 @@ export default function CrearScreen() {
     }
   };
 
+  const handleEditar = (item: ejercicio) => {
+    setItemAeditar(item)
+    setEditar(true)
+  }
+
+  const handleEliminar = (item: ejercicio) => {
+    setItemAeditar(item)
+    setEliminar(true)
+
+  }
+
   return (
     <ImageBackground
       source={{
@@ -100,7 +122,7 @@ export default function CrearScreen() {
         <View style={styles.container}>
           <StatusBar style="dark" />
 
-
+          {/* item nuevo */}
           <NuevaTarjeta
             ejercicios={ejercicios}
             setEjercicios={setEjercicios}
@@ -108,6 +130,18 @@ export default function CrearScreen() {
             setVisible={setNuevaTarjetaVisible}
             API_URL={API_URL}
           />
+
+          {/* item a editar */}
+          <NuevaTarjeta
+            ejercicios={ejercicios}
+            setEjercicios={setEjercicios}
+            visible={editar}
+            setVisible={setEditar}
+            API_URL={API_URL}
+            item={itemAeditar}
+          />
+
+
 
           <View style={styles.header}>
             <Text style={styles.headerLabel}>Título de la rutina</Text>
@@ -144,11 +178,15 @@ export default function CrearScreen() {
                     </Text>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
                       {/* -- editar -- */}
-                      <Boton viewStyle={[styles.secondaryButton, { width: 40, height: 40 }]}>
+                      <Boton
+                        onPress={() => handleEditar(item)}
+                        viewStyle={[styles.secondaryButton, { width: 40, height: 40 }]}>
                         <Ionicons name="pencil-outline" size={20} color="white" />
                       </Boton>
                       {/* -- eliminar -- */}
-                      <Boton viewStyle={[styles.secondaryButton, { width: 40, height: 40 }]}>
+                      <Boton
+                        onPress={() => handleEliminar(item)}
+                        viewStyle={[styles.secondaryButton, { width: 40, height: 40 }]}>
                         <Ionicons name="trash" size={20} color="white" />
                       </Boton>
                     </View>
@@ -209,6 +247,7 @@ type NuevaTarjetaProp = {
   visible: boolean;
   setVisible: (v: boolean) => void;
   API_URL: string;
+  item?: ejercicio
 };
 
 function NuevaTarjeta(props: NuevaTarjetaProp) {
@@ -219,22 +258,39 @@ function NuevaTarjeta(props: NuevaTarjetaProp) {
   const [loading, setLoading] = useState(false);
 
   const disabled = useMemo(() => !titulo.trim(), [titulo]);
+  const [editando, setEditando] = useState(false)
+
+  useEffect(() => {
+    if (props.item != undefined) {
+      setTitulo(props.item.titulo)
+      setMedia(props.item.media)
+      setInfo1(props.item.info1)
+      setInfo2(props.item.info2)
+    }
+  }, [props.item])
 
   const onGuardar = async () => {
     if (disabled || loading) return;
     setLoading(true);
 
     try {
-      const nuevo: ejercicio = {
-        id: (props.ejercicios.length + 1).toString(),
-        titulo: titulo.trim(),
-        media: media.trim() || PLACEHOLDER_IMG,
-        info1: info1.trim(),
-        info2: info2.trim(),
-      };
-      props.setEjercicios([...props.ejercicios, nuevo]);
+      if (props.item == undefined) { // use effect tb?
+        const nuevo: ejercicio = {
+          id: (props.ejercicios.length + 1).toString(),
+          titulo: titulo.trim(),
+          media: media.trim() || PLACEHOLDER_IMG,
+          info1: info1.trim(),
+          info2: info2.trim(),
+        };
+        props.setEjercicios([...props.ejercicios, nuevo]);
+      }
+      else {
+        const nuevoArray = props.ejercicios.map(ej => {
+          return ej.id == props.item?.id ? { ...ej, titulo, media, info1, info2 } : ej
+        })
+        props.setEjercicios(nuevoArray)
+      }
 
-      //Alert.alert('Éxito', 'Ejercicio agregado');
 
       setTitulo('');
       setMedia(PLACEHOLDER_IMG);
@@ -255,7 +311,9 @@ function NuevaTarjeta(props: NuevaTarjetaProp) {
       animationType="fade"
       transparent
       visible={props.visible}
-      onRequestClose={() => props.setVisible(false)}
+      onRequestClose={() => {
+        props.setVisible(false)
+      }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.modalOverlay}>

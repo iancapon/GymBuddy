@@ -231,6 +231,7 @@ export default function IndexTab() {
     }, [userId])
   );
 
+  // HAY QUE GUARDAR UNA COPIA DE LA RUTINA EN EL HISTORIA
   const handleEditRoutine = () => {
     Alert.alert("oops 🫣", "aún no está implementado")
   }
