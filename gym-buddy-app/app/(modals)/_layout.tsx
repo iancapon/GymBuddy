@@ -18,7 +18,7 @@ export default function ModalsLayout() {
             />
             <Stack.Screen
                 name="crear_screen"
-                options={{ presentation: "modal", animation: "fade", title: "Crear Workout" }}
+                options={{ presentation: "modal", animation: "fade", title: "Crear Workout", headerShown: false }}
             />
 
             <Stack.Screen

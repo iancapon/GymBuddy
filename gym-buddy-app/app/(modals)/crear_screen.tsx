@@ -4,8 +4,10 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Boton from '../../components/Boton';
 import Tarjeta from '../../components/Tarjeta';
-import { ContextoPerfil } from '../_layout'
+import { ContextoPerfil, ContextoTema } from '../_layout'
 import { Ionicons } from '@expo/vector-icons';
+import THEMES from '../THEMES';
+import Header from '../../components/Header';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -15,6 +17,10 @@ export default function CrearScreen() {
 
   const contexto = useContext(ContextoPerfil);
   const userId = contexto?.userContext.id ? contexto?.userContext.id : 0
+
+  const contextoTema = useContext(ContextoTema)
+  const mode = contextoTema?.themeContext.theme
+  const theme = THEMES()[mode != undefined ? mode : 'light'];
 
   const [titulo, setTitulo] = useState('');
   const [ejercicios, setEjercicios] = useState<ejercicio[]>([]);
@@ -118,8 +124,12 @@ export default function CrearScreen() {
       resizeMode="cover"
     >
       <View style={styles.overlay} />
+      {/* Header */}
+      <Header theme={theme} backButton={true} >
+        <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>🚑 Crear Rutina</Text>
+      </Header>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
+        <View style={[styles.container, {paddingTop:30}]}>
           <StatusBar style="dark" />
 
           {/* item nuevo */}

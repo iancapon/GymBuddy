@@ -15,6 +15,7 @@ import api_url from '../API_URL';
 import Boton from '../../components/Boton';
 import { StatusBar } from 'expo-status-bar';
 import THEMES from '../THEMES'
+import Header from '../../components/Header';
 
 const API_URL = api_url();
 
@@ -248,15 +249,9 @@ export default function ProgramarScreen() {
       <StatusBar style={mode == "light" ? "dark" : "light"} />
 
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: theme.header }]}>
-        <Boton
-          onPress={() => router.back()}
-          viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
-          <Ionicons name="arrow-back" size={24} color={theme.text} />
-        </Boton>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>Programar Semana</Text>
-        <View style={{ width: 24 }} />
-      </View>
+      <Header theme={theme} backButton={true} >
+        <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>Programar Semana</Text>
+      </Header>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Instructions */}

@@ -8,6 +8,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { ContextoPerfil, ContextoTema } from '../_layout';
 import THEMES from '../THEMES';
 import { Ionicons } from '@expo/vector-icons';
+import Header from '../../components/Header';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -114,17 +115,9 @@ export default function WorkoutScreen() {
       <StatusBar style={mode == "light" ? "dark" : "light"} />
 
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: theme.header }]}>
-        <Boton
-          onPress={() => router.back()}
-          viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
-          <Ionicons name="arrow-back" size={24} color={theme.text} />
-        </Boton>
-
-        <View style={{}}>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>Workout</Text>
-        </View>
-      </View>
+      <Header theme={theme} backButton={true} >
+        <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>Workout</Text>
+      </Header>
 
       <View style={[styles.safe, { flex: 1, height: "100%", backgroundColor: theme.overlay }]}>
         {/* Header */}

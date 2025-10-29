@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import ModalAlerta from '../../components/ModalAlerta';
 import THEMES from '../THEMES'
 import { ContextoPerfil, ContextoTema } from '../_layout';
+import Header from '../../components/Header';
 
 
 import api_url from "../API_URL"
@@ -73,6 +74,7 @@ export default function PerfilScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
 
+
       {/* Modal resumen */}
 
       <ModalAlerta
@@ -86,41 +88,45 @@ export default function PerfilScreen() {
           router.replace("../../"); // creo que es suficiente
         }}
       />
+      {/* Header */}
+      <Header theme={theme} backButton={false} >
+        <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>🙋 Mi Perfil</Text>
+      </Header>
 
-      <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
+      <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
 
-      {/* Tarjeta de perfil */}
-      <View style={[styles.profileCard, { backgroundColor: theme.cardBg }]}>
-        <Text style={[styles.name, { color: theme.text }]}>{nombre + " " + apellido}</Text>
-        <Text style={[styles.subtitle, { color: theme.text }]}>Cliente</Text>
+        {/* Tarjeta de perfil */}
+        <View style={[styles.profileCard, { backgroundColor: theme.cardBg }]}>
+          <Text style={[styles.name, { color: theme.text }]}>{nombre + " " + apellido}</Text>
+          <Text style={[styles.subtitle, { color: theme.text }]}>Cliente</Text>
 
-        {/* Datos personales */}
-        <View style={[styles.infoSection, { borderColor: theme.border }]}>
-          <View style={styles.infoRow}>
-            <Ionicons name="mail-outline" size={22} color={theme.accent} />
-            <Text style={[styles.infoText, { color: theme.text }]}>{mail}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="calendar-outline" size={22} color={theme.accent} />
-            <Text style={[styles.infoText, { color: theme.text }]}>{edad} años</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="call-outline" size={22} color={theme.accent} />
-            <Text style={[styles.infoText, { color: theme.text }]}>{telefono}</Text>
+          {/* Datos personales */}
+          <View style={[styles.infoSection, { borderColor: theme.border }]}>
+            <View style={styles.infoRow}>
+              <Ionicons name="mail-outline" size={22} color={theme.accent} />
+              <Text style={[styles.infoText, { color: theme.text }]}>{mail}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Ionicons name="calendar-outline" size={22} color={theme.accent} />
+              <Text style={[styles.infoText, { color: theme.text }]}>{edad} años</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Ionicons name="call-outline" size={22} color={theme.accent} />
+              <Text style={[styles.infoText, { color: theme.text }]}>{telefono}</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* Botón de logout */}
-      <View style={styles.buttonWrap}>
-        <Boton
-          name="Cerrar Sesión"
-          viewStyle={[styles.logoutButton, { backgroundColor: theme.warning }]}
-          textStyle={[styles.logoutText, { color: theme.text }]}
-          onPress={() => setModal(true)}
-        />
+        {/* Botón de logout */}
+        <View style={styles.buttonWrap}>
+          <Boton
+            name="Cerrar Sesión"
+            viewStyle={[styles.logoutButton, { backgroundColor: theme.warning }]}
+            textStyle={[styles.logoutText, { color: theme.text }]}
+            onPress={() => setModal(true)}
+          />
+        </View>
       </View>
-
       <StatusBar style="dark" />
     </View>
   );
@@ -140,8 +146,6 @@ const COLORS = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,

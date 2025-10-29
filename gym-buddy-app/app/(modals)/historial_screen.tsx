@@ -7,6 +7,7 @@ import { ContextoPerfil, ContextoTema } from '../_layout';
 import THEMES from '../THEMES';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import Header from '../../components/Header';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -154,16 +155,11 @@ export default function Historial() {
       }
 
       <View style={styles.container}>
+
         {/* Header */}
-        <View style={[styles.header, { backgroundColor: theme.header }]}>
-          <Boton
-            onPress={() => router.back()}
-            viewStyle={[styles.backButton, { backgroundColor: theme.header }]}>
-            <Ionicons name="arrow-back" size={24} color={theme.text} />
-          </Boton>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>📅 Historial Completo</Text>
-          <View style={{ width: 24 }} />
-        </View>
+        <Header theme={theme} backButton={true} >
+          <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>📅 Historial Completo</Text>
+        </Header>
 
         {/* Historial completo */}
         <FlatList

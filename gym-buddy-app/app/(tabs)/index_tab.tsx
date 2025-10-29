@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 
 import { ContextoPerfil, ContextoTema } from '../_layout';
+import Header from '../../components/Header';
 import THEMES from '../THEMES'
 import Boton from '../../components/Boton';
 import ModalAlerta from '../../components/ModalAlerta';
@@ -247,9 +248,9 @@ export default function IndexTab() {
       <StatusBar style={mode == "light" ? "dark" : "light"} />
 
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: theme.header }]}>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>GymBuddy</Text>
-      </View>
+      <Header theme={theme} backButton={false} >
+        <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>GymBuddy</Text>
+      </Header>
 
 
       {/* 🔝 sub Header con saludo y selector */}

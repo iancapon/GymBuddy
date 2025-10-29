@@ -11,7 +11,7 @@ export default function Layout() {
 
             <Tabs.Screen
                 name="perfil_screen"
-                options={{ title: "Perfil", tabBarIcon: ({ size }) => <Ionicons name="person" size={size} /> }}
+                options={{ headerShown: false, title: "Perfil", tabBarIcon: ({ size }) => <Ionicons name="person" size={size} /> }}
             />
 
         </Tabs>

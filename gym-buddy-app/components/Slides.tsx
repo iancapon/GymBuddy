@@ -63,7 +63,7 @@ export default function Slides(props: myListProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
 
-  const duration = 10 //////////////////duracion de cada ejercicio
+  const duration = 5 //////////////////duracion de cada ejercicio
   const timeLeft = useRef(new Animated.Value(0)).current;
   const [siguiente, setSiguiente] = useState(false)
 
