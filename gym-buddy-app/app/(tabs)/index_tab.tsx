@@ -304,92 +304,71 @@ export default function IndexTab() {
 
         {/* --- Programa de la semana --- */}
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Esta semana</Text>
-        <FlatList
-          style={{ width: "100%" }}
-          horizontal
-          showsHorizontalScrollIndicator={true}
-          data={dayAssignments.filter(day => day.routineId)}
-          keyExtractor={(item) => item.dayIndex.toString()}
-          contentContainerStyle={{ paddingHorizontal: 10 }}
-          ItemSeparatorComponent={() => {
-            return (<View style={{
-              width: 2,
-              height: 120,
-              padding: 0,
-              marginTop: 10,
-              backgroundColor: theme.text
+        <View style={{ flex: 1, flexDirection: "row", }}>
+          <View style={{ width: 130 }}>
+            <Boton
+              onPress={() => router.push('../(modals)/programar_screen')}
+              viewStyle={[
+                styles.smallCard,
+                { backgroundColor: theme.warning, shadowColor: theme.text },
+              ]}
+            >
+              <Ionicons name="create-outline" size={40} color="#fff" />
+              <Text style={[styles.smallTitle, { color: theme.text }]}>Programar entrenamiento</Text>
+            </Boton>
+          </View>
+          <FlatList
+            style={{ width: "100%" }}
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            data={dayAssignments.filter(day => day.routineId)}
+            keyExtractor={(item) => item.dayIndex.toString()}
+            contentContainerStyle={{ paddingHorizontal: 10 }}
+            ItemSeparatorComponent={() => {
+              return (<View style={{
+                width: 2,
+                height: 120,
+                padding: 0,
+                marginTop: 10,
+                backgroundColor: theme.text
+              }}
+              />)
             }}
-            />)
-          }}
-          ListEmptyComponent={
-            <View
-              style={[
-                styles.programCard,
-                { backgroundColor: "transparent", borderColor: theme.border },
-              ]}
-            >
-              <Ionicons name="calendar-outline" size={42} color={theme.text} />
-              <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
-                {loadingProgram ? 'Cargando...' : 'No tienes rutinas programadas'}
-              </Text>
-            </View>
-          }
+            ListEmptyComponent={
+              <View
+                style={[
+                  styles.programCard,
+                  { backgroundColor: "transparent", borderColor: theme.border },
+                ]}
+              >
+                <Ionicons name="calendar-outline" size={42} color={theme.text} />
+                <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
+                  {loadingProgram ? 'Cargando...' : 'No tienes rutinas programadas'}
+                </Text>
+              </View>
+            }
 
-          renderItem={({ item }) => (
+            renderItem={({ item }) => (
+              <View
+                style={[
+                  styles.programCard,
+                  { backgroundColor: "transparent", borderColor: theme.border, marginVertical: 10, width: 80 },
+                ]}
+              >
+                <Ionicons name="calendar-outline" size={42} color={theme.text} />
+                <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
+                  {item.routineName}
+                </Text>
+                <Text style={{ color: theme.textMuted, fontSize: 12 }}>
+                  {item.dayName}
+                </Text>
+              </View>
+            )}
+          />
 
-            <View
-              style={[
-                styles.programCard,
-                { backgroundColor: "transparent", borderColor: theme.border, marginVertical: 10 },
-              ]}
-            >
-              <Ionicons name="calendar-outline" size={42} color={theme.text} />
-              <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
-                {item.routineName}
-              </Text>
-              <Text style={{ color: theme.textMuted, fontSize: 12 }}>
-                {item.dayName}
-              </Text>
-            </View>
-          )}
-        />
-
-        {/*-- Acciones -- */}
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Acciones</Text>
-        <View style={styles.row}>
-          <Boton
-            onPress={() => router.push('../(modals)/crear_screen')}
-            viewStyle={[
-              styles.smallCard,
-              { backgroundColor: theme.success, shadowColor: theme.text },
-            ]}
-          >
-            <Ionicons name="create-outline" size={40} color="#fff" />
-            <Text style={[styles.smallTitle, { color: theme.text }]}>Crear Rutina</Text>
-          </Boton>
-
-          <Boton
-            onPress={() => router.push('../(modals)/programar_screen')}
-            viewStyle={[
-              styles.smallCard,
-              { backgroundColor: theme.success, shadowColor: theme.text },
-            ]}
-          >
-            <Ionicons name="create-outline" size={40} color="#fff" />
-            <Text style={[styles.smallTitle, { color: theme.text }]}>Programar entrenamiento</Text>
-          </Boton>
-
-          <Boton
-            onPress={() => router.push('../(modals)/historial_screen')}
-            viewStyle={[
-              styles.smallCard,
-              { backgroundColor: theme.warning, shadowColor: theme.text },
-            ]}
-          >
-            <Ionicons name="book-outline" size={40} color="#fff" />
-            <Text style={[styles.smallTitle, { color: theme.text }]}>Historial</Text>
-          </Boton>
         </View>
+
+
 
         {/* -- Modal para editar | eliminar rutina -- */}
         <ModalAlerta
@@ -406,72 +385,108 @@ export default function IndexTab() {
         />
         {/* --- Tus rutinas --- */}
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Tus Rutinas</Text>
-
-        <FlatList
-          style={{ width: "100%" }}
-          horizontal
-          showsHorizontalScrollIndicator={true}
-          data={routines}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ paddingHorizontal: 10 }}
-          ListEmptyComponent={
+        {/* -- Crear rutina -- */}
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View style={{ width: 130 }}>
             <Boton
+              onPress={() => router.push('../(modals)/crear_screen')}
               viewStyle={[
-                styles.programCard,
-                { backgroundColor: theme.cardBg, borderColor: theme.border },
+                styles.smallCard,
+                { backgroundColor: theme.success, shadowColor: theme.text },
               ]}
             >
-              <Ionicons name="calendar-outline" size={42} color={theme.text} />
-              <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
-                {loadingRoutines ? 'Cargando...' : 'No tienes rutinas creadas'}
-              </Text>
+              <Ionicons name="create-outline" size={40} color="#fff" />
+              <Text style={[styles.smallTitle, { color: theme.text }]}>Crear Rutina</Text>
             </Boton>
-          }
-          renderItem={({ item }) => (
+          </View>
 
-            <Boton
-              onPress={() => router.push({
-                pathname: '../(modals)/workout_screen',
-                params: { userId: userId.toString(), routineId: item.id, nombre: item.nombre }
-              })}
-              onLongPress={() => {
-                set_ee_visible(true)
-              }}
-              viewStyle={[
-                styles.workoutCard,
-                { backgroundColor: theme.cardBg, borderColor: theme.border },
-              ]}
-            >
-              <View style={{ flexDirection: "row-reverse" }}>
+          <FlatList
+            style={{ width: "100%" }}
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            data={routines}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={{ paddingHorizontal: 10 }}
+            ListEmptyComponent={
+              <Boton
+                viewStyle={[
+                  styles.programCard,
+                  { backgroundColor: theme.cardBg, borderColor: theme.border },
+                ]}
+              >
+                <Ionicons name="calendar-outline" size={42} color={theme.text} />
+                <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
+                  {loadingRoutines ? 'Cargando...' : 'No tienes rutinas creadas'}
+                </Text>
+              </Boton>
+            }
+            renderItem={({ item }) => (
 
-                {/* //editar | eliminar 
-                <View style={{ flexDirection: "column", alignItems: "center", right: 0 }}>
-                  <Ionicons name="pencil-outline" size={15} color={theme.text} />
-                  <Ionicons name="trash" size={15} color={theme.text} />
+              <Boton
+                onPress={() => router.push({
+                  pathname: '../(modals)/workout_screen',
+                  params: { userId: userId.toString(), routineId: item.id, nombre: item.nombre }
+                })}
+                onLongPress={() => {
+                  set_ee_visible(true)
+                }}
+                viewStyle={[
+                  styles.workoutCard,
+                  { backgroundColor: theme.cardBg, borderColor: theme.border, width: 80 },
+                ]}
+              >
+                <View style={{ flexDirection: "row-reverse" }}>
+
+                  <View style={{}} >
+                    <Ionicons name="barbell-outline" size={42} color={theme.text} />
+                    <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
+                      {item.nombre}
+                    </Text>
+                    <Text style={{ color: theme.textMuted, fontSize: 12 }}>
+                      {item.exercises.length} ejercicio{item.exercises.length > 1 ? "s" : ""}
+                    </Text>
+                  </View>
                 </View>
-                */}
-
-                <View style={{}} >
-                  <Ionicons name="barbell-outline" size={42} color={theme.text} />
-                  <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
-                    {item.nombre}
-                  </Text>
-                  <Text style={{ color: theme.textMuted, fontSize: 12 }}>
-                    {item.exercises.length} ejercicio{item.exercises.length > 1 ? "s" : ""}
-                  </Text>
-                </View>
-              </View>
 
 
-            </Boton>
-          )}
-        />
+              </Boton>
+            )}
+          />
+        </View>
         {/* Instructions */}
         <View style={styles.instructionCard}>
           <Ionicons name="information-circle-outline" size={24} color="#4DB6FF" />
           <Text style={[styles.instructionText, { color: theme.textMuted }]}>
             Manten apretado sobre una rutina para editarla o eliminarla.
           </Text>
+        </View>
+
+        {/*-- Acciones -- */}
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Acciones</Text>
+        <View style={styles.row}>
+          {/* -- historial -- */}
+          <Boton
+            onPress={() => router.push('../(modals)/historial_screen')}
+            viewStyle={[
+              styles.smallCard,
+              { backgroundColor: theme.progressFill, shadowColor: theme.text },
+            ]}
+          >
+            <Ionicons name="book-outline" size={40} color="#fff" />
+            <Text style={[styles.smallTitle, { color: theme.text }]}>Registro Histórico</Text>
+          </Boton>
+
+            {/* -- backlog -- */}
+          <Boton
+            onPress={()=>Alert.alert("perdonnn 😭", "Esto aún no ha sido implementado")}
+            viewStyle={[
+              styles.smallCard,
+              { backgroundColor: theme.warning, shadowColor: theme.text },
+            ]}
+          >
+            <Ionicons name="book-outline" size={40} color="#fff" />
+            <Text style={[styles.smallTitle, { color: theme.text }]}>Mi diario</Text>
+          </Boton>
         </View>
 
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Noticias..</Text>
@@ -489,6 +504,8 @@ export default function IndexTab() {
         </Boton>
 
       </ScrollView>
+
+
       <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View>
   );
