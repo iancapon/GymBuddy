@@ -16,7 +16,7 @@ const API_URL = api_url()
 export default function PerfilScreen() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
-  const [userId, setUserId] = useState<Number | null>(null)
+  const userId = contextoPerfil?.userContext.id ? contextoPerfil?.userContext.id : 0
 
   const [mail, setMail] = useState("...")
   const [nombre, setNombre] = useState("...")
@@ -38,7 +38,7 @@ export default function PerfilScreen() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: contextoPerfil?.userContext.id
+        id: userId
       })
     });
 
@@ -56,7 +56,6 @@ export default function PerfilScreen() {
     }
 
     if (response.ok) {
-      setUserId(data.id)
       setNombre(data.nombre)
       setApellido(data.apellido)
       setEdad(data.edad)
@@ -69,6 +68,7 @@ export default function PerfilScreen() {
   useEffect(() => {
     fetchUserInfo()
   }, [userId])
+
 
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>

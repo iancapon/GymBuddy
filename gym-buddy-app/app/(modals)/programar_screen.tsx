@@ -49,7 +49,8 @@ export default function ProgramarScreen() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
 
-  const [userId, setUserId] = useState<number | null>(null);
+  const userId = contextoPerfil?.userContext.id ? contextoPerfil?.userContext.id : 0
+
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
   const [loadingSchedule, setLoadingSchedule] = useState(false)
@@ -67,37 +68,6 @@ export default function ProgramarScreen() {
 
   // Seleccionador de dia para implementar una rutina
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
-
-
-  const fetchUserProfile = async () => {
-    try {
-      const userResponse = await fetch(`${API_URL}/profile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: contextoPerfil?.userContext.id
-        }),
-      });
-      const userdata = await userResponse.json();
-      if (!userResponse.ok) {
-        let errorMsg = `Error ${userResponse.status}`;
-        try {
-          const errData = userdata//await userResponse.json();
-          errorMsg = errData.message || errorMsg;
-        } catch {
-          // si no hay body JSON, deja el mensaje por defecto
-        }
-        throw new Error(errorMsg);
-      }
-      if (userResponse.ok) {
-        const id = userdata.data.id;
-        setUserId(id);
-      }
-    } catch (error: any) {
-      console.error("❌ fetch user profile error:", error.message);
-      throw new Error(error.message || "Error de conexión con el servidor");
-    }
-  };
 
   const fetchUserRoutines = async () => {
     if (!userId) return;
@@ -173,7 +143,6 @@ export default function ProgramarScreen() {
   }
 
   useEffect(() => {
-    fetchUserProfile();
     fetchUserRoutines()
     fetchAlreadyAssignedDays()
   }, [userId]);

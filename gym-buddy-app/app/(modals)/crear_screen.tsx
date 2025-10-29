@@ -15,6 +15,7 @@ export default function CrearScreen() {
   const router = useRouter();
 
   const contexto = useContext(ContextoPerfil);
+  const userId = contexto?.userContext.id ? contexto?.userContext.id : 0
 
   const [titulo, setTitulo] = useState('');
   const [ejercicios, setEjercicios] = useState<ejercicio[]>([]);
@@ -36,26 +37,6 @@ export default function CrearScreen() {
     setSavingRoutine(true);
 
     try {
-
-      // 0. findUser
-      const userResponse = await fetch(`${API_URL}/profile`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: contexto?.userContext.id
-      })
-    });
-
-      // para confirmar bien que encuentra el usuario
-      const user_Id = (await userResponse.json()).data.id
-
-      if (!userResponse.ok) {
-        Alert.alert('Error', 'No se encontró el usuario');
-        setSavingRoutine(false);
-        return;
-      }
       
       // 1. Create routine
       const routineResponse = await fetch(`${API_URL}/workout/routine`, {
@@ -63,7 +44,7 @@ export default function CrearScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre: titulo.trim(),
-          userId: user_Id
+          userId: userId
         }),
       });
 

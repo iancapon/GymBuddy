@@ -42,7 +42,7 @@ function formatFechaES(fecha = new Date()) {
 export default function Historial() {
   const router = useRouter()
   const contextoPerfil = useContext(ContextoPerfil);
-  const [userId, setUserId] = useState(0)
+  const userId = contextoPerfil?.userContext.id ? contextoPerfil?.userContext.id : 0
   const [modal, setModal] = useState(false);
   const [tituloModal, setTituloModal] = useState('');
   const [fechaModal, setFechaModal] = useState('');
@@ -52,53 +52,7 @@ export default function Historial() {
   const mode = contextoTema?.themeContext.theme
   const theme = THEMES()[mode != undefined ? mode : 'light'];
 
-  const fechasMarcadas = () => {
-    if (!history) return
-    const wk = history.map(h => new Date(h.fecha))
-
-    return wk.reduce((fechas: any, programa: Date) => {
-      fechas[programa.toISOString().split("T")[0]] = { selected: true, selectedColor: theme.accent };
-      return fechas;
-    }, {})
-  }
-
   const [history, setHistory] = useState<Array<History>>([]);
-
-
-  //fetch user profile data
-  const handleSession = async () => {
-    try {
-      const response = await fetch(`${API_URL}/profile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: contextoPerfil?.userContext.id
-        })
-      });
-
-      const userdata = await response.json();
-
-      if (!response.ok) {
-        let errorMsg = `Error ${response.status}`;
-        try {
-          const errData = userdata//await userResponse.json();
-          errorMsg = errData.message || errorMsg;
-        } catch {
-          // si no hay body JSON, deja el mensaje por defecto
-        }
-        throw new Error(errorMsg);
-      }
-
-      if (response.ok) {
-        setUserId(userdata.data.id)
-      }
-    } catch (error: any) {
-      console.error("❌ fetch user info error:", error.message);
-      throw new Error(error.message || "Error de conexión con el servidor");
-    }
-  }
 
   ////////////// falta trabajo esto
   const fetchUserHistory = async () => {
@@ -135,7 +89,6 @@ export default function Historial() {
   };
 
   useEffect(() => {
-    handleSession()
     fetchUserHistory()
   }, [userId, history])
 

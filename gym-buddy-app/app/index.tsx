@@ -75,10 +75,13 @@ export default function LoginScreen() {
 
   useEffect(() => { ///////////////////////////// CREO QUE ESTO ESTÁ BIEN....
     if (contextoPerfil?.userContext.id) {
+      setEmail("")
+      setPassword("")
+      setLoading(false)
       router.push("./(tabs)/index_tab");
       Alert.alert(
         "Inicio de sesion ",
-        "Has iniciado sesion correctamente 👽: ", //+ contextoPerfil?.userContext.id.toString(),
+        "Has iniciado sesion correctamente 👽", //+ contextoPerfil?.userContext.id.toString(),
         [{ text: "OK" }]
       );
     }
