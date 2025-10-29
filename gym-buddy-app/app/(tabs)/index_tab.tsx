@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ContextoPerfil, ContextoTema } from '../_layout';
 import THEMES from '../THEMES'
 import Boton from '../../components/Boton';
+import ModalAlerta from '../../components/ModalAlerta';
 import api_url from "../API_URL"
 
 const API_URL = api_url()
@@ -55,6 +56,7 @@ export default function IndexTab() {
       routineName: null,
     }))
   );
+  const [editar_eliminar_visible, set_ee_visible] = useState(false)
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
@@ -229,6 +231,13 @@ export default function IndexTab() {
     }, [userId])
   );
 
+  const handleEditRoutine = () => {
+    Alert.alert("oops 🫣", "aún no está implementado")
+  }
+  const handleDeleteRoutine = () => {
+    Alert.alert("oops 🫠", "aún no está implementado")
+  }
+
 
 
   return (
@@ -382,6 +391,19 @@ export default function IndexTab() {
           </Boton>
         </View>
 
+        {/* -- Modal para editar | eliminar rutina -- */}
+        <ModalAlerta
+          visible={editar_eliminar_visible}
+          setVisible={set_ee_visible}
+          titulo='¿Vas a editar o eliminar?'
+          subtitulo={`Rutina ${"~~~"}`}
+          botonA='editar'
+          botonAOnPress={handleEditRoutine}
+          botonB='eliminar'
+          botonBOnPress={handleDeleteRoutine}
+          botonC='cerrar'
+          botonCOnPress={() => set_ee_visible(false)}
+        />
         {/* --- Tus rutinas --- */}
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Tus Rutinas</Text>
 
@@ -412,7 +434,9 @@ export default function IndexTab() {
                 pathname: '../(modals)/workout_screen',
                 params: { userId: userId.toString(), routineId: item.id, nombre: item.nombre }
               })}
-              onLongPress={() => Alert.alert("oops 🙈", "esto aún no está implementado..")}
+              onLongPress={() => {
+                set_ee_visible(true)
+              }}
               viewStyle={[
                 styles.workoutCard,
                 { backgroundColor: theme.cardBg, borderColor: theme.border },

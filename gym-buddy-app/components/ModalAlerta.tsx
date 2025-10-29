@@ -12,6 +12,8 @@ type props = {
     botonAOnPress?: () => void
     botonB?: string
     botonBOnPress?: () => void
+    botonC?: string
+    botonCOnPress?: () => void
 };
 
 export default function ModalAlerta(props: props) {
@@ -21,24 +23,35 @@ export default function ModalAlerta(props: props) {
                 <View style={styles.modalCard}>
                     <Text style={styles.modalTitle}>{props.titulo}</Text>
                     <Text style={styles.modalSubtitle}>{props.subtitulo}</Text>
-                    {
-                        props.botonA != undefined ?
-                            <Boton
-                                name={props.botonA}
-                                viewStyle={styles.modalButton}
-                                textStyle={styles.modalButtonText}
-                                onPress={props.botonAOnPress}
-                            /> : <></>
-                    }
-                    {
-                        props.botonB != undefined ?
-                            <Boton
-                                name={props.botonB}
-                                viewStyle={styles.modalButton}
-                                textStyle={styles.modalButtonText}
-                                onPress={props.botonBOnPress}
-                            /> : <></>
-                    }
+                    <View style={{flexDirection:"row"}}>
+                        {
+                            props.botonA != undefined ?
+                                <Boton
+                                    name={props.botonA}
+                                    viewStyle={styles.modalButton}
+                                    textStyle={styles.modalButtonText}
+                                    onPress={props.botonAOnPress}
+                                /> : <></>
+                        }
+                        {
+                            props.botonB != undefined ?
+                                <Boton
+                                    name={props.botonB}
+                                    viewStyle={styles.modalButton}
+                                    textStyle={styles.modalButtonText}
+                                    onPress={props.botonBOnPress}
+                                /> : <></>
+                        }
+                        {
+                            props.botonC != undefined ?
+                                <Boton
+                                    name={props.botonC}
+                                    viewStyle={styles.modalButton}
+                                    textStyle={styles.modalButtonText}
+                                    onPress={props.botonCOnPress}
+                                /> : <></>
+                        }
+                    </View>
                 </View>
             </View>
         </Modal>
