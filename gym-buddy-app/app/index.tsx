@@ -1,5 +1,5 @@
 import { Text, View, ScrollView, StyleSheet, TextInput, ImageBackground, ActivityIndicator, Alert } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useRouter } from "expo-router";
 import Boton from "../components/Boton";
 import { StatusBar } from "expo-status-bar";
@@ -47,8 +47,7 @@ export default function LoginScreen() {
 
       const data = await response.json();
 
-      /*
-      if(!response.ok){
+      if (!response.ok) {
         let errorMsg = `Error ${response.status}`;
         try {
           const errData = data//await userResponse.json();
@@ -58,16 +57,10 @@ export default function LoginScreen() {
         }
         throw new Error(errorMsg);
       }
-        */
 
-      if (response.ok) {
-        contextoPerfil?.setUserContext({ id: data.id });
-        router.push("./(tabs)/index_tab"); // antes era replace
-        Alert.alert(
-          "Inicio de sesion ",
-          "Has iniciado sesion correctamente 👽",
-          [{ text: "OK" }]
-        );
+      if (data) {
+        //Alert.alert("", data.data.id.toString())//JSON.stringify(data))
+        contextoPerfil?.setUserContext({ id: data.data.id });
 
       } else {
         Alert.alert("Error", data.error || "No se pudo iniciar sesión");
@@ -79,6 +72,17 @@ export default function LoginScreen() {
       setLoading(false);
     }
   };
+
+  useEffect(() => { ///////////////////////////// CREO QUE ESTO ESTÁ BIEN....
+    if (contextoPerfil?.userContext.id) {
+      router.push("./(tabs)/index_tab");
+      Alert.alert(
+        "Inicio de sesion ",
+        "Has iniciado sesion correctamente 👽: ", //+ contextoPerfil?.userContext.id.toString(),
+        [{ text: "OK" }]
+      );
+    }
+  }, [contextoPerfil?.userContext.id])
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

@@ -7,10 +7,10 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { id } = req.body;
 
-    const user = await prisma.user.findFirst({
-      where: { email, password },
+    const user = await prisma.user.findUnique({
+      where: { id },
     });
 
     if (user) return res.status(200).json({ ok: true, mensaje: "Usuario encontrado", data: user })

@@ -13,7 +13,6 @@ export const ContextoPerfil = createContext<{
 
 type customTheme = {
   theme: 'light' | 'dark'
-  // theme: 'image' | 'dark' | 'light'
 }
 
 export const ContextoTema = createContext<{

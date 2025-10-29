@@ -81,8 +81,8 @@ export default function PerfilScreen() {
         subtitulo={'¿Seguro que deseas continuar?'}
         botonA='Mantener sesion' botonAOnPress={() => setModal(false)}
         botonB={'Cerrar sesion'} botonBOnPress={() => {
-          setModal(false);
           contextoPerfil?.setUserContext({ id: 0 }) // (a ver si esto es suficiente)
+          setModal(false);
           router.replace("../../"); // creo que es suficiente
         }}
       />

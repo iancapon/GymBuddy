@@ -39,8 +39,7 @@ const DAYS_OF_WEEK = [
 export default function IndexTab() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
-
-  const [userId, setUserId] = useState()
+  const userId = contextoPerfil?.userContext.id ? contextoPerfil?.userContext.id : 0
   const [nombre, setNombre] = useState("...")
 
   const [loadingRoutines, setLoadingRoutines] = useState(false);
@@ -73,7 +72,7 @@ export default function IndexTab() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: contextoPerfil?.userContext.id
+          id: userId
         })
       });
 
@@ -92,7 +91,7 @@ export default function IndexTab() {
 
       if (response.ok) {
         setNombre(userdata.data.nombre)
-        setUserId(userdata.data.id)
+        //setUserId(userdata.data.id)
       }
     } catch (error: any) {
       console.error("❌ fetch user info error:", error.message);
@@ -278,7 +277,7 @@ export default function IndexTab() {
             todaysRoutine == undefined ? Alert.alert("Esperá! 👋👋", "Primero programá una rutina") :
               router.push({
                 pathname: '../(modals)/workout_screen',
-                params: { userId: userId, routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
+                params: { userId: userId.toString(), routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
               })
           }}
           viewStyle={[
@@ -303,26 +302,36 @@ export default function IndexTab() {
           data={dayAssignments.filter(day => day.routineId)}
           keyExtractor={(item) => item.dayIndex.toString()}
           contentContainerStyle={{ paddingHorizontal: 10 }}
+          ItemSeparatorComponent={() => {
+            return (<View style={{
+              width: 2,
+              height: 120,
+              padding: 0,
+              marginTop: 10,
+              backgroundColor: theme.text
+            }}
+            />)
+          }}
           ListEmptyComponent={
-            <Boton
-              viewStyle={[
+            <View
+              style={[
                 styles.programCard,
-                { backgroundColor: theme.cardBg, borderColor: theme.border },
+                { backgroundColor: "transparent", borderColor: theme.border },
               ]}
             >
               <Ionicons name="calendar-outline" size={42} color={theme.text} />
               <Text style={[styles.workoutTitle, { color: theme.text }]} numberOfLines={2}>
                 {loadingProgram ? 'Cargando...' : 'No tienes rutinas programadas'}
               </Text>
-            </Boton>
+            </View>
           }
 
           renderItem={({ item }) => (
 
-            <Boton
-              viewStyle={[
+            <View
+              style={[
                 styles.programCard,
-                { backgroundColor: theme.cardBg, borderColor: theme.border },
+                { backgroundColor: "transparent", borderColor: theme.border, marginVertical: 10 },
               ]}
             >
               <Ionicons name="calendar-outline" size={42} color={theme.text} />
@@ -332,7 +341,7 @@ export default function IndexTab() {
               <Text style={{ color: theme.textMuted, fontSize: 12 }}>
                 {item.dayName}
               </Text>
-            </Boton>
+            </View>
           )}
         />
 
@@ -400,7 +409,7 @@ export default function IndexTab() {
             <Boton
               onPress={() => router.push({
                 pathname: '../(modals)/workout_screen',
-                params: { userId: userId, routineId: item.id, nombre: item.nombre }
+                params: { userId: userId.toString(), routineId: item.id, nombre: item.nombre }
               })}
               viewStyle={[
                 styles.workoutCard,
@@ -536,7 +545,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   workoutCard: {
-    width: 160,
+    width: 140,
     height: 120,
     borderRadius: 16,
     marginHorizontal: 8,
@@ -549,17 +558,17 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   programCard: {
-    width: 160,
+    width: 140,
     height: 120,
     borderRadius: 16,
     marginHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 8,
-    elevation: 3,
+    //borderWidth: 1,
+    //shadowOpacity: 0.3,
+    //shadowOffset: { width: 0, height: 5 },
+    //shadowRadius: 8,
+    //elevation: 3,
   },
   workoutTitle: { fontSize: 16, fontWeight: '600', marginTop: 8 },
 });
