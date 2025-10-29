@@ -250,36 +250,38 @@ export default function IndexTab() {
         <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>GymBuddy</Text>
       </Header>
 
-
-      {/* 🔝 sub Header con saludo y selector */}
-      <View style={styles.topBar}>
-        <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
-        <View style={styles.modeButtons}>
-          <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'dark' })}>
-            <Ionicons
-              name="moon"
-              size={26}
-              color={mode === 'dark' ? theme.accent : theme.textMuted}
-              style={styles.modeIcon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'light' })}>
-            <Ionicons
-              name="sunny"
-              size={26}
-              color={mode === 'light' ? theme.accent : theme.textMuted}
-              style={styles.modeIcon}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
       {/* Contenido principal */}
       <ScrollView
         contentContainerStyle={{ alignItems: "center" }}
         style={[{ width: "100%", paddingHorizontal: 10 }]}
 
       >
+        {/* 🔝 sub Header con saludo y selector */}
+        <View style={{ flexDirection: "row", flex: 1, padding:10 }}>
+          <View style={{ flex: 10 }}>
+            <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
+          </View>
+          <View style={[styles.modeButtons, { flex: 1}]}>
+            <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'dark' })}>
+              <Ionicons
+                name="moon"
+                size={26}
+                color={mode === 'dark' ? theme.accent : theme.textMuted}
+                style={styles.modeIcon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'light' })}>
+              <Ionicons
+                name="sunny"
+                size={26}
+                color={mode === 'light' ? theme.accent : theme.textMuted}
+                style={styles.modeIcon}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+
         {/*-- Rutina de hoy -- */}
         <Boton
           onPress={() => {
@@ -476,9 +478,9 @@ export default function IndexTab() {
             <Text style={[styles.smallTitle, { color: theme.text }]}>Registro Histórico</Text>
           </Boton>
 
-            {/* -- backlog -- */}
+          {/* -- backlog -- */}
           <Boton
-            onPress={()=>Alert.alert("perdonnn 😭", "Esto aún no ha sido implementado")}
+            onPress={() => Alert.alert("perdonnn 😭", "Esto aún no ha sido implementado")}
             viewStyle={[
               styles.smallCard,
               { backgroundColor: theme.warning, shadowColor: theme.text },
