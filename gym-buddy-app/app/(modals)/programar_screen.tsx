@@ -68,99 +68,116 @@ export default function ProgramarScreen() {
   // Seleccionador de dia para implementar una rutina
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
 
-  // fetch para el user profile
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const userResponse = await fetch(`${API_URL}/profile`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: contextoPerfil?.userContext.id
-          }),
-        });
 
-        const userdata = await userResponse.json();
-        if (userResponse.ok) {
-          const id = 1//userdata.data.id;
-          setUserId(id);
-
+  const fetchUserProfile = async () => {
+    try {
+      const userResponse = await fetch(`${API_URL}/profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: contextoPerfil?.userContext.id
+        }),
+      });
+      const userdata = await userResponse.json();
+      if (!userResponse.ok) {
+        let errorMsg = `Error ${userResponse.status}`;
+        try {
+          const errData = userdata//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
         }
-      } catch (error) {
-        console.error('Error fetching profile:', error);
+        throw new Error(errorMsg);
       }
-    };
+      if (userResponse.ok) {
+        const id = userdata.data.id;
+        setUserId(id);
+      }
+    } catch (error: any) {
+      console.error("❌ fetch user profile error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
+    }
+  };
 
+  const fetchUserRoutines = async () => {
+    if (!userId) return;
+
+    try {
+      setLoadingRoutines(true);
+      const response = await fetch(`${API_URL}/workout/routines/${userId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        let errorMsg = `Error ${response.status}`;
+        try {
+          const errData = data//await response.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
+      if (data.success && data.routines) {
+        setRoutines(data.routines);
+      }
+    } catch (error: any) {
+      console.error("❌ fetch user routines error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
+    } finally {
+      setLoadingRoutines(false);
+    }
+  };
+
+  const fetchAlreadyAssignedDays = async () => {
+    if (!userId) return;
+    setLoadingSchedule(true)
+    try {
+      const userResponse = await fetch(`${API_URL}/programar_workout/findschedule?userId=${userId}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+      )
+      const datos = await userResponse.json()
+      if (!userResponse.ok) {
+        let errorMsg = `Error ${userResponse.status}`;
+        try {
+          const errData = datos//await userResponse.json();
+          errorMsg = errData.message || errorMsg;
+        } catch {
+          // si no hay body JSON, deja el mensaje por defecto
+        }
+        throw new Error(errorMsg);
+      }
+      const programa = datos.assigned
+      const loaded = dayAssignments.map(day => {
+        const match = programa.find((dia: { dayIndex: number; }) => dia.dayIndex === day.dayIndex)
+        return match
+          ? {
+            ...day,
+            routineId: match.Routine.id,
+            routineName: match.Routine.nombre
+          } : day
+      })
+      setDayAssignments(loaded);
+    }
+    catch (error: any) {
+      console.error("❌ fetch assingned days error:", error.message);
+      throw new Error(error.message || "Error de conexión con el servidor");
+    } finally {
+      setLoadingSchedule(false)
+    }
+  }
+
+  useEffect(() => {
     fetchUserProfile();
-  }, []);
-
-  // fetch para las rutinas de un determinado usuario
-  useEffect(() => {
-    const fetchUserRoutines = async () => {
-      if (!userId) return;
-
-      try {
-        setLoadingRoutines(true);
-        const response = await fetch(`${API_URL}/workout/routines/${userId}`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        const data = await response.json();
-        if (data.success && data.routines) {
-          setRoutines(data.routines);
-        }
-      } catch (error) {
-        console.error('Error fetching routines:', error);
-        Alert.alert('Error', 'No se pudieron cargar las rutinas');
-      } finally {
-        setLoadingRoutines(false);
-      }
-    };
-    fetchUserRoutines();
+    fetchUserRoutines()
+    fetchAlreadyAssignedDays()
   }, [userId]);
 
-  // fetch para las rutinas asignadas del usuario
-  useEffect(() => {
-
-    const fetchAlreadyAssignedDays = async () => {
-      if (!userId) return;
-      setLoadingSchedule(true)
-      try {
-        const userResponse = await fetch(`${API_URL}/programar_workout/findschedule?userId=${userId}`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-        )
-
-        const datos = await userResponse.json()
-
-        const programa = datos.assigned
-
-        const loaded = dayAssignments.map(day => {
-          const match = programa.find(dia => dia.dayIndex === day.dayIndex)
-          return match
-            ? {
-              ...day,
-              routineId: match.Routine.id,
-              routineName: match.Routine.nombre
-            } : day
-        })
-
-        setDayAssignments(loaded);
-      }
-      catch (error) {
-        console.error('Error fetching routines:', error);
-        Alert.alert('Error', 'No se pudieron cargar las rutinas programadas');
-      } finally {
-        setLoadingSchedule(false)
-      }
-    }
-    fetchAlreadyAssignedDays()
-
-  }, [userId, routines,])
 
   // Asigno rutina a un dia
   const assignRoutineToDay = (routineId: number, routineName: string) => {
