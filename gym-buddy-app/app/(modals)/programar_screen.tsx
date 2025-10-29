@@ -366,6 +366,7 @@ export default function ProgramarScreen() {
           </View>
         </View>
       )}
+      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View>
   );
 }

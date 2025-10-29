@@ -127,7 +127,7 @@ export default function PerfilScreen() {
           />
         </View>
       </View>
-      <StatusBar style="dark" />
+      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View>
   );
 }

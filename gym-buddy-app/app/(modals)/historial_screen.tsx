@@ -8,6 +8,7 @@ import THEMES from '../THEMES';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
+import { StatusBar } from 'expo-status-bar';
 
 import api_url from "../API_URL"
 const API_URL = api_url()
@@ -196,6 +197,7 @@ export default function Historial() {
           )}
         />
       </View>
+      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View >
   );
 }

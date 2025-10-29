@@ -112,7 +112,6 @@ export default function WorkoutScreen() {
 
   return (
     <View style={[styles.bg, styles.overlay, { backgroundColor: theme.overlay }]}>
-      <StatusBar style={mode == "light" ? "dark" : "light"} />
 
       {/* Header */}
       <Header theme={theme} backButton={true} >
@@ -134,7 +133,7 @@ export default function WorkoutScreen() {
             theme={theme} />
         </View>
       </View>
-
+      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View>
   );
 }

@@ -129,7 +129,7 @@ export default function CrearScreen() {
         <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>🚑 Crear Rutina</Text>
       </Header>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, {paddingTop:30}]}>
+        <View style={[styles.container, { paddingTop: 30 }]}>
           <StatusBar style="dark" />
 
           {/* item nuevo */}
@@ -236,6 +236,7 @@ export default function CrearScreen() {
           </View>
         </View>
       </TouchableWithoutFeedback>
+      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </ImageBackground>
   );
 }

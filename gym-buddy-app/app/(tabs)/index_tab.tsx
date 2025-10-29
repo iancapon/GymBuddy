@@ -245,8 +245,6 @@ export default function IndexTab() {
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
 
-      <StatusBar style={mode == "light" ? "dark" : "light"} />
-
       {/* Header */}
       <Header theme={theme} backButton={false} >
         <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>GymBuddy</Text>
@@ -491,7 +489,7 @@ export default function IndexTab() {
         </Boton>
 
       </ScrollView>
-
+      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View>
   );
 }
