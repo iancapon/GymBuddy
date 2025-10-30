@@ -1,9 +1,12 @@
 import { Text, View, ScrollView, StyleSheet, TextInput, ImageBackground, ActivityIndicator, Alert } from "react-native";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, use } from "react";
 import { useRouter } from "expo-router";
 import Boton from "../components/Boton";
 import { StatusBar } from "expo-status-bar";
-import { ContextoPerfil } from "./_layout";
+import { useAuth, ContextoTema } from "./_layout";
+import * as SecureStore from 'expo-secure-store';
+import { jwtDecode } from "jwt-decode";
+
 
 import api_url from "./API_URL"
 const API_URL = api_url()
@@ -11,7 +14,7 @@ const API_URL = api_url()
 
 export default function LoginScreen() {
   const router = useRouter();
-  const contextoPerfil = useContext(ContextoPerfil);
+  const { user, token, setUser, setToken, login, logout } = useAuth()
 
   // Estados para los campos
 
@@ -59,8 +62,7 @@ export default function LoginScreen() {
       }
 
       if (data) {
-        //Alert.alert("", data.data.id.toString())//JSON.stringify(data))
-        contextoPerfil?.setUserContext({ id: data.data.id });
+        login(data.token)
 
       } else {
         Alert.alert("Error", data.error || "No se pudo iniciar sesión");
@@ -74,18 +76,18 @@ export default function LoginScreen() {
   };
 
   useEffect(() => { ///////////////////////////// CREO QUE ESTO ESTÁ BIEN....
-    if (contextoPerfil?.userContext) {
+    if (user) {
       setEmail("")
       setPassword("")
       setLoading(false)
       router.push("./(tabs)/index_tab");
-      Alert.alert(
+      /*Alert.alert(
         "Inicio de sesion ",
         "Has iniciado sesion correctamente 👽", //+ contextoPerfil?.userContext.id.toString(),
         [{ text: "OK" }]
-      );
+      );*/
     }
-  }, [contextoPerfil?.userContext])
+  }, [user])
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

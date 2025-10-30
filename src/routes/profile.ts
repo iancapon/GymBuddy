@@ -1,13 +1,14 @@
 import { Router, Request, Response } from "express";
 import { prisma } from "../prisma";
-
+import { verificarToken, AuthRequest } from "../verificar";
 
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", verificarToken, async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.body;
+    //const { id } = req.body;
+    const id = req.user.id;
 
     const user = await prisma.user.findUnique({
       where: { id },

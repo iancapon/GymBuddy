@@ -1,5 +1,8 @@
 import { Router, Request, Response } from "express";
 import { prisma } from "../prisma";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { verificarToken, AuthRequest } from "../verificar";
 
 
 const router = Router();
@@ -25,14 +28,16 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Crecion de usuario:
     const user = await prisma.user.create({
       data: {
         nombre,
         apellido,
         DNI: BigInt(dni),
-        email, 
-        password,
+        email,
+        password: hashedPassword,
         telefono: BigInt(telefono),
         edad: parseInt(edad),
       },
@@ -42,13 +47,16 @@ router.post("/", async (req: Request, res: Response) => {
       ...user,
       DNI: user.DNI.toString(),
       telefono: user.telefono.toString(),
-      userId : user.id
+      userId: user.id
     };
+
+    const token = jwt.sign(userResponse, process.env.JWT_SECRET!, { expiresIn: "7d" })
 
     res.status(201).json({
       message: "Usuario registrado exitosamente",
-      user: userResponse
+      token
     });
+
   } catch (error) {
     console.error("Error en registro:", error);
     res.status(500).json({

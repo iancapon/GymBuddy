@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import ModalAlerta from '../../components/ModalAlerta';
 import THEMES from '../THEMES'
-import { ContextoPerfil, ContextoTema } from '../_layout';
+import { useAuth, ContextoTema } from '../_layout';
 import Header from '../../components/Header';
 
 
@@ -16,8 +16,7 @@ const API_URL = api_url()
 
 export default function PerfilScreen() {
   const router = useRouter();
-  const contextoPerfil = useContext(ContextoPerfil);
-  const userId = contextoPerfil?.userContext ? contextoPerfil?.userContext.id : null
+  const { token, user, setToken, setUser, login, logout } = useAuth()
 
   const [mail, setMail] = useState("...")
   const [nombre, setNombre] = useState("...")
@@ -33,15 +32,13 @@ export default function PerfilScreen() {
 
 
   const fetchUserInfo = async () => {
-    if (!userId) return
+    if (!user) return
     const response = await fetch(`${API_URL}/profile`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: userId
-      })
+        "Authorization": `Bearer ${token}`,
+      }
     });
 
     const data = (await response.json()).data;
@@ -68,11 +65,11 @@ export default function PerfilScreen() {
   }
 
   useEffect(() => {
-    if (userId == null) {
+    if (!user) {
       router.replace("/")
     }
     fetchUserInfo()
-  }, [userId])
+  }, [user])
 
 
   return (
@@ -87,7 +84,7 @@ export default function PerfilScreen() {
         subtitulo={'¿Seguro que deseas continuar?'}
         botonA='Mantener sesion' botonAOnPress={() => setModal(false)}
         botonB={'Cerrar sesion'} botonBOnPress={() => {
-          contextoPerfil?.setUserContext(null)//(a ver si esto es suficiente) -> salgo en la 
+          logout()
           setModal(false);
         }}
       />

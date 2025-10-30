@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { ContextoPerfil, ContextoTema } from '../_layout';
+import { useAuth, ContextoTema } from '../_layout';
 import api_url from '../API_URL';
 import Boton from '../../components/Boton';
 import { StatusBar } from 'expo-status-bar';
@@ -48,9 +48,7 @@ export default function ProgramarScreen() {
   const theme = THEMES()[mode != undefined ? mode : 'light'];
 
   const router = useRouter();
-  const contextoPerfil = useContext(ContextoPerfil);
-
-  const userId = contextoPerfil?.userContext ? contextoPerfil?.userContext.id : null
+  const { user, token, setUser, setToken, login, logout } = useAuth()
 
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
@@ -71,13 +69,16 @@ export default function ProgramarScreen() {
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
 
   const fetchUserRoutines = async () => {
-    if (!userId) return;
+    if (!user) return;
 
     try {
       setLoadingRoutines(true);
-      const response = await fetch(`${API_URL}/workout/routines/${userId}`, {
+      const response = await fetch(`${API_URL}/workout/routines`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
       });
       const data = await response.json();
       if (!response.ok) {
@@ -102,14 +103,15 @@ export default function ProgramarScreen() {
   };
 
   const fetchAlreadyAssignedDays = async () => {
-    if (!userId) return;
+    if (!user) return;
     setLoadingSchedule(true)
     try {
-      const userResponse = await fetch(`${API_URL}/programar_workout/findschedule?userId=${userId}`, {
+      const userResponse = await fetch(`${API_URL}/programar_workout/findschedule`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-        },
+          "Authorization": `Bearer ${token}`,
+        }
       }
       )
       const datos = await userResponse.json()
@@ -146,7 +148,7 @@ export default function ProgramarScreen() {
   useEffect(() => {
     fetchUserRoutines()
     fetchAlreadyAssignedDays()
-  }, [userId]);
+  }, [user]);
 
 
   // Asigno rutina a un dia
@@ -175,7 +177,7 @@ export default function ProgramarScreen() {
   };
 
   const saveSchedule = async () => {
-    if (!userId) {
+    if (!user) {
       Alert.alert('Error', 'Usuario no identificado');
       return;
     }
@@ -194,9 +196,11 @@ export default function ProgramarScreen() {
 
           const response = await fetch(`${API_URL}/programar_workout/schedule`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
             body: JSON.stringify({
-              userId,
               routineId: day.routineId,
               dayIndex: day.dayIndex
             }),
@@ -212,9 +216,12 @@ export default function ProgramarScreen() {
         else {
           const response = await fetch(`${API_URL}/programar_workout/unschedule`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
             body: JSON.stringify({
-              userId,
               dayIndex: day.dayIndex
             }),
           });

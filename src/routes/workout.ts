@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { prisma } from '../prisma';
+import { verificarToken, AuthRequest } from '../verificar';
 
 const router = Router();
 
@@ -23,11 +24,13 @@ interface CreateExerciseRequest extends Request {
 // ============================================================
 // CREATE a new routine
 // ============================================================
-router.post('/routine', async (req, res) => {
-  const { userId, nombre } = req.body;
+router.post('/routine', verificarToken, async (req: AuthRequest, res: Response) => {
+  const { nombre } = req.body;
+  const id = req.user.id
+
   try {
     const rutina = await prisma.routine.create({
-      data: { userId: Number(userId), nombre },
+      data: { userId: Number(id), nombre },
     });
     res.json({ success: true, routine: rutina });
   } catch (err) {
@@ -39,7 +42,7 @@ router.post('/routine', async (req, res) => {
 // ============================================================
 // CREATE exercise in a routine
 // ============================================================
-router.post('/exercise', async (req, res) => {
+router.post('/exercise', verificarToken, async (req: AuthRequest, res: Response) => {
   const { routineId, titulo, media, info1, info2 } = req.body;
   console.log('🔥 POST /exercise called'); // Add this line
   console.log('Body:', req.body); // Add this line
@@ -63,12 +66,12 @@ router.post('/exercise', async (req, res) => {
 // ============================================================
 // GET all routines for a user
 // ============================================================
-router.get('/routines/:userId', async (req: Request, res: Response) => {
+router.get('/routines', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
-    const { userId } = req.params;
+    const id = req.user.id
 
     const routines = await prisma.routine.findMany({
-      where: { userId: parseInt(userId) },
+      where: { userId: parseInt(id) },
       include: {
         exercises: {
           orderBy: { orden: 'desc' },
@@ -89,7 +92,7 @@ router.get('/routines/:userId', async (req: Request, res: Response) => {
 // ============================================================
 // GET exercises for a routine
 // ============================================================
-router.get('/routine/:routineId/exercises', async (req: Request, res: Response) => {
+router.get('/routine/:routineId/exercises', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
     const { routineId } = req.params;
 
@@ -111,7 +114,7 @@ router.get('/routine/:routineId/exercises', async (req: Request, res: Response) 
 // ============================================================
 // UPDATE exercise
 // ============================================================
-router.put('/exercise/:exerciseId', async (req: Request, res: Response) => {
+router.put('/exercise/:exerciseId', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
     const { exerciseId } = req.params;
     const { titulo, media, info1, info2 } = req.body;
@@ -139,7 +142,7 @@ router.put('/exercise/:exerciseId', async (req: Request, res: Response) => {
 // ============================================================
 // DELETE exercise
 // ============================================================
-router.delete('/exercise/:exerciseId', async (req: Request, res: Response) => {
+router.delete('/exercise/:exerciseId', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
     const { exerciseId } = req.params;
 
@@ -160,7 +163,7 @@ router.delete('/exercise/:exerciseId', async (req: Request, res: Response) => {
 // ============================================================
 // DELETE routine
 // ============================================================
-router.delete('/routine/:routineId', async (req: Request, res: Response) => {
+router.delete('/routine/:routineId', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
     const { routineId } = req.params;
 

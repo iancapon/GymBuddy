@@ -3,6 +3,8 @@
 
 import { Router } from 'express';
 import { prisma } from "../prisma";
+import { verificarToken, AuthRequest } from '../verificar';
+import { Request, Response } from 'express';
 
 const router = Router();
 
@@ -17,14 +19,15 @@ const DAYS_OF_WEEK = [
 ];
 
 // Post programar una rutina para un dia en especifico
-router.post('/schedule', async (req, res) => {
+router.post('/schedule', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
-    const { userId, dayIndex, routineId } = req.body
+    const { dayIndex, routineId } = req.body
+    const id = req.user.id
 
     // busco si hay una rutina ese dia
     const scheduledThatDay = await prisma.dayAssignment.findFirst({
       where: {
-        userId: parseInt(userId),
+        userId: parseInt(id),
         dayIndex: dayIndex
       },
     });
@@ -52,7 +55,7 @@ router.post('/schedule', async (req, res) => {
         data: {
           dayIndex: dayIndex,
           Routine: { connect: { id: routineId } },
-          User: { connect: { id: userId } },
+          User: { connect: { id: id } },
         }
       })
       return res.status(201).json({
@@ -75,14 +78,15 @@ router.post('/schedule', async (req, res) => {
 
 
 // Post eliminar una rutina para un dia especifico
-router.post('/unschedule', async (req, res) => {
+router.post('/unschedule', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
-    const { userId, dayIndex } = req.body
+    const { dayIndex } = req.body
+    const id = req.user.id
 
     // busco si hay una rutina ese dia
     const scheduledThatDay = await prisma.dayAssignment.findFirst({
       where: {
-        userId: parseInt(userId),
+        userId: parseInt(id),
         dayIndex: dayIndex
       },
     });
@@ -119,13 +123,13 @@ router.post('/unschedule', async (req, res) => {
 
 
 // GET para la rutina programada hoy
-router.get('/todayschedule', async (req, res) => {
+router.get('/todayschedule', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
-    const { userId } = req.query
+    const id = req.user.id
     const today = (new Date()).getDay()
 
     const assigned = await prisma.dayAssignment.findMany({
-      where: { userId: Number(userId), dayIndex: today },
+      where: { userId: Number(id), dayIndex: today },
       include: {
         Routine: true
       }
@@ -151,12 +155,12 @@ router.get('/todayschedule', async (req, res) => {
 });
 
 // GET para todas las rutinas programadas de un usuario
-router.get('/findschedule', async (req, res) => {
+router.get('/findschedule', verificarToken, async (req: AuthRequest, res: Response) => {
   try {
-    const { userId } = req.query
+    const id = req.user.id
 
     const assigned = await prisma.dayAssignment.findMany({
-      where: { userId: Number(userId) },
+      where: { userId: Number(id) },
       include: {
         Routine: true
       }

@@ -5,7 +5,7 @@ import Boton from '../../components/Boton';
 import Slides from '../../components/Slides';
 import { useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
-import { ContextoPerfil, ContextoTema } from '../_layout';
+import { useAuth, ContextoTema } from '../_layout';
 import THEMES from '../THEMES';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
@@ -36,7 +36,7 @@ export default function WorkoutScreen() {
 
   const router = useRouter();
   const params = useLocalSearchParams();
-  const contexto = useContext(ContextoPerfil);
+  const { user, token, setUser, setToken, login, logout } = useAuth()
 
   const routineId = params.routineId as string;
   const userId = params.userId as string
@@ -50,7 +50,10 @@ export default function WorkoutScreen() {
       setLoading(true);
       const response = await fetch(`${API_URL}/workout/routine/${routineId}/exercises`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
       });
 
       const data = await response.json();
@@ -79,9 +82,11 @@ export default function WorkoutScreen() {
 
       const history = await fetch(`${API_URL}/history`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify({
-          userId: Number(userId),
           routineId: Number(routineId)
         })
       });

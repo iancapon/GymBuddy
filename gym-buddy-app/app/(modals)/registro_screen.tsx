@@ -5,13 +5,16 @@ import Boton from "../../components/Boton";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import workoutsBase from "../workoutsBase";
+import { useAuth } from "../_layout";
 
 import api_url from "../API_URL"
 const API_URL = api_url()
 
 
 export default function RegistroScreen() {
+  const { user, token, setUser, setToken, login, logout } = useAuth()
   const router = useRouter();
+
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [dni, setDni] = useState("");
@@ -57,7 +60,8 @@ export default function RegistroScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        handleGuardarRutinas(data.user.id)
+        login(data.token)
+        handleGuardarRutinas(data.token)
         Alert.alert("✅ Registro exitoso", "Tu cuenta fue creada correctamente", [
           { text: "OK", onPress: () => router.back() },
         ]);
@@ -79,16 +83,18 @@ export default function RegistroScreen() {
     }
   };
 
-  const handleGuardarRutinas = (userId: number) => {
+  const handleGuardarRutinas = (token: string | null) => {
     const nuevaRutina = async (rutina: any) => {
       try {
         // 1. Create routine
         const routineResponse = await fetch(`${API_URL}/workout/routine`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${token}`
+          },
           body: JSON.stringify({
             nombre: rutina.nombre,
-            userId: userId
           }),
         });
 

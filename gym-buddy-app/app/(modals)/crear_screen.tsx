@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Boton from '../../components/Boton';
 import Tarjeta from '../../components/Tarjeta';
-import { ContextoPerfil, ContextoTema } from '../_layout'
+import { useAuth, ContextoTema } from '../_layout'
 import { Ionicons } from '@expo/vector-icons';
 import THEMES from '../THEMES';
 import Header from '../../components/Header';
@@ -14,9 +14,7 @@ const API_URL = api_url()
 
 export default function CrearScreen() {
   const router = useRouter();
-
-  const contexto = useContext(ContextoPerfil);
-  const userId = contexto?.userContext ? contexto?.userContext.id : null
+  const { user, token, setUser, setToken, login, logout } = useAuth()
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme
@@ -59,10 +57,12 @@ export default function CrearScreen() {
       // 1. Create routine
       const routineResponse = await fetch(`${API_URL}/workout/routine`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify({
           nombre: titulo.trim(),
-          userId: userId
         }),
       });
 
@@ -80,7 +80,10 @@ export default function CrearScreen() {
       for (const ejercicio of ejercicios) {
         await fetch(`${API_URL}/workout/exercise`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
           body: JSON.stringify({
             routineId,
             titulo: ejercicio.titulo,

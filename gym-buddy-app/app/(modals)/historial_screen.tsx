@@ -3,7 +3,7 @@ import Boton from '../../components/Boton';
 import { Calendar } from 'react-native-calendars';
 import { useState, useEffect, useCallback, useContext } from 'react';
 import ModalAlerta from '../../components/ModalAlerta';
-import { ContextoPerfil, ContextoTema } from '../_layout';
+import { useAuth, ContextoTema } from '../_layout';
 import THEMES from '../THEMES';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -43,8 +43,8 @@ function formatFechaES(fecha = new Date()) {
 
 export default function Historial() {
   const router = useRouter()
-  const contextoPerfil = useContext(ContextoPerfil);
-  const userId = contextoPerfil?.userContext ? contextoPerfil?.userContext.id : null
+  const { user, token, setUser, setToken, login, logout } = useAuth()
+
   const [modal, setModal] = useState(false);
   const [tituloModal, setTituloModal] = useState('');
   const [fechaModal, setFechaModal] = useState('');
@@ -58,12 +58,16 @@ export default function Historial() {
 
   ////////////// falta trabajo esto
   const fetchUserHistory = async () => {
-    if (!userId || !API_URL) return;
+    if (!user?.id || !API_URL) return;
 
     try {
-      const response = await fetch(`${API_URL}/history?userId=${userId}`, {
+      const response = await fetch(`${API_URL}/history`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
+
       });
 
       const data = await response.json();
@@ -92,13 +96,16 @@ export default function Historial() {
 
   useEffect(() => {
     fetchUserHistory()
-  }, [userId, history])
+  }, [user, history])
 
   const fetchRoutineDetails = async (rutinaId: Number) => {
     try {
       const response = await fetch(`${API_URL}/workout/routine/${rutinaId}/exercises`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
       });
       const data = await response.json();
       if (!response.ok) {

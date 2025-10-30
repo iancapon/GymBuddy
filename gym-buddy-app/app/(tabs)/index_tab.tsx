@@ -4,7 +4,7 @@ import { useMemo, useState, useCallback, useContext, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 
-import { ContextoPerfil, ContextoTema } from '../_layout';
+import { useAuth, ContextoTema } from '../_layout';
 import Header from '../../components/Header';
 import THEMES from '../THEMES'
 import Boton from '../../components/Boton';
@@ -40,8 +40,7 @@ const DAYS_OF_WEEK = [
 
 export default function IndexTab() {
   const router = useRouter();
-  const contextoPerfil = useContext(ContextoPerfil);
-  const userId = contextoPerfil?.userContext ? contextoPerfil?.userContext.id : null
+  const { user, token, setUser, setToken, login, logout } = useAuth()
   const [nombre, setNombre] = useState("...")
 
   const [loadingRoutines, setLoadingRoutines] = useState(false);
@@ -68,16 +67,14 @@ export default function IndexTab() {
 
   //fetch user profile data
   const handleSession = async () => {
-    if(!userId) return
+    if (!user) return
     try {
       const response = await fetch(`${API_URL}/profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          id: userId
-        })
       });
 
       const userdata = await response.json();
@@ -95,7 +92,6 @@ export default function IndexTab() {
 
       if (response.ok) {
         setNombre(userdata.data.nombre)
-        //setUserId(userdata.data.id)
       }
     } catch (error: any) {
       console.error("❌ fetch user info error:", error.message);
@@ -105,12 +101,15 @@ export default function IndexTab() {
 
 
   const fetchUserRoutines = async () => {
-    if (!userId) return;
+    if (!user) return;
     try {
       setLoadingRoutines(true);
-      const response = await fetch(`${API_URL}/workout/routines/${userId}`, {
+      const response = await fetch(`${API_URL}/workout/routines`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`
+        },
       });
       const data = await response.json();
       if (!response.ok) {
@@ -135,13 +134,14 @@ export default function IndexTab() {
   };
 
   const fetchAlreadyAssignedDays = async () => {
-    if (!userId) return;
+    if (!user) return;
     setLoadingProgram(true)
     try {
-      const userResponse = await fetch(`${API_URL}/programar_workout/findschedule?userId=${userId}`, {
+      const userResponse = await fetch(`${API_URL}/programar_workout/findschedule`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       }
       )
@@ -187,10 +187,17 @@ export default function IndexTab() {
 
 
   const fetchTodaysProgram = async () => {
-    if (!userId) return;
+    if (!user) return;
     try {
       setLTR(true)
-      const userResponse = await fetch(`${API_URL}/programar_workout/todayschedule?userId=${userId}`)
+      const userResponse = await fetch(`${API_URL}/programar_workout/todayschedule`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      }
+      )
 
       const datos = await userResponse.json()
 
@@ -225,14 +232,14 @@ export default function IndexTab() {
   // Load data when screen is focused
   useFocusEffect(
     useCallback(() => {
-      if (userId == null) {
+      if (!user) {
         router.replace("/")
       }
       handleSession()
       fetchUserRoutines()
       fetchAlreadyAssignedDays()
       fetchTodaysProgram()
-    }, [userId])
+    }, [user])
   );
 
   // HAY QUE GUARDAR UNA COPIA DE LA RUTINA EN EL HISTORIA
@@ -291,7 +298,7 @@ export default function IndexTab() {
             todaysRoutine == undefined ? Alert.alert("Esperá! 👋👋", "Primero programá una rutina") :
               router.push({
                 pathname: '../(modals)/workout_screen',
-                params: { userId: userId?.toString(), routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
+                params: { userId: user?.id?.toString(), routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
               })
           }}
           viewStyle={[
@@ -430,7 +437,7 @@ export default function IndexTab() {
               <Boton
                 onPress={() => router.push({
                   pathname: '../(modals)/workout_screen',
-                  params: { userId: userId?.toString(), routineId: item.id, nombre: item.nombre }
+                  params: { userId: user?.id?.toString(), routineId: item.id, nombre: item.nombre }
                 })}
                 onLongPress={() => {
                   set_ee_visible(true)
