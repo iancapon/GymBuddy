@@ -63,7 +63,7 @@ export default function RegistroScreen() {
         login(data.token)
         handleGuardarRutinas(data.token)
         Alert.alert("✅ Registro exitoso", "Tu cuenta fue creada correctamente", [
-          { text: "OK", onPress: () => router.back() },
+          { text: "OK" },
         ]);
         setNombre("");
         setApellido("");
