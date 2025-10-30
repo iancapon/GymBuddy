@@ -16,7 +16,7 @@ export default function CrearScreen() {
   const router = useRouter();
 
   const contexto = useContext(ContextoPerfil);
-  const userId = contexto?.userContext.id ? contexto?.userContext.id : 0
+  const userId = contexto?.userContext ? contexto?.userContext.id : null
 
   const contextoTema = useContext(ContextoTema)
   const mode = contextoTema?.themeContext.theme

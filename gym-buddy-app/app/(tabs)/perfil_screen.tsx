@@ -17,7 +17,7 @@ const API_URL = api_url()
 export default function PerfilScreen() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
-  const userId = contextoPerfil?.userContext.id ? contextoPerfil?.userContext.id : 0
+  const userId = contextoPerfil?.userContext ? contextoPerfil?.userContext.id : null
 
   const [mail, setMail] = useState("...")
   const [nombre, setNombre] = useState("...")
@@ -33,6 +33,7 @@ export default function PerfilScreen() {
 
 
   const fetchUserInfo = async () => {
+    if (!userId) return
     const response = await fetch(`${API_URL}/profile`, {
       method: "POST",
       headers: {
@@ -67,6 +68,9 @@ export default function PerfilScreen() {
   }
 
   useEffect(() => {
+    if (userId == null) {
+      router.replace("/")
+    }
     fetchUserInfo()
   }, [userId])
 
@@ -83,9 +87,8 @@ export default function PerfilScreen() {
         subtitulo={'¿Seguro que deseas continuar?'}
         botonA='Mantener sesion' botonAOnPress={() => setModal(false)}
         botonB={'Cerrar sesion'} botonBOnPress={() => {
-          contextoPerfil?.setUserContext({ id: 0 }) // (a ver si esto es suficiente)
+          contextoPerfil?.setUserContext(null)//(a ver si esto es suficiente) -> salgo en la 
           setModal(false);
-          router.replace("../../"); // creo que es suficiente
         }}
       />
       {/* Header */}
@@ -93,7 +96,7 @@ export default function PerfilScreen() {
         <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>🙋 Mi Perfil</Text>
       </Header>
 
-      <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 
         {/* Tarjeta de perfil */}
         <View style={[styles.profileCard, { backgroundColor: theme.cardBg }]}>

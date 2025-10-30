@@ -41,7 +41,7 @@ const DAYS_OF_WEEK = [
 export default function IndexTab() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
-  const userId = contextoPerfil?.userContext.id ? contextoPerfil?.userContext.id : 0
+  const userId = contextoPerfil?.userContext ? contextoPerfil?.userContext.id : null
   const [nombre, setNombre] = useState("...")
 
   const [loadingRoutines, setLoadingRoutines] = useState(false);
@@ -68,6 +68,7 @@ export default function IndexTab() {
 
   //fetch user profile data
   const handleSession = async () => {
+    if(!userId) return
     try {
       const response = await fetch(`${API_URL}/profile`, {
         method: "POST",
@@ -105,7 +106,6 @@ export default function IndexTab() {
 
   const fetchUserRoutines = async () => {
     if (!userId) return;
-
     try {
       setLoadingRoutines(true);
       const response = await fetch(`${API_URL}/workout/routines/${userId}`, {
@@ -225,6 +225,9 @@ export default function IndexTab() {
   // Load data when screen is focused
   useFocusEffect(
     useCallback(() => {
+      if (userId == null) {
+        router.replace("/")
+      }
       handleSession()
       fetchUserRoutines()
       fetchAlreadyAssignedDays()
@@ -257,11 +260,11 @@ export default function IndexTab() {
 
       >
         {/* 🔝 sub Header con saludo y selector */}
-        <View style={{ flexDirection: "row", flex: 1, padding:10 }}>
+        <View style={{ flexDirection: "row", flex: 1, padding: 10 }}>
           <View style={{ flex: 10 }}>
             <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
           </View>
-          <View style={[styles.modeButtons, { flex: 1}]}>
+          <View style={[styles.modeButtons, { flex: 1 }]}>
             <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'dark' })}>
               <Ionicons
                 name="moon"
@@ -288,7 +291,7 @@ export default function IndexTab() {
             todaysRoutine == undefined ? Alert.alert("Esperá! 👋👋", "Primero programá una rutina") :
               router.push({
                 pathname: '../(modals)/workout_screen',
-                params: { userId: userId.toString(), routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
+                params: { userId: userId?.toString(), routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
               })
           }}
           viewStyle={[
@@ -427,7 +430,7 @@ export default function IndexTab() {
               <Boton
                 onPress={() => router.push({
                   pathname: '../(modals)/workout_screen',
-                  params: { userId: userId.toString(), routineId: item.id, nombre: item.nombre }
+                  params: { userId: userId?.toString(), routineId: item.id, nombre: item.nombre }
                 })}
                 onLongPress={() => {
                   set_ee_visible(true)

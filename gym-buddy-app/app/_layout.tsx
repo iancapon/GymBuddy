@@ -4,7 +4,7 @@ import { ThemeProvider } from '@react-navigation/native';
 
 type userInfo = {
   id: Number
-}
+} | null
 
 export const ContextoPerfil = createContext<{
   userContext: userInfo;
@@ -21,7 +21,7 @@ export const ContextoTema = createContext<{
 } | null>(null)
 
 export default function RootLayout() {
-  const [userContext, setUserContext] = useState<userInfo>({ id: 0 });
+  const [userContext, setUserContext] = useState<userInfo>(null);
   const [themeContext, setThemeContext] = useState<customTheme>({ theme: "light" })
 
   return (

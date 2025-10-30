@@ -44,7 +44,7 @@ function formatFechaES(fecha = new Date()) {
 export default function Historial() {
   const router = useRouter()
   const contextoPerfil = useContext(ContextoPerfil);
-  const userId = contextoPerfil?.userContext.id ? contextoPerfil?.userContext.id : 0
+  const userId = contextoPerfil?.userContext ? contextoPerfil?.userContext.id : null
   const [modal, setModal] = useState(false);
   const [tituloModal, setTituloModal] = useState('');
   const [fechaModal, setFechaModal] = useState('');

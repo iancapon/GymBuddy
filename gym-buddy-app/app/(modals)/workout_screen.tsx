@@ -115,7 +115,7 @@ export default function WorkoutScreen() {
 
       {/* Header */}
       <Header theme={theme} backButton={true} >
-        <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>Workout</Text>
+        <Text style={[{ color: theme.text, backgroundColor: theme.header }]}>💪Rutina</Text>
       </Header>
 
       <View style={[styles.safe, { flex: 1, height: "100%", backgroundColor: theme.overlay }]}>

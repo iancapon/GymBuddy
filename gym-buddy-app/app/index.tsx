@@ -74,7 +74,7 @@ export default function LoginScreen() {
   };
 
   useEffect(() => { ///////////////////////////// CREO QUE ESTO ESTÁ BIEN....
-    if (contextoPerfil?.userContext.id) {
+    if (contextoPerfil?.userContext) {
       setEmail("")
       setPassword("")
       setLoading(false)
@@ -85,7 +85,7 @@ export default function LoginScreen() {
         [{ text: "OK" }]
       );
     }
-  }, [contextoPerfil?.userContext.id])
+  }, [contextoPerfil?.userContext])
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

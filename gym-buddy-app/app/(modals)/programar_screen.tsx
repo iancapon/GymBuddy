@@ -50,7 +50,7 @@ export default function ProgramarScreen() {
   const router = useRouter();
   const contextoPerfil = useContext(ContextoPerfil);
 
-  const userId = contextoPerfil?.userContext.id ? contextoPerfil?.userContext.id : 0
+  const userId = contextoPerfil?.userContext ? contextoPerfil?.userContext.id : null
 
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loadingRoutines, setLoadingRoutines] = useState(false);
