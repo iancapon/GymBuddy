@@ -250,7 +250,13 @@ export default function IndexTab() {
     Alert.alert("oops 🫠", "aún no está implementado")
   }
 
-
+  const toggleTema = () => {
+    if (contextoTema?.themeContext.theme == 'light') {
+      return contextoTema.setThemeContext({ theme: 'dark' })
+    } else {
+      contextoTema?.setThemeContext({ theme: 'light' })
+    }
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
@@ -268,27 +274,26 @@ export default function IndexTab() {
       >
         {/* 🔝 sub Header con saludo y selector */}
         <View style={{ flexDirection: "row", flex: 1, padding: 10 }}>
-          <View style={{ flex: 10 }}>
+          <View style={{ flex: 3 }}>
             <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
           </View>
-          <View style={[styles.modeButtons, { flex: 1 }]}>
-            <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'dark' })}>
+          <TouchableOpacity onPress={toggleTema}>
+            <View style={[styles.modeButtons, { flex: 1, justifyContent: "flex-end", padding:2, borderWidth:1, borderRadius:100, borderColor:theme.textMuted }]}>
               <Ionicons
                 name="moon"
                 size={26}
                 color={mode === 'dark' ? theme.accent : theme.textMuted}
                 style={styles.modeIcon}
               />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => contextoTema?.setThemeContext({ theme: 'light' })}>
+              <View style={{width:1, height:"100%", backgroundColor:theme.textMuted}}></View>
               <Ionicons
                 name="sunny"
                 size={26}
                 color={mode === 'light' ? theme.accent : theme.textMuted}
                 style={styles.modeIcon}
               />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
 
 
@@ -444,7 +449,7 @@ export default function IndexTab() {
                 }}
                 viewStyle={[
                   styles.workoutCard,
-                  { backgroundColor: theme.cardBg, borderColor: theme.border, width: 80 },
+                  { backgroundColor: theme.cardBg, borderColor: theme.border, width: 90 },
                 ]}
               >
                 <View style={{ flexDirection: "row-reverse" }}>
@@ -655,7 +660,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: 120,
     borderRadius: 16,
-    marginHorizontal: 8,
+    marginHorizontal: 3,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
