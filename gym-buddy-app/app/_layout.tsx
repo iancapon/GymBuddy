@@ -82,7 +82,7 @@ export default function AuthProvider() { /////////////////////////////////// el 
       <ContextoTema.Provider value={{ themeContext, setThemeContext }}>
         <Stack>
 
-          <Stack.Screen name="index" options={{ headerShown: false, navigationBarHidden: true, }} />
+          <Stack.Screen name="index" options={{ headerShown: false, }} />
 
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
