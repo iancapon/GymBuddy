@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import workoutsBase from "../workoutsBase";
 import { useAuth } from "../_layout";
 
-import api_url from "../API_URL"
+import api_url from "../../constants/API_URL"
 const API_URL = api_url()
 
 export default function RegistroScreen() {

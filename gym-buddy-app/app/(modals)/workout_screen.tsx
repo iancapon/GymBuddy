@@ -6,11 +6,11 @@ import Slides from '../../components/Slides';
 import { useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import { useAuth, ContextoTema } from '../_layout';
-import THEMES from '../THEMES';
+import THEMES from '../../constants/THEMES';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 
-import api_url from "../API_URL"
+import api_url from "../../constants/API_URL"
 const API_URL = api_url()
 
 type Exercise = {

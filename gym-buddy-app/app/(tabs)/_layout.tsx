@@ -2,7 +2,7 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons"
 import { ContextoTema } from "../_layout";
 import { useContext } from "react";
-import THEMES from "../THEMES";
+import THEMES from "../../constants/THEMES";
 import { StyleSheet } from "react-native";
 
 

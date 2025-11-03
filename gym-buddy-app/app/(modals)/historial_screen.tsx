@@ -4,13 +4,13 @@ import { Calendar } from 'react-native-calendars';
 import { useState, useEffect, useCallback, useContext } from 'react';
 import ModalAlerta from '../../components/ModalAlerta';
 import { useAuth, ContextoTema } from '../_layout';
-import THEMES from '../THEMES';
+import THEMES from '../../constants/THEMES';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import { StatusBar } from 'expo-status-bar';
 
-import api_url from "../API_URL"
+import api_url from "../../constants/API_URL"
 const API_URL = api_url()
 
 type Routine = {

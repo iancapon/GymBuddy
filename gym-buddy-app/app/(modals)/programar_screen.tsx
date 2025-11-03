@@ -11,10 +11,10 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth, ContextoTema } from '../_layout';
-import api_url from '../API_URL';
+import api_url from '../../constants/API_URL';
 import Boton from '../../components/Boton';
 import { StatusBar } from 'expo-status-bar';
-import THEMES from '../THEMES'
+import THEMES from '../../constants/THEMES'
 import Header from '../../components/Header';
 
 const API_URL = api_url();

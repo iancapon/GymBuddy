@@ -4,7 +4,7 @@ import { ThemeProvider } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode"
 import * as SystemUI from 'expo-system-ui';
-import THEMES from "./THEMES";
+import THEMES from "../constants/THEMES";
 
 
 type customTheme = {
@@ -61,6 +61,7 @@ export default function AuthProvider() { /////////////////////////////////// el 
     };
     cargarToken();
     SystemUI.setBackgroundColorAsync(theme.header)
+    
   }, [themeContext]);
 
   const login = async (newToken: string | null) => {

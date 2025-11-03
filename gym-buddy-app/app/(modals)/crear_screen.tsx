@@ -6,10 +6,10 @@ import Boton from '../../components/Boton';
 import Tarjeta from '../../components/Tarjeta';
 import { useAuth, ContextoTema } from '../_layout'
 import { Ionicons } from '@expo/vector-icons';
-import THEMES from '../THEMES';
+import THEMES from '../../constants/THEMES';
 import Header from '../../components/Header';
 
-import api_url from "../API_URL"
+import api_url from "../../constants/API_URL"
 const API_URL = api_url()
 
 export default function CrearScreen() {

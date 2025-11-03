@@ -5,7 +5,7 @@ import Boton from "../components/Boton";
 import { StatusBar } from "expo-status-bar";
 import { useAuth } from "./_layout";
 
-import api_url from "./API_URL"
+import api_url from "../constants/API_URL"
 const API_URL = api_url()
 
 export default function LoginScreen() {

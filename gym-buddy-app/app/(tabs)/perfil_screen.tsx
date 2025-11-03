@@ -5,12 +5,12 @@ import { StatusBar } from 'expo-status-bar';
 import { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import ModalAlerta from '../../components/ModalAlerta';
-import THEMES from '../THEMES'
+import THEMES from '../../constants/THEMES'
 import { useAuth, ContextoTema } from '../_layout';
 import Header from '../../components/Header';
 
 
-import api_url from "../API_URL"
+import api_url from "../../constants/API_URL"
 const API_URL = api_url()
 
 

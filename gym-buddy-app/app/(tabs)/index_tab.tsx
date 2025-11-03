@@ -6,10 +6,10 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useAuth, ContextoTema } from '../_layout';
 import Header from '../../components/Header';
-import THEMES from '../THEMES'
+import THEMES from '../../constants/THEMES'
 import Boton from '../../components/Boton';
 import ModalAlerta from '../../components/ModalAlerta';
-import api_url from "../API_URL"
+import api_url from "../../constants/API_URL"
 
 const API_URL = api_url()
 
