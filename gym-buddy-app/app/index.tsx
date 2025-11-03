@@ -46,12 +46,16 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (!response.ok) {
-        let errorMsg = `Error ${response.status}`;
-        try {
-          const errData = data;
-          errorMsg = errData.message || errorMsg;
-        } catch {}
-        Alert.alert("Error", errorMsg);
+        if (response.status == 401) {
+          Alert.alert("Usuario no encontrado")
+        } else {
+          let errorMsg = `Error ${response.status}`;
+          try {
+            const errData = data;
+            errorMsg = errData.message || errorMsg;
+          } catch { }
+          Alert.alert("Error", errorMsg);
+        }
         return;
       }
 

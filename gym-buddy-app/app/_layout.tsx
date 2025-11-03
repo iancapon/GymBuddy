@@ -3,6 +3,9 @@ import { useEffect, useContext, createContext, useState, ReactNode } from "react
 import { ThemeProvider } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode"
+import * as SystemUI from 'expo-system-ui';
+import THEMES from "./THEMES";
+
 
 type customTheme = {
   theme: 'light' | 'dark'
@@ -35,7 +38,8 @@ export function useAuth() {
 export default function AuthProvider() { /////////////////////////////////// el nuevo Root Layout
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<userInfo>(null);
-  const [themeContext, setThemeContext] = useState<customTheme>({ theme: "light" })
+  const [themeContext, setThemeContext] = useState<customTheme>({ theme: "dark" })
+  const theme = THEMES()[themeContext.theme];
 
 
   useEffect(() => {
@@ -56,7 +60,8 @@ export default function AuthProvider() { /////////////////////////////////// el 
       }
     };
     cargarToken();
-  }, []);
+    SystemUI.setBackgroundColorAsync(theme.header)
+  }, [themeContext]);
 
   const login = async (newToken: string | null) => {
     if (!newToken) return
