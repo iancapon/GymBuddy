@@ -1,23 +1,18 @@
 import { Text, View, ScrollView, StyleSheet, TextInput, ImageBackground, ActivityIndicator, Alert } from "react-native";
-import { useState, useContext, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import Boton from "../components/Boton";
 import { StatusBar } from "expo-status-bar";
-import { useAuth, ContextoTema } from "./_layout";
-import * as SecureStore from 'expo-secure-store';
-import { jwtDecode } from "jwt-decode";
-
+import { useAuth } from "./_layout";
 
 import api_url from "./API_URL"
 const API_URL = api_url()
 
-
 export default function LoginScreen() {
   const router = useRouter();
-  const { user, token, setUser, setToken, login, logout } = useAuth()
+  const { user, login } = useAuth()
 
   // Estados para los campos
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,41 +48,36 @@ export default function LoginScreen() {
       if (!response.ok) {
         let errorMsg = `Error ${response.status}`;
         try {
-          const errData = data//await userResponse.json();
+          const errData = data;
           errorMsg = errData.message || errorMsg;
-        } catch {
-          // si no hay body JSON, deja el mensaje por defecto
-        }
-        throw new Error(errorMsg);
+        } catch {}
+        Alert.alert("Error", errorMsg);
+        return;
       }
 
-      if (data) {
-        login(data.token)
-
+      if (data?.token) {
+        await login(data.token); // setea user/token en el contexto
       } else {
         Alert.alert("Error", data.error || "No se pudo iniciar sesión");
       }
     } catch (error: any) {
-      console.error("❌ login error:", error.message);
-      throw new Error(error.message || "Error de conexión con el servidor");
+      console.error("❌ login error:", error?.message);
+      Alert.alert("Error de conexión", "No se pudo conectar con el servidor");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { ///////////////////////////// CREO QUE ESTO ESTÁ BIEN....
+  useEffect(() => {
     if (user) {
-      setEmail("")
-      setPassword("")
-      setLoading(false)
-      router.push("./(tabs)/index_tab");
-      /*Alert.alert(
-        "Inicio de sesion ",
-        "Has iniciado sesion correctamente 👽", //+ contextoPerfil?.userContext.id.toString(),
-        [{ text: "OK" }]
-      );*/
+      // limpiar campos
+      setEmail("");
+      setPassword("");
+      setLoading(false);
+      // navegar a la Home (ruta real sin el grupo)
+      router.replace("/index_tab");
     }
-  }, [user])
+  }, [user]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -149,7 +139,7 @@ export default function LoginScreen() {
       <View style={[styles.buttonContainer, { flex: 1 }]}>
         <Boton
           name="Registrarme"
-          onPress={() => router.push("./(modals)/registro_screen")}
+          onPress={() => router.push("/registro_screen")}
           viewStyle={styles.boton}
           textStyle={styles.botonText}
         />

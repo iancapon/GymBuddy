@@ -10,9 +10,8 @@ import { useAuth } from "../_layout";
 import api_url from "../API_URL"
 const API_URL = api_url()
 
-
 export default function RegistroScreen() {
-  const { user, token, setUser, setToken, login, logout } = useAuth()
+  const { login } = useAuth()
   const router = useRouter();
 
   const [nombre, setNombre] = useState("");
@@ -60,18 +59,30 @@ export default function RegistroScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        login(data.token)
-        handleGuardarRutinas(data.token)
-        Alert.alert("✅ Registro exitoso", "Tu cuenta fue creada correctamente", [
-          { text: "OK" },
-        ]);
-        setNombre("");
-        setApellido("");
-        setDni("");
-        setEmail("");
-        setPassword("");
-        setTelefono("");
-        setEdad("");
+        // 1) Guardar sesión primero
+        await login(data.token);
+
+        // 2) Disparar guardado de rutinas base (sin bloquear)
+        handleGuardarRutinas(data.token);
+
+        // 3) Ir directo a la Home (index_tab) y cerrar modales si los hay
+         Alert.alert(
+    "✅ Registro exitoso",
+    "Tu cuenta fue creada correctamente",
+    [
+      {
+        text: "OK",
+        onPress: () => {
+          router.dismissAll?.();// cerrar modal si es modal
+          router.replace("/"); // ir a la Home
+        },
+      },
+    ]
+  );
+
+        // 4) (Opcional) limpiar campos
+        setNombre(""); setApellido(""); setDni("");
+        setEmail(""); setPassword(""); setTelefono(""); setEdad("");
       } else {
         Alert.alert("Error", data.error || "No se pudo completar el registro");
       }
@@ -83,55 +94,66 @@ export default function RegistroScreen() {
     }
   };
 
-  const handleGuardarRutinas = (token: string | null) => {
-    const nuevaRutina = async (rutina: any) => {
-      try {
-        // 1. Create routine
-        const routineResponse = await fetch(`${API_URL}/workout/routine`, {
+const handleGuardarRutinas = (token: string | null) => {
+  const nuevaRutina = async (rutina: any) => {
+    try {
+      // 1) Crear rutina (con token)
+      const routineResponse = await fetch(`${API_URL}/workout/routine`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ nombre: rutina.nombre }),
+      });
+
+      const routineData = await routineResponse.json();
+
+      if (!routineResponse.ok || !routineData?.success) {
+        console.warn('No se pudo crear la rutina:', routineData?.error);
+        Alert.alert('Error', routineData?.error || 'No se pudo crear la rutina');
+        return;
+      }
+
+      const routineId = routineData.routine.id;
+
+      // 2) Crear ejercicios (también con token)
+      for (const ejercicio of rutina.exercises) {
+        const exRes = await fetch(`${API_URL}/workout/exercise`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            "Authorization": `Bearer ${token}`
+            'Authorization': `Bearer ${token}`, // 👈 faltaba esto
           },
           body: JSON.stringify({
-            nombre: rutina.nombre,
+            routineId,
+            titulo: ejercicio.titulo,
+            media: ejercicio.media,
+            info1: ejercicio.info1,
+            info2: ejercicio.info2,
           }),
         });
 
-        const routineData = await routineResponse.json();
-
-        if (!routineData.success) {
-          Alert.alert('Error', routineData.error || 'No se pudo crear la rutina');
-          return;
+        // si falla alguno, lo registramos para que lo veas en consola
+        if (!exRes.ok) {
+          let msg = 'No se pudo crear un ejercicio';
+          try {
+            const err = await exRes.json();
+            msg = err?.error || msg;
+          } catch {}
+          console.warn(`✖ ${msg} (status ${exRes.status})`);
         }
-
-        const routineId = routineData.routine.id;
-
-        // 2. Create all exercises for this routine
-        for (const ejercicio of rutina.exercises) {
-          await fetch(`${API_URL}/workout/exercise`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              routineId,
-              titulo: ejercicio.titulo,
-              media: ejercicio.media,
-              info1: ejercicio.info1,
-              info2: ejercicio.info2,
-            }),
-          });
-        }
-      } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
-        Alert.alert('Error de conexión', errorMsg);
-        console.error('Error al guardar rutina:', error);
       }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
+      console.error('Error al guardar rutina/ejercicios:', errorMsg);
+      Alert.alert('Error de conexión', errorMsg);
     }
+  };
 
-    workoutsBase().forEach(wk => {
-      nuevaRutina(wk)
-    })
-  }
+  // Dispara la creación de las 3 rutinas base
+  workoutsBase().forEach(wk => nuevaRutina(wk));
+};
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -178,18 +200,11 @@ export default function RegistroScreen() {
   );
 }
 
-function InputField({
-  icon,
-  ...props
-}: any) {
+function InputField({ icon, ...props }: any) {
   return (
     <View style={styles.inputContainer}>
       <Ionicons name={icon} size={22} color="#FF7A00" style={styles.icon} />
-      <TextInput
-        {...props}
-        placeholderTextColor="#999"
-        style={styles.input}
-      />
+      <TextInput {...props} placeholderTextColor="#999" style={styles.input} />
     </View>
   );
 }
@@ -252,19 +267,9 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 3 },
   },
-  icon: {
-    marginRight: 8,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    paddingVertical: 12,
-    color: "#222",
-  },
-  buttonContainer: {
-    marginTop: 18,
-    width: "100%",
-  },
+  icon: { marginRight: 8 },
+  input: { flex: 1, fontSize: 16, paddingVertical: 12, color: "#222" },
+  buttonContainer: { marginTop: 18, width: "100%" },
   boton: {
     height: 54,
     backgroundColor: COLORS.orange,
@@ -277,10 +282,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     elevation: 8,
   },
-  botonText: {
-    color: "#111",
-    fontSize: 18,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-  },
+  botonText: { color: "#111", fontSize: 18, fontWeight: "800", letterSpacing: 0.5 },
 });
