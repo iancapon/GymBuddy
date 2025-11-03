@@ -62,7 +62,7 @@ export default function AuthProvider() { /////////////////////////////////// el 
     cargarToken();
     SystemUI.setBackgroundColorAsync(theme.header)
     
-  }, [themeContext]);
+  }, []);
 
   const login = async (newToken: string | null) => {
     if (!newToken) return

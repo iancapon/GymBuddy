@@ -16,8 +16,10 @@ interface CreateExerciseRequest extends Request {
     routineId: number;
     titulo: string;
     media?: string;
-    info1?: string;
-    info2?: string;
+    series?: number
+    repesXserie?: number
+    tiempoXserie?: number
+    descansoXserie?: number
   };
 }
 
@@ -32,10 +34,10 @@ router.post('/routine', verificarToken, async (req: AuthRequest, res: Response) 
     const rutina = await prisma.routine.create({
       data: { userId: Number(id), nombre },
     });
-    res.json({ success: true, routine: rutina });
+    return res.json({ success: true, routine: rutina });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: 'Error al crear rutina' });
+    return res.status(500).json({ success: false, error: 'Error al crear rutina' });
   }
 });
 
@@ -43,23 +45,28 @@ router.post('/routine', verificarToken, async (req: AuthRequest, res: Response) 
 // CREATE exercise in a routine
 // ============================================================
 router.post('/exercise', verificarToken, async (req: AuthRequest, res: Response) => {
-  const { routineId, titulo, media, info1, info2 } = req.body;
+  const { routineId, titulo, media, series, repesXserie, tiempoXserie, descansoXserie } = req.body;
   console.log('🔥 POST /exercise called'); // Add this line
   console.log('Body:', req.body); // Add this line
+
+  const toNum = (v: any) => v !== undefined && v !== null && v !== '' ? Number(v) : 0;
+
   try {
     const ejercicio = await prisma.exercise.create({
       data: {
         titulo,
         media,
-        info1,
-        info2,
+        series: toNum(series),
+        repesXserie: toNum(repesXserie),
+        tiempoXserie: toNum(tiempoXserie),
+        descansoXserie: toNum(descansoXserie),
         routineId: Number(routineId),
       },
     });
-    res.json({ success: true, exercise: ejercicio });
+    return res.json({ success: true, exercise: ejercicio });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: 'Error al crear ejercicio' });
+    return res.status(500).json({ success: false, error: 'Error al crear ejercicio' });
   }
 });
 
@@ -79,10 +86,10 @@ router.get('/routines', verificarToken, async (req: AuthRequest, res: Response) 
       },
     });
 
-    res.json({ success: true, routines });
+    return res.json({ success: true, routines });
   } catch (error) {
     console.error('Error fetching routines:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Error al obtener rutinas',
     });
@@ -101,16 +108,19 @@ router.get('/routine/:routineId/exercises', verificarToken, async (req: AuthRequ
       orderBy: { orden: 'asc' },
     });
 
-    res.json({ success: true, exercises });
+    return res.json({ success: true, exercises });
   } catch (error) {
     console.error('Error fetching exercises:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Error al obtener ejercicios',
     });
   }
 });
 
+
+
+//////////////////// de acá para abajo no se implementó aún, hace falta revisar...  
 // ============================================================
 // UPDATE exercise
 // ============================================================

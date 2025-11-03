@@ -78,7 +78,7 @@ export default function CrearScreen() {
 
       // 2. Create all exercises for this routine
       for (const ejercicio of ejercicios) {
-        await fetch(`${API_URL}/workout/exercise`, {
+        const exercise = await fetch(`${API_URL}/workout/exercise`, {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -88,11 +88,26 @@ export default function CrearScreen() {
             routineId,
             titulo: ejercicio.titulo,
             media: ejercicio.media,
-            info1: ejercicio.info1,
-            info2: ejercicio.info2,
+            info1: "",
+            info2: "",
+            series: (ejercicio.series),
+            repesXseries: (ejercicio.repesXserie),
+            tiempoXserie: (ejercicio.tiempoXserie),
+            descansoXserie: (ejercicio.descansoXserie)
+
           }),
         });
+
+        const exerciseData = await exercise.json();
+
+        if (!exerciseData.success) {
+          Alert.alert('Error', exerciseData.error || 'No se pudo crear el ejercicio');
+          // setSavingRoutine(false);
+          return;
+        }
       }
+
+
 
       Alert.alert('Éxito', 'Rutina y ejercicios guardados correctamente');
       setTitulo('');
@@ -212,10 +227,10 @@ export default function CrearScreen() {
                   </View>
                   <View style={styles.exerciseInfoWrap}>
                     <Text style={styles.exerciseInfo} numberOfLines={1}>
-                      {item.info1}
+                      {item.series} x {item.repesXserie != "" ? item.repesXserie + " repes" : item.tiempoXserie + " segundos"}
                     </Text>
-                    <Text style={styles.exerciseInfo} numberOfLines={2}>
-                      {item.info2}
+                    <Text style={styles.exerciseInfo} numberOfLines={1}>
+                      {item.descansoXserie} segundos de descanso
                     </Text>
                   </View>
                 </Tarjeta>
@@ -251,8 +266,10 @@ type ejercicio = {
   id: string;
   titulo: string;
   media: string;
-  info1: string;
-  info2: string;
+  series: string
+  repesXserie: string
+  tiempoXserie: string
+  descansoXserie: string
 };
 
 type NuevaTarjetaProp = {
@@ -267,8 +284,10 @@ type NuevaTarjetaProp = {
 function NuevaTarjeta(props: NuevaTarjetaProp) {
   const [titulo, setTitulo] = useState('');
   const [media, setMedia] = useState(PLACEHOLDER_IMG);
-  const [info1, setInfo1] = useState('');
-  const [info2, setInfo2] = useState('');
+  const [series, setSeries] = useState("");
+  const [repesXserie, setRepes] = useState("");
+  const [tiempoXserie, setTiempo] = useState("")
+  const [descansoXserie, setDescanso] = useState("")
   const [loading, setLoading] = useState(false);
 
   const disabled = useMemo(() => !titulo.trim(), [titulo]);
@@ -278,8 +297,10 @@ function NuevaTarjeta(props: NuevaTarjetaProp) {
     if (props.item != undefined) {
       setTitulo(props.item.titulo)
       setMedia(props.item.media)
-      setInfo1(props.item.info1)
-      setInfo2(props.item.info2)
+      setSeries(props.item.series)
+      setRepes(props.item.repesXserie)
+      setTiempo(props.item.tiempoXserie)
+      setDescanso(props.item.descansoXserie)
     }
   }, [props.item])
 
@@ -290,17 +311,21 @@ function NuevaTarjeta(props: NuevaTarjetaProp) {
     try {
       if (props.item == undefined) { // use effect tb?
         const nuevo: ejercicio = {
-          id: (props.ejercicios.length + 1).toString(),
+          id: (props.ejercicios.length + 1).toString(),///// acá genera problema al eliminar una tarjeta creo
           titulo: titulo.trim(),
           media: media.trim() || PLACEHOLDER_IMG,
-          info1: info1.trim(),
-          info2: info2.trim(),
+          //info1: info1.trim(),
+          //info2: info2.trim(),
+          series: series,
+          repesXserie: repesXserie,
+          tiempoXserie: tiempoXserie,
+          descansoXserie: descansoXserie
         };
         props.setEjercicios([...props.ejercicios, nuevo]);
       }
       else {
         const nuevoArray = props.ejercicios.map(ej => {
-          return ej.id == props.item?.id ? { ...ej, titulo, media, info1, info2 } : ej
+          return ej.id == props.item?.id ? { ...ej, titulo, media, series, repesXserie, tiempoXserie, descansoXserie } : ej
         })
         props.setEjercicios(nuevoArray)
       }
@@ -308,8 +333,10 @@ function NuevaTarjeta(props: NuevaTarjetaProp) {
 
       setTitulo('');
       setMedia(PLACEHOLDER_IMG);
-      setInfo1('');
-      setInfo2('');
+      setSeries('')
+      setRepes('')
+      setTiempo('')
+      setDescanso('')
       props.setVisible(false);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
@@ -351,10 +378,10 @@ function NuevaTarjeta(props: NuevaTarjetaProp) {
                   </View>
                   <View style={styles.previewFooter}>
                     <Text style={styles.previewInfo} numberOfLines={1}>
-                      {info1 || '–'}
+                      {series} x {repesXserie != "" ? repesXserie + " repes" : tiempoXserie + " segundos"}
                     </Text>
-                    <Text style={styles.previewInfo} numberOfLines={2}>
-                      {info2 || '–'}
+                    <Text style={styles.previewInfo} numberOfLines={1}>
+                      {descansoXserie} segundos de descanso
                     </Text>
                   </View>
                 </Tarjeta>
@@ -383,19 +410,39 @@ function NuevaTarjeta(props: NuevaTarjetaProp) {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="Info 1 (por ej. 10 x 5)"
+                  placeholder="Número de series"
                   placeholderTextColor="#666"
-                  value={info1}
-                  onChangeText={setInfo1}
+                  value={series}
+                  onChangeText={setSeries}
                   editable={!loading}
+                  keyboardType="number-pad"
                 />
                 <TextInput
-                  style={[styles.input, { marginBottom: 0 }]}
-                  placeholder="Info 2 (por ej. descanso 1 min)"
+                  style={styles.input}
+                  placeholder="Repes x serie (opcional)"
                   placeholderTextColor="#666"
-                  value={info2}
-                  onChangeText={setInfo2}
+                  value={repesXserie}
+                  onChangeText={setRepes}
                   editable={!loading}
+                  keyboardType="number-pad"
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Segundos x serie (opcional)"
+                  placeholderTextColor="#666"
+                  value={tiempoXserie}
+                  onChangeText={setTiempo}
+                  editable={!loading}
+                  keyboardType="number-pad"
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Descanso entre series"
+                  placeholderTextColor="#666"
+                  value={descansoXserie}
+                  onChangeText={setDescanso}
+                  editable={!loading}
+                  keyboardType="number-pad"
                 />
 
                 <View style={styles.modalActions}>
@@ -492,7 +539,7 @@ const styles = StyleSheet.create({
   /* Card de ejercicio */
   exerciseCard: {
     width: 300,
-    height: 450,
+    height: 400,
     marginHorizontal: 8,
     backgroundColor: PALETTE.card,
     borderRadius: 18,
