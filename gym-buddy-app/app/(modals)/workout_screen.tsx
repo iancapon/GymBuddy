@@ -19,6 +19,10 @@ type Exercise = {
   media: string;
   info1: string;
   info2: string;
+  series: number
+  repesXserie: number
+  tiempoXserie: number
+  descansoXserie: number
   orden: number;
 };
 

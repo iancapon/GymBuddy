@@ -58,13 +58,10 @@ model Exercise {
   id             Int      @id @default(autoincrement())
   titulo         String
   media          String // URL de imagen
-  //////////////////// deprecado | se tiene que ir
-  info1          String @default("")// "10 x 5"
-  info2          String @default("")// "descanso 1 min"
   ///////////////////  nuevo
   series         Int      @default(0)
   repesXserie    Int      @default(0)
-  tiempoXserie   Int      @default(10)
+  tiempoXserie   Int      @default(0)
   descansoXserie Int      @default(0)
   ///////////////////
   routineId      Int

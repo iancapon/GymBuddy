@@ -66,19 +66,19 @@ export default function RegistroScreen() {
         handleGuardarRutinas(data.token);
 
         // 3) Ir directo a la Home (index_tab) y cerrar modales si los hay
-         Alert.alert(
-    "✅ Registro exitoso",
-    "Tu cuenta fue creada correctamente",
-    [
-      {
-        text: "OK",
-        onPress: () => {
-          router.dismissAll?.();// cerrar modal si es modal
-          router.replace("/"); // ir a la Home
-        },
-      },
-    ]
-  );
+        Alert.alert(
+          "✅ Registro exitoso",
+          "Tu cuenta fue creada correctamente",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.dismissAll?.();// cerrar modal si es modal
+                router.replace("/"); // ir a la Home
+              },
+            },
+          ]
+        );
 
         // 4) (Opcional) limpiar campos
         setNombre(""); setApellido(""); setDni("");
@@ -94,66 +94,70 @@ export default function RegistroScreen() {
     }
   };
 
-const handleGuardarRutinas = (token: string | null) => {
-  const nuevaRutina = async (rutina: any) => {
-    try {
-      // 1) Crear rutina (con token)
-      const routineResponse = await fetch(`${API_URL}/workout/routine`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ nombre: rutina.nombre }),
-      });
+  const toNum = (v: any) => v !== undefined && v !== null && v !== '' ? Number(v) : 0;
 
-      const routineData = await routineResponse.json();
-
-      if (!routineResponse.ok || !routineData?.success) {
-        console.warn('No se pudo crear la rutina:', routineData?.error);
-        Alert.alert('Error', routineData?.error || 'No se pudo crear la rutina');
-        return;
-      }
-
-      const routineId = routineData.routine.id;
-
-      // 2) Crear ejercicios (también con token)
-      for (const ejercicio of rutina.exercises) {
-        const exRes = await fetch(`${API_URL}/workout/exercise`, {
+  const handleGuardarRutinas = (token: string | null) => {
+    const nuevaRutina = async (rutina: any) => {
+      try {
+        // 1) Crear rutina (con token)
+        const routineResponse = await fetch(`${API_URL}/workout/routine`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // 👈 faltaba esto
+            'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            routineId,
-            titulo: ejercicio.titulo,
-            media: ejercicio.media,
-            info1: ejercicio.info1,
-            info2: ejercicio.info2,
-          }),
+          body: JSON.stringify({ nombre: rutina.nombre }),
         });
 
-        // si falla alguno, lo registramos para que lo veas en consola
-        if (!exRes.ok) {
-          let msg = 'No se pudo crear un ejercicio';
-          try {
-            const err = await exRes.json();
-            msg = err?.error || msg;
-          } catch {}
-          console.warn(`✖ ${msg} (status ${exRes.status})`);
-        }
-      }
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
-      console.error('Error al guardar rutina/ejercicios:', errorMsg);
-      Alert.alert('Error de conexión', errorMsg);
-    }
-  };
+        const routineData = await routineResponse.json();
 
-  // Dispara la creación de las 3 rutinas base
-  workoutsBase().forEach(wk => nuevaRutina(wk));
-};
+        if (!routineResponse.ok || !routineData?.success) {
+          console.warn('No se pudo crear la rutina:', routineData?.error);
+          Alert.alert('Error', routineData?.error || 'No se pudo crear la rutina');
+          return;
+        }
+
+        const routineId = routineData.routine.id;
+
+        // 2) Crear ejercicios (también con token)
+        for (const ejercicio of rutina.exercises) {
+          const exRes = await fetch(`${API_URL}/workout/exercise`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`, // 👈 faltaba esto
+            },
+            body: JSON.stringify({
+              routineId,
+              titulo: ejercicio.titulo,
+              media: ejercicio.media,
+              series: toNum(ejercicio.series),
+              repesXserie: toNum(ejercicio.repesXserie),
+              tiempoXserie: toNum(ejercicio.tiempoXserie),
+              descansoXserie: toNum(ejercicio.descansoXserie)
+            }),
+          });
+
+          // si falla alguno, lo registramos para que lo veas en consola
+          if (!exRes.ok) {
+            let msg = 'No se pudo crear un ejercicio';
+            try {
+              const err = await exRes.json();
+              msg = err?.error || msg;
+            } catch { }
+            console.warn(`✖ ${msg} (status ${exRes.status})`);
+          }
+        }
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
+        console.error('Error al guardar rutina/ejercicios:', errorMsg);
+        Alert.alert('Error de conexión', errorMsg);
+      }
+    };
+
+    // Dispara la creación de las 3 rutinas base
+    workoutsBase().forEach(wk => nuevaRutina(wk));
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

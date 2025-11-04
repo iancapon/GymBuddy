@@ -88,8 +88,6 @@ export default function CrearScreen() {
             routineId,
             titulo: ejercicio.titulo,
             media: ejercicio.media,
-            info1: "",
-            info2: "",
             series: (ejercicio.series),
             repesXseries: (ejercicio.repesXserie),
             tiempoXserie: (ejercicio.tiempoXserie),

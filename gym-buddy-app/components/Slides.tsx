@@ -9,9 +9,13 @@ import { Ionicons } from '@expo/vector-icons';
 type itemProps = {
   id: number;
   titulo: string;
-  media: string;   // URL de imagen
-  info1: string;   // por ej: "10 x 5"
-  info2: string;   // por ej: "descanso 1 min"
+  media: string;
+  info1: string;
+  info2: string;
+  series: number
+  repesXserie: number
+  tiempoXserie: number
+  descansoXserie: number
   orden: number;
 };
 
@@ -24,33 +28,133 @@ type myListProps = {
 
 
 type slideProps = {
-  titulo: string;
-  media: string;   // URL de imagen
-  info1: string;   // por ej: "10 x 5"
-  info2: string;   // por ej: "descanso 1 min"
+  datos: itemProps
   theme: any
+  haySiguiente: boolean
+  siguienteSlide: () => void
 };
 
 
 function Slide(ejercicio: slideProps) {
-  const hasImage = !!ejercicio.media && /^https?:\/\//i.test(ejercicio.media);
+  const hasImage = !!ejercicio.datos.media && /^https?:\/\//i.test(ejercicio.datos.media);
   const noImage = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.smaroadsafety.com%2Fes%2Fp%2Fsoluciones-inteligentes%2Fandromeda-smart-system%2F&psig=AOvVaw0i5yhH538-i_kLcOOvo4AK&ust=1761325806012000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLijq5HoupADFQAAAAAdAAAAABAE"
 
+  const titulo = ejercicio.datos.titulo
+  const series = ejercicio.datos.series
+  const tiempoXserie = ejercicio.datos.tiempoXserie
+  const descansoXserie = ejercicio.datos.descansoXserie
+  const repesXserie = ejercicio.datos.repesXserie
 
+  const tiempoEnVezDeRepes = tiempoXserie != 0
+  const tiempo = `${tiempoXserie} segundo${tiempoXserie > 1 ? 's' : ''}`
+  const repes = `${repesXserie} repe${repesXserie > 1 ? 's' : ''}`
+  const info1 = `${series} serie${series > 1 ? 's' : ''} x ${tiempoEnVezDeRepes ? tiempo : repes}`
+  const info2 = `${descansoXserie} segundo${descansoXserie > 1 ? 's' : ''} de descanso`
+
+  const [serieNum, setSerieNum] = useState(0)
+  const [descansoNum, setDescansoNum] = useState(0)
+  const [momento, setMomento] = useState<'EMPEZAR' | 'SERIE' | 'DESCANSO' | 'SALIR'>('EMPEZAR')
+
+  const timeLeft = useRef(new Animated.Value(0)).current;
+
+  const timeBarWidth = timeLeft.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['100%', '0%'],
+  });
+
+  const handleEmpezar = () => {
+    setSerieNum(serieNum + 1)
+    setMomento('SERIE')
+    // iniciar contador de tiempo para serie
+  }
+
+  const handleSerie = () => {
+    setDescansoNum(descansoNum + 1)
+    setMomento('DESCANSO')
+    // iniciar contador de tiempo para descanso
+  }
+
+  const handleDescanso = () => {
+    setSerieNum(serieNum + 1)
+    setMomento('SERIE')
+    // iniciar contador de tiempo para serie
+  }
+
+  const handleSalir = () => {
+    setSerieNum(0)
+    setDescansoNum(0)
+    setMomento('EMPEZAR')
+    ejercicio.siguienteSlide()
+  }
+
+  useEffect(() => {
+    if (descansoNum >= series) {
+      setMomento('SALIR')
+    }
+  }, [descansoNum])
 
   return (
     <View style={[styles.wrapper,]}>
       <ImageBackground
-        source={{ uri: hasImage ? ejercicio.media : noImage }}
+        source={{ uri: hasImage ? ejercicio.datos.media : noImage }}
         resizeMode="cover"
         style={styles.image}
         imageStyle={styles.imageRadius}
       >
         <View style={[styles.overlay, { borderRadius: 16 }]} />
         <View style={styles.card}>
-          <Text style={styles.title} numberOfLines={2}>{ejercicio.titulo}</Text>
-          <Text style={styles.info}>{ejercicio.info1}</Text>
-          <Text style={[styles.info, styles.info2]}>{ejercicio.info2}</Text>
+          {momento === 'EMPEZAR' && (
+            <>
+              <Text style={styles.title} numberOfLines={2}>{titulo}</Text>
+              <Text style={styles.info}>{info1}</Text>
+              <Text style={[styles.info, styles.info2]}>{info2}</Text>
+              <Boton
+                name={'EMPEZAR EJERCICIO'}
+                onPress={handleEmpezar}
+                viewStyle={[styles.primaryButton, { backgroundColor: !true ? ejercicio.theme.accentMuted : ejercicio.theme.accent }]}
+                textStyle={[styles.primaryButtonText, { color: ejercicio.theme.text }]}
+              />
+            </>
+          )}
+
+          {momento === 'SERIE' && (
+            <>
+              <Text style={styles.title} numberOfLines={2}>{titulo}</Text>
+              <Text style={styles.info} numberOfLines={2}>{`Serie número ${serieNum}`}</Text>
+              <Text style={styles.info} numberOfLines={2}>{`${tiempoEnVezDeRepes ? tiempo : repes}`}</Text>
+              <Boton
+                name={'SIGUIENTE'}
+                onPress={handleSerie}
+                viewStyle={[styles.primaryButton, { backgroundColor: !true ? ejercicio.theme.accentMuted : ejercicio.theme.accent }]}
+                textStyle={[styles.primaryButtonText, { color: ejercicio.theme.text }]}
+              />
+            </>
+          )}
+
+          {momento === 'DESCANSO' && (
+            <>
+              <Text style={styles.title} numberOfLines={2}>{titulo}</Text>
+              <Text style={[styles.info, styles.info2]}>{info2}</Text>
+              <Boton
+                name={'SIGUIENTE'}
+                onPress={handleDescanso}
+                viewStyle={[styles.primaryButton, { backgroundColor: !true ? ejercicio.theme.accentMuted : ejercicio.theme.accent }]}
+                textStyle={[styles.primaryButtonText, { color: ejercicio.theme.text }]}
+              />
+            </>
+          )}
+
+          {momento === 'SALIR' && (
+            <>
+              <Text style={styles.info} numberOfLines={2}>{'Fin del ejercicio'}</Text>
+              <Boton
+                name={ejercicio.haySiguiente ? 'SIGUIENTE EJERCICIO' : 'SALIR'}
+                onPress={handleSalir}
+                viewStyle={[styles.primaryButton, { backgroundColor: !true ? ejercicio.theme.accentMuted : ejercicio.theme.accent }]}
+                textStyle={[styles.primaryButtonText, { color: ejercicio.theme.text }]}
+              />
+            </>
+          )}
         </View>
       </ImageBackground>
     </View>
@@ -61,11 +165,6 @@ export default function Slides(props: myListProps) {
   const router = useRouter()
   const { data, style } = props;
   const [currentIndex, setCurrentIndex] = useState(0)
-
-
-  const duration = 5 //////////////////duracion de cada ejercicio
-  const timeLeft = useRef(new Animated.Value(0)).current;
-  const [siguiente, setSiguiente] = useState(false)
 
   const ejercicioActual = () => {
     if (data && currentIndex < data.length) {
@@ -80,46 +179,19 @@ export default function Slides(props: myListProps) {
       media: '',   // URL de imagen
       info1: '',   // por ej: "10 x 5"
       info2: '',   // por ej: "descanso 1 min"
+      series: 0,
+      repesXserie: 0,
+      tiempoXserie: 0,
+      descansoXserie: 0,
       orden: 0
     }
   }
 
-  const progress = () => data ? (currentIndex + 1) / data.length : 0
+  const progress = () => data ? (currentIndex) / data.length : 0
 
-  const slideNo = () => data ? `${currentIndex + 1}/${data.length}` : "#/#"
+  const slideNo = () => data ? `${currentIndex + 1
+    }/${data.length}` : "#/#"
 
-  const restartAnimation = () => {
-    setSiguiente(false)
-
-    timeLeft.stopAnimation(() => {
-      timeLeft.setValue(0);
-      Animated.timing(timeLeft, {
-        toValue: 1,
-        duration: duration * 1000,
-        useNativeDriver: false,
-      }).start(() => {
-        setSiguiente(true)
-      });
-    });
-
-    /*const descripcionTTS = `${ejercicioActual().titulo}. ${ejercicioActual().info1}. ${ejercicioActual().info2}`;
-    Speech.stop();
-    Speech.speak(descripcionTTS, {
-      language: 'es-ES',
-      pitch: 1.0,
-      rate: 1.05,
-    });*/
-  };
-
-  useEffect(() => {
-    restartAnimation()
-  }, []);
-
-
-  const timeBarWidth = timeLeft.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['100%', '0%'],
-  });
 
   if (!data || data.length === 0) {
     return (
@@ -139,36 +211,23 @@ export default function Slides(props: myListProps) {
       <View style={{ padding: 5 }}></View>
       {/* Slide */}
       <Slide
-        titulo={ejercicioActual().titulo}
-        media={ejercicioActual().media}
-        info1={ejercicioActual().info1}
-        info2={ejercicioActual().info2}
+        datos={ejercicioActual()}
+        haySiguiente={currentIndex < data.length}
+        siguienteSlide={() => {
+          if (currentIndex < data.length) {
+            setCurrentIndex(currentIndex + 1)
+          }
+          else {
+            props.uploadToHistory()
+            router.back()
+            Alert.alert("Felicidades!", "Terminaste con el ejercicio")
+          }
+
+        }}
         theme={props.theme}
       />
-      {/* Timer */}
-      <View style={{ alignItems: "center", marginTop: 10 }}>
-        <Animated.View style={[styles.progressFill, { width: timeBarWidth, height: 10, marginBottom: 0, backgroundColor: props.theme.warning }]} />
-        <Ionicons name="stopwatch-outline" size={40} color={!siguiente ? props.theme.warning : props.theme.success} />
-      </View>
-      {/* Boton */}
-      <Boton
-        name={currentIndex + 1 < data.length ? 'SIGUIENTE' : 'SALIR'}
-        onPress={() => {
-          if (siguiente) {
-            if (currentIndex + 1 < data.length) {
-              setCurrentIndex(currentIndex + 1)
-              restartAnimation()
-            }
-            else {
-              props.uploadToHistory()
-              router.back()
-              Alert.alert("Felicidades!", "Terminaste con el ejercicio")
-            }
-          }
-        }}
-        viewStyle={[styles.primaryButton, { backgroundColor: !siguiente ? props.theme.accentMuted : props.theme.accent }]}
-        textStyle={[styles.primaryButtonText, { color: props.theme.text }]}
-      />
+
+      <View style={{padding:40}}></View>
 
       {/* Progreso */}
       <View style={styles.progressWrap}>
