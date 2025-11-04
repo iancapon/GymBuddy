@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, ImageBackground, StyleSheet, StyleProp, ViewStyle, Text, View, Animated } from 'react-native';
+import { Alert, ImageBackground, StyleSheet, StyleProp, ViewStyle, Text, View, TouchableOpacity } from 'react-native';
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
 import * as Speech from 'expo-speech';
 import Boton from './Boton';
 import { useRouter } from 'expo-router';
@@ -55,48 +56,64 @@ function Slide(ejercicio: slideProps) {
   const [descansoNum, setDescansoNum] = useState(0)
   const [momento, setMomento] = useState<'EMPEZAR' | 'SERIE' | 'DESCANSO' | 'SALIR'>('EMPEZAR')
 
-  const timeLeft = useRef(new Animated.Value(0)).current;
+  const timeBarWidth = useSharedValue(100)
 
-  const timeBarWidth = timeLeft.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['100%', '0%'],
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    width: `${timeBarWidth.value}%`,
+  }))
+
+  ////////// podria cambiar el valor segun la duracion de la serie o el tiempo de descanso
+  ////////// pero va a ser muy larga la demostracion
+  const handleAnimation = () => {
+    timeBarWidth.value = 100 // reset
+    timeBarWidth.value = withTiming(0, { duration: 1000 }) // animate shrink
+  }
 
   const handleEmpezar = () => {
-    setSerieNum(serieNum + 1)
-    setMomento('SERIE')
-    // iniciar contador de tiempo para serie
+    if (timeBarWidth.value === 0) {
+      setSerieNum(serieNum + 1)
+      setMomento('SERIE')
+      // iniciar contador de tiempo para serie
+    }
   }
 
   const handleSerie = () => {
-    setDescansoNum(descansoNum + 1)
-    setMomento('DESCANSO')
-    // iniciar contador de tiempo para descanso
+    if (timeBarWidth.value === 0) {
+      setDescansoNum(descansoNum + 1)
+      setMomento('DESCANSO')
+      // iniciar contador de tiempo para descanso
+    }
   }
 
   const handleDescanso = () => {
-    setSerieNum(serieNum + 1)
-    setMomento('SERIE')
-    // iniciar contador de tiempo para serie
+    if (timeBarWidth.value === 0) {
+      setSerieNum(serieNum + 1)
+      setMomento('SERIE')
+      // iniciar contador de tiempo para serie
+    }
   }
 
   const handleSalir = () => {
-    setSerieNum(0)
-    setDescansoNum(0)
-    setMomento('EMPEZAR')
-    ejercicio.siguienteSlide()
+    if (timeBarWidth.value === 0) {
+      setSerieNum(0)
+      setDescansoNum(0)
+      setMomento('EMPEZAR')
+      ejercicio.siguienteSlide()
+    }
+
   }
 
   useEffect(() => {
+    handleAnimation()
     if (descansoNum >= series) {
       setMomento('SALIR')
     }
-  }, [descansoNum])
+  }, [descansoNum, momento])
 
   return (
     <View style={[styles.wrapper,]}>
       <ImageBackground
-        source={{ uri: hasImage ? ejercicio.datos.media : noImage }}
+        source={{ uri: hasImage && ejercicio.haySiguiente ? ejercicio.datos.media : noImage }}
         resizeMode="cover"
         style={styles.image}
         imageStyle={styles.imageRadius}
@@ -134,7 +151,8 @@ function Slide(ejercicio: slideProps) {
           {momento === 'DESCANSO' && (
             <>
               <Text style={styles.title} numberOfLines={2}>{titulo}</Text>
-              <Text style={[styles.info, styles.info2]}>{info2}</Text>
+              <Text style={styles.info} numberOfLines={2}>{`Descanso número ${descansoNum}`}</Text>
+              <Text style={[styles.info]}>{info2}</Text>
               <Boton
                 name={'SIGUIENTE'}
                 onPress={handleDescanso}
@@ -146,7 +164,7 @@ function Slide(ejercicio: slideProps) {
 
           {momento === 'SALIR' && (
             <>
-              <Text style={styles.info} numberOfLines={2}>{'Fin del ejercicio'}</Text>
+              <Text style={styles.title} numberOfLines={2}>{ejercicio.haySiguiente ? 'Fin del ejercicio' : 'Fin de la rutina'}</Text>
               <Boton
                 name={ejercicio.haySiguiente ? 'SIGUIENTE EJERCICIO' : 'SALIR'}
                 onPress={handleSalir}
@@ -155,6 +173,17 @@ function Slide(ejercicio: slideProps) {
               />
             </>
           )}
+
+          {/* -- barra de tiempo -- */}
+          <View style={[styles.progressWrap, {}]}>
+            <View style={[styles.progressTrack, { alignItems: "center" }]}>
+              <Animated.View
+                style={[animatedStyle, styles.progressFill, {backgroundColor: ejercicio.theme.accent}]}
+              >
+              </Animated.View>
+            </View>
+          </View>
+
         </View>
       </ImageBackground>
     </View>
@@ -227,7 +256,7 @@ export default function Slides(props: myListProps) {
         theme={props.theme}
       />
 
-      <View style={{padding:40}}></View>
+      <View style={{ padding: 40 }}></View>
 
       {/* Progreso */}
       <View style={styles.progressWrap}>

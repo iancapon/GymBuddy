@@ -76,6 +76,8 @@ export default function CrearScreen() {
 
       const routineId = routineData.routine.id;
 
+      const toNum = (v: any) => v !== undefined && v !== null && v !== '' ? Number(v) : 0;
+
       // 2. Create all exercises for this routine
       for (const ejercicio of ejercicios) {
         const exercise = await fetch(`${API_URL}/workout/exercise`, {
@@ -88,10 +90,10 @@ export default function CrearScreen() {
             routineId,
             titulo: ejercicio.titulo,
             media: ejercicio.media,
-            series: (ejercicio.series),
-            repesXseries: (ejercicio.repesXserie),
-            tiempoXserie: (ejercicio.tiempoXserie),
-            descansoXserie: (ejercicio.descansoXserie)
+            series: toNum(ejercicio.series),
+            repesXserie: toNum(ejercicio.repesXserie),
+            tiempoXserie: toNum(ejercicio.tiempoXserie),
+            descansoXserie: toNum(ejercicio.descansoXserie)
 
           }),
         });

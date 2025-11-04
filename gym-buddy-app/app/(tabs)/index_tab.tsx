@@ -278,14 +278,14 @@ export default function IndexTab() {
             <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
           </View>
           <TouchableOpacity onPress={toggleTema}>
-            <View style={[styles.modeButtons, { flex: 1, justifyContent: "flex-end", padding:2, borderWidth:1, borderRadius:100, borderColor:theme.textMuted }]}>
+            <View style={[styles.modeButtons, { flex: 1, justifyContent: "flex-end", padding: 2, borderWidth: 1, borderRadius: 100, borderColor: theme.textMuted }]}>
               <Ionicons
                 name="moon"
                 size={26}
                 color={mode === 'dark' ? theme.accent : theme.textMuted}
                 style={styles.modeIcon}
               />
-              <View style={{width:1, height:"100%", backgroundColor:theme.textMuted}}></View>
+              <View style={{ width: 1, height: "100%", backgroundColor: theme.textMuted }}></View>
               <Ionicons
                 name="sunny"
                 size={26}

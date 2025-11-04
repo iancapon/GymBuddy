@@ -361,6 +361,7 @@ export default function ProgramarScreen() {
                     <Ionicons name="barbell-outline" size={24} color="#4DB6FF" />
                     <View style={styles.routineItemInfo}>
                       <Text style={styles.routineItemName}>{routine.nombre}</Text>
+
                       <Text style={styles.routineItemExercises}>
                         {routine.exercises.length} ejercicio{routine.exercises.length > 1 ? 's' : ''}
                       </Text>
@@ -369,6 +370,8 @@ export default function ProgramarScreen() {
                   </TouchableOpacity>
                 ))
               )}
+
+              <View style={{ paddingVertical: 20 }}></View>
             </ScrollView>
           </View>
         </View>
