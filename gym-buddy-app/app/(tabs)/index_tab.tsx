@@ -392,7 +392,7 @@ export default function IndexTab() {
           visible={editar_eliminar_visible}
           setVisible={set_ee_visible}
           titulo='¿Vas a editar o eliminar?'
-          subtitulo={`Rutina ${"~~~"}`}
+          subtitulo={`Esto aún no está implementado`}
           botonA='editar'
           botonAOnPress={handleEditRoutine}
           botonB='eliminar'
@@ -493,7 +493,8 @@ export default function IndexTab() {
             <Text style={[styles.smallTitle, { color: theme.text }]}>Registro Histórico</Text>
           </Boton>
 
-          {/* -- backlog -- */}
+          {/* -- diario de entrenamiento -- (aún no está implementado) */}
+          {/*
           <Boton
             onPress={() => Alert.alert("perdonnn 😭", "Esto aún no ha sido implementado")}
             viewStyle={[
@@ -504,8 +505,10 @@ export default function IndexTab() {
             <Ionicons name="book-outline" size={40} color="#fff" />
             <Text style={[styles.smallTitle, { color: theme.text }]}>Mi diario</Text>
           </Boton>
+          */}
         </View>
-
+        {/* -- Noticias -- */}
+        {/*  
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Noticias..</Text>
 
         <Boton
@@ -519,6 +522,8 @@ export default function IndexTab() {
           <Text style={[styles.mainTitle, { color: theme.text }]}>Noticias de la semana</Text>
           <Text style={[styles.mainSubtitle, { color: theme.text }]}>{fechaDeHoy}</Text>
         </Boton>
+
+        */}
 
       </ScrollView>
 

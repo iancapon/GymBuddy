@@ -272,37 +272,48 @@ export default function ProgramarScreen() {
         {/* Days List */}
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Días de la Semana</Text>
         {dayAssignments.map((day) => (
-          <View key={day.dayIndex} style={[styles.dayCard, { backgroundColor: theme.overlay, borderColor: theme.border }]}>
-            <View style={[styles.dayInfo, { backgroundColor: theme.overlay }]}>
-              <Text style={[styles.dayName, { color: theme.text }]}>{day.dayName}</Text>
-              {day.routineName ? (
-                <View style={styles.assignedRoutine}>
-                  <Ionicons name="barbell" size={16} color="#43e97b" />
-                  <Text style={styles.routineName}>{day.routineName}</Text>
-                </View>
-              ) : (
-                <Text style={styles.noRoutine}>Sin rutina asignada</Text>
-              )}
-            </View>
+          <TouchableOpacity
+            key={day.dayIndex}
+            onPress={() => {
+              if (day.routineId) {
+                removeRoutineFromDay(day.dayIndex)
+              } else {
+                setSelectedDayIndex(day.dayIndex)
+              }
+            }}
+          >
+            <View style={[styles.dayCard, { backgroundColor: theme.overlay, borderColor: theme.border }]}>
+              <View style={[styles.dayInfo, { backgroundColor: theme.overlay }]}>
+                <Text style={[styles.dayName, { color: theme.text }]}>{day.dayName}</Text>
+                {day.routineName ? (
+                  <View style={styles.assignedRoutine}>
+                    <Ionicons name="barbell" size={16} color="#43e97b" />
+                    <Text style={styles.routineName}>{day.routineName}</Text>
+                  </View>
+                ) : (
+                  <Text style={styles.noRoutine}>Sin rutina asignada</Text>
+                )}
+              </View>
 
-            <View style={styles.dayActions}>
-              {day.routineId ? (
-                <TouchableOpacity
-                  onPress={() => removeRoutineFromDay(day.dayIndex)}
-                  style={styles.removeButton}
-                >
-                  <Ionicons name="close-circle" size={28} color="#ff6b6b" />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => setSelectedDayIndex(day.dayIndex)}
-                  style={styles.addButton}
-                >
-                  <Ionicons name="add-circle" size={28} color="#4DB6FF" />
-                </TouchableOpacity>
-              )}
+              <View style={styles.dayActions}>
+                {day.routineId ? (
+                  <View
+                    //onPress={() => removeRoutineFromDay(day.dayIndex)}
+                    style={styles.removeButton}
+                  >
+                    <Ionicons name="close-circle" size={28} color="#ff6b6b" />
+                  </View>
+                ) : (
+                  <View
+                    //onPress={() => setSelectedDayIndex(day.dayIndex)}
+                    style={styles.addButton}
+                  >
+                    <Ionicons name="add-circle" size={28} color="#4DB6FF" />
+                  </View>
+                )}
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
         <View style={{ paddingBottom: 20 }}></View>
       </ScrollView>
