@@ -75,7 +75,8 @@ export default function AuthProvider() { /////////////////////////////////// el 
 
         <Stack.Screen name="registro_screen" options={{ headerShown: false }} />
 
-        <Stack.Screen name="(modals)" options={{ headerShown: false }} />
+        <Stack.Screen name="(principal)" options={{ headerShown: false }} />
+        
 
       </Stack>
       <StatusBar style="light" />

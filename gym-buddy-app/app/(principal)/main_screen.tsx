@@ -294,7 +294,7 @@ export default function IndexTab() {
           onPress={() => {
             todaysRoutine == undefined ? Alert.alert("Esperá! 👋👋", "Primero programá una rutina") :
               router.push({
-                pathname: '../(modals)/workout_screen',
+                pathname: './workout_screen',
                 params: { userId: user?.id?.toString(), routineId: todaysRoutine.id, nombre: todaysRoutine.nombre }
               })
           }}
@@ -316,7 +316,7 @@ export default function IndexTab() {
         <View style={{ flex: 1, flexDirection: "row", }}>
           <View style={{ width: 130 }}>
             <Boton
-              onPress={() => router.push('../(modals)/programar_screen')}
+              onPress={() => router.push('./programar_screen')}
               viewStyle={[
                 styles.smallCard,
                 { backgroundColor: theme.warning, shadowColor: theme.text },
@@ -398,7 +398,7 @@ export default function IndexTab() {
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ width: 130 }}>
             <Boton
-              onPress={() => router.push('../(modals)/crear_screen')}
+              onPress={() => router.push('./crear_screen')}
               viewStyle={[
                 styles.smallCard,
                 { backgroundColor: theme.success, shadowColor: theme.text },
@@ -433,7 +433,7 @@ export default function IndexTab() {
 
               <Boton
                 onPress={() => router.push({
-                  pathname: '../(modals)/workout_screen',
+                  pathname: './workout_screen',
                   params: { userId: user?.id?.toString(), routineId: item.id, nombre: item.nombre }
                 })}
                 onLongPress={() => {
@@ -475,7 +475,7 @@ export default function IndexTab() {
         <View style={styles.row}>
           {/* -- historial -- */}
           <Boton
-            onPress={() => router.push('../(modals)/historial_screen')}
+            onPress={() => router.push('./historial_screen')}
             viewStyle={[
               styles.smallCard,
               { backgroundColor: theme.progressFill, shadowColor: theme.text },

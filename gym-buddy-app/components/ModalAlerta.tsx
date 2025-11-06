@@ -2,6 +2,7 @@ import { StyleSheet, Modal, Text, View, FlatList, ImageBackground, Alert } from 
 import Boton from './Boton';
 import { Calendar } from 'react-native-calendars';
 import { useState } from 'react';
+import useTheme from '../hooks/useTheme';
 
 type props = {
     visible: boolean;
@@ -17,18 +18,20 @@ type props = {
 };
 
 export default function ModalAlerta(props: props) {
+    const { theme } = useTheme()
+
     return (
         <Modal animationType="fade" transparent visible={props.visible} onRequestClose={() => props.setVisible(false)}>
             <View style={styles.modalOverlay}>
                 <View style={styles.modalCard}>
                     <Text style={styles.modalTitle}>{props.titulo}</Text>
                     <Text style={styles.modalSubtitle}>{props.subtitulo}</Text>
-                    <View style={{flexDirection:"row"}}>
+                    <View style={{ flexDirection: "row" }}>
                         {
                             props.botonA != undefined ?
                                 <Boton
                                     name={props.botonA}
-                                    viewStyle={styles.modalButton}
+                                    viewStyle={[styles.modalButton, { backgroundColor: theme.warning }]}
                                     textStyle={styles.modalButtonText}
                                     onPress={props.botonAOnPress}
                                 /> : <></>
@@ -37,7 +40,7 @@ export default function ModalAlerta(props: props) {
                             props.botonB != undefined ?
                                 <Boton
                                     name={props.botonB}
-                                    viewStyle={styles.modalButton}
+                                    viewStyle={[styles.modalButton, { backgroundColor: theme.warning }]}
                                     textStyle={styles.modalButtonText}
                                     onPress={props.botonBOnPress}
                                 /> : <></>
@@ -46,7 +49,7 @@ export default function ModalAlerta(props: props) {
                             props.botonC != undefined ?
                                 <Boton
                                     name={props.botonC}
-                                    viewStyle={styles.modalButton}
+                                    viewStyle={[styles.modalButton, { backgroundColor: theme.warning }]}
                                     textStyle={styles.modalButtonText}
                                     onPress={props.botonCOnPress}
                                 /> : <></>
@@ -165,7 +168,6 @@ const styles = StyleSheet.create({
     modalButton: {
         backgroundColor: COLORS.accent,
         borderRadius: 12,
-        paddingHorizontal: 30,
         paddingVertical: 10,
     },
     modalButtonText: {
