@@ -4,17 +4,8 @@ import { ThemeProvider } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode"
 import * as SystemUI from 'expo-system-ui';
-import THEMES from "../constants/THEMES";
-
-
-type customTheme = {
-  theme: 'light' | 'dark'
-}
-
-export const ContextoTema = createContext<{
-  themeContext: customTheme
-  setThemeContext: React.Dispatch<React.SetStateAction<customTheme>>;
-} | null>(null)
+import useTheme from "../hooks/useTheme";
+import { StatusBar } from "expo-status-bar";
 
 type userInfo = {
   id: Number
@@ -38,9 +29,7 @@ export function useAuth() {
 export default function AuthProvider() { /////////////////////////////////// el nuevo Root Layout
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<userInfo>(null);
-  const [themeContext, setThemeContext] = useState<customTheme>({ theme: "dark" })
-  const theme = THEMES()[themeContext.theme];
-
+  const { theme, themeValue } = useTheme()
 
   useEffect(() => {
     const cargarToken = async () => {
@@ -61,7 +50,7 @@ export default function AuthProvider() { /////////////////////////////////// el 
     };
     cargarToken();
     SystemUI.setBackgroundColorAsync(theme.header)
-    
+
   }, []);
 
   const login = async (newToken: string | null) => {
@@ -80,17 +69,16 @@ export default function AuthProvider() { /////////////////////////////////// el 
 
   return (
     <AuthContext.Provider value={{ user, token, setUser, setToken, login, logout }}>
-      <ContextoTema.Provider value={{ themeContext, setThemeContext }}>
-        <Stack>
+      <Stack>
 
-          <Stack.Screen name="index" options={{ headerShown: false, }} />
+        <Stack.Screen name="index" options={{ headerShown: false, }} />
 
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="registro_screen" options={{ headerShown: false }} />
 
-          <Stack.Screen name="(modals)" options={{ headerShown: false }} />
+        <Stack.Screen name="(modals)" options={{ headerShown: false }} />
 
-        </Stack>
-      </ContextoTema.Provider>
+      </Stack>
+      <StatusBar style="light" />
     </AuthContext.Provider>
   );
 }

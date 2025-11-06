@@ -1,22 +1,7 @@
 // 🎨 Paletas de color mejoradas
-const THEMES = {
-    image: {
-        bg: 'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000',
-        overlay: 'rgba(0,0,0,0.55)',
-        text: '#fff',
-        textMuted: 'rgba(255,255,255,0.7)',
-        accent: '#4DB6FF',
-        accentMuted: '#31709cff',
-        success: '#43e97b',
-        warning: '#ffb74d',
-        cardBg: 'rgba(255,255,255,0.12)',
-        border: 'rgba(255,255,255,0.2)',
-        progressTrack: 'rgba(255,255,255,0.18)',
-        progressFill: '#FFB46B',
-    },
+export const THEMES = {
     dark: {
-        bg: undefined,
-        header:"#252a35ff",
+        header: "#252a35ff",
         overlay: '#0f1115',
         text: '#e8f0ff',
         textMuted: '#94a3b8',
@@ -30,8 +15,7 @@ const THEMES = {
         progressFill: '#6b81ffff',
     },
     light: {
-        bg: undefined,
-        header:"#ffffffff",
+        header: "#ffffffff",
         overlay: '#f6f7fb',
         text: '#212529',
         textMuted: '#606770',
@@ -45,5 +29,3 @@ const THEMES = {
         progressFill: '#6babffff',
     },
 };
-
-export default () => THEMES

@@ -5,13 +5,13 @@ import Boton from '../../components/Boton';
 import Slides from '../../components/Slides';
 import { useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
-import { useAuth, ContextoTema } from '../_layout';
-import THEMES from '../../constants/THEMES';
+import { useAuth } from '../_layout';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 
-import api_url from "../../constants/API_URL"
-const API_URL = api_url()
+import useTheme from '../../hooks/useTheme';
+
+import { API_URL } from '../../constants/API_URL';
 
 type Exercise = {
   id: number;
@@ -34,13 +34,10 @@ type Routine = {
 };
 
 export default function WorkoutScreen() {
-  const contextoTema = useContext(ContextoTema)
-  const mode = contextoTema?.themeContext.theme
-  const theme = THEMES()[mode != undefined ? mode : 'light'];
-
   const router = useRouter();
   const params = useLocalSearchParams();
   const { user, token, setUser, setToken, login, logout } = useAuth()
+  const { theme } = useTheme()
 
   const routineId = params.routineId as string;
   const userId = params.userId as string
@@ -142,7 +139,6 @@ export default function WorkoutScreen() {
             theme={theme} />
         </View>
       </View>
-      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View>
   );
 }

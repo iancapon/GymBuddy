@@ -4,21 +4,18 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Boton from '../../components/Boton';
 import Tarjeta from '../../components/Tarjeta';
-import { useAuth, ContextoTema } from '../_layout'
+import { useAuth } from '../_layout'
 import { Ionicons } from '@expo/vector-icons';
-import THEMES from '../../constants/THEMES';
 import Header from '../../components/Header';
+import useTheme from '../../hooks/useTheme';
 
-import api_url from "../../constants/API_URL"
-const API_URL = api_url()
+import { API_URL } from '../../constants/API_URL';
 
 export default function CrearScreen() {
   const router = useRouter();
   const { user, token, setUser, setToken, login, logout } = useAuth()
 
-  const contextoTema = useContext(ContextoTema)
-  const mode = contextoTema?.themeContext.theme
-  const theme = THEMES()[mode != undefined ? mode : 'light'];
+  const { theme } = useTheme()
 
   const [titulo, setTitulo] = useState('');
   const [ejercicios, setEjercicios] = useState<ejercicio[]>([]);
@@ -134,12 +131,8 @@ export default function CrearScreen() {
   }
 
   return (
-    <ImageBackground
-      source={{
-        uri: 'https://plus.unsplash.com/premium_photo-1661301057249-bd008eebd06a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3ltfGVufDB8fDB8fHww',
-      }}
-      style={styles.bg}
-      resizeMode="cover"
+    <View
+      style={[styles.bg, { backgroundColor: theme.overlay }]}
     >
       <View style={styles.overlay} />
       {/* Header */}
@@ -242,20 +235,20 @@ export default function CrearScreen() {
             <Boton
               name="Nuevo ejercicio"
               onPress={() => setNuevaTarjetaVisible(true)}
-              viewStyle={[styles.primaryButton, { flex: 1, marginRight: 10, opacity: savingRoutine ? 0.6 : 1 }]}
-              textStyle={styles.primaryButtonText}
+              viewStyle={[styles.primaryButton, { backgroundColor: theme.warning, flex: 1, marginRight: 10, opacity: savingRoutine ? 0.6 : 1 }]}
+              textStyle={[styles.primaryButtonText, { color: theme.text }]}
             />
             <Boton
               name={savingRoutine ? 'Guardando...' : 'Guardar rutina'}
               onPress={handleGuardarRutina}
-              viewStyle={[styles.secondaryButton, { flex: 1, marginLeft: 10, opacity: savingRoutine ? 0.6 : 1 }]}
-              textStyle={styles.secondaryButtonText}
+              viewStyle={[styles.secondaryButton, { backgroundColor: theme.cardBg, flex: 1, marginLeft: 10, opacity: savingRoutine ? 0.6 : 1 }]}
+              textStyle={[styles.secondaryButtonText, { color: theme.text }]}
             />
           </View>
         </View>
       </TouchableWithoutFeedback>
-      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
-    </ImageBackground>
+      <StatusBar style='light'/>
+    </View>
   );
 }
 

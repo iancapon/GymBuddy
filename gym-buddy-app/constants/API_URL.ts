@@ -1,4 +1,3 @@
-// ACÁ PONES LA DIRECCION IPV4 DE TU COMPUTADORA.. http://(......):4000/api
-const ip = "192.168.0.12"
+const ip = "172.29.144.42"
 const port = "4000"
-export default () => `http://${ip}:${port}/api`
+export const API_URL = `http://${ip}:${port}/api`

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, use } from 'react';
 import {
   View,
   Text,
@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth, ContextoTema } from '../_layout';
-import api_url from '../../constants/API_URL';
+import { useAuth } from '../_layout';
 import Boton from '../../components/Boton';
 import { StatusBar } from 'expo-status-bar';
-import THEMES from '../../constants/THEMES'
 import Header from '../../components/Header';
 
-const API_URL = api_url();
+import useTheme from '../../hooks/useTheme';
+
+import { API_URL } from '../../constants/API_URL';
 
 type Routine = {
   id: number;
@@ -43,9 +43,7 @@ const DAYS_OF_WEEK = [
 ];
 
 export default function ProgramarScreen() {
-  const contextoTema = useContext(ContextoTema)
-  const mode = contextoTema?.themeContext.theme
-  const theme = THEMES()[mode != undefined ? mode : 'light'];
+  const { theme } = useTheme()
 
   const router = useRouter();
   const { user, token, setUser, setToken, login, logout } = useAuth()
@@ -253,7 +251,6 @@ export default function ProgramarScreen() {
   return (
 
     <View style={[styles.container, { backgroundColor: theme.overlay }]}>
-      <StatusBar style={mode == "light" ? "dark" : "light"} />
 
       {/* Header */}
       <Header theme={theme} backButton={true} >
@@ -387,7 +384,6 @@ export default function ProgramarScreen() {
           </View>
         </View>
       )}
-      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View>
   );
 }

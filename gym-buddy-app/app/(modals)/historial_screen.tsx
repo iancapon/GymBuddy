@@ -3,15 +3,14 @@ import Boton from '../../components/Boton';
 import { Calendar } from 'react-native-calendars';
 import { useState, useEffect, useCallback, useContext } from 'react';
 import ModalAlerta from '../../components/ModalAlerta';
-import { useAuth, ContextoTema } from '../_layout';
-import THEMES from '../../constants/THEMES';
+import { useAuth } from '../_layout';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import { StatusBar } from 'expo-status-bar';
+import useTheme from '../../hooks/useTheme';
 
-import api_url from "../../constants/API_URL"
-const API_URL = api_url()
+import { API_URL } from '../../constants/API_URL';
 
 type Routine = {
   id: number;
@@ -50,9 +49,7 @@ export default function Historial() {
   const [fechaModal, setFechaModal] = useState('');
   const [rutinaModal, setRutinaModal] = useState<Routine>()
 
-  const contextoTema = useContext(ContextoTema)
-  const mode = contextoTema?.themeContext.theme
-  const theme = THEMES()[mode != undefined ? mode : 'light'];
+  const { theme } = useTheme()
 
   const [history, setHistory] = useState<Array<History>>([]);
 
@@ -204,7 +201,6 @@ export default function Historial() {
           )}
         />
       </View>
-      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
     </View >
   );
 }

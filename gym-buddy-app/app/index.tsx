@@ -5,8 +5,7 @@ import Boton from "../components/Boton";
 import { StatusBar } from "expo-status-bar";
 import { useAuth } from "./_layout";
 
-import api_url from "../constants/API_URL"
-const API_URL = api_url()
+import { API_URL } from "../constants/API_URL";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -79,7 +78,7 @@ export default function LoginScreen() {
       setPassword("");
       setLoading(false);
       // navegar a la Home (ruta real sin el grupo)
-      router.replace("/index_tab");
+      router.replace("/main_screen");
     }
   }, [user]);
 
@@ -148,7 +147,6 @@ export default function LoginScreen() {
           textStyle={styles.botonText}
         />
       </View>
-      <StatusBar style="dark" />
     </ScrollView>
   );
 }

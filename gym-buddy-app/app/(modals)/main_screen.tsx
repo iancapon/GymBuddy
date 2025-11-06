@@ -4,14 +4,15 @@ import { useMemo, useState, useCallback, useContext, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useAuth, ContextoTema } from '../_layout';
+import { useAuth } from '../_layout';
 import Header from '../../components/Header';
-import THEMES from '../../constants/THEMES'
 import Boton from '../../components/Boton';
 import ModalAlerta from '../../components/ModalAlerta';
-import api_url from "../../constants/API_URL"
 
-const API_URL = api_url()
+import useTheme from '../../hooks/useTheme';
+
+import { API_URL } from '../../constants/API_URL';
+
 
 type Routine = {
   userId: number;
@@ -41,6 +42,7 @@ const DAYS_OF_WEEK = [
 export default function IndexTab() {
   const router = useRouter();
   const { user, token, setUser, setToken, login, logout } = useAuth()
+  const { theme } = useTheme()
   const [nombre, setNombre] = useState("...")
 
   const [loadingRoutines, setLoadingRoutines] = useState(false);
@@ -58,9 +60,7 @@ export default function IndexTab() {
   );
   const [editar_eliminar_visible, set_ee_visible] = useState(false)
 
-  const contextoTema = useContext(ContextoTema)
-  const mode = contextoTema?.themeContext.theme
-  const theme = THEMES()[mode != undefined ? mode : 'light'];
+  const [modal, setModal] = useState(false)
 
   // 📅 Fecha con formato “16 de Octubre del 2025” (sin Intl)
   const fechaDeHoy = useMemo(() => formatFechaES(new Date()), []);
@@ -250,14 +250,6 @@ export default function IndexTab() {
     Alert.alert("oops 🫠", "aún no está implementado")
   }
 
-  const toggleTema = () => {
-    if (contextoTema?.themeContext.theme == 'light') {
-      return contextoTema.setThemeContext({ theme: 'dark' })
-    } else {
-      contextoTema?.setThemeContext({ theme: 'light' })
-    }
-  }
-
   return (
     <View style={[styles.container, { backgroundColor: theme.overlay, width: "100%" }]}>
 
@@ -272,28 +264,28 @@ export default function IndexTab() {
         style={[{ width: "100%", paddingHorizontal: 10 }]}
 
       >
+        {/* -- Modal para cerrar sesion -- */}
+        <ModalAlerta
+          visible={modal} setVisible={setModal}
+          titulo={'🏋️ Estas por cerrar sesión'}
+          subtitulo={'¿Seguro que deseas continuar?'}
+          botonA='Mantener sesion' botonAOnPress={() => setModal(false)}
+          botonB={'Cerrar sesion'} botonBOnPress={() => {
+            logout()
+            setModal(false);
+          }}
+        />
         {/* 🔝 sub Header con saludo y selector */}
-        <View style={{ flexDirection: "row", flex: 1, padding: 10 }}>
+        <View style={{ flexDirection: "row", flex: 1, padding: 10, alignItems:"center" }}>
           <View style={{ flex: 3 }}>
             <Text style={[styles.greeting, { color: theme.text }]}>Hola {nombre} 👋</Text>
           </View>
-          <TouchableOpacity onPress={toggleTema}>
-            <View style={[styles.modeButtons, { flex: 1, justifyContent: "flex-end", padding: 2, borderWidth: 1, borderRadius: 100, borderColor: theme.textMuted }]}>
-              <Ionicons
-                name="moon"
-                size={26}
-                color={mode === 'dark' ? theme.accent : theme.textMuted}
-                style={styles.modeIcon}
-              />
-              <View style={{ width: 1, height: "100%", backgroundColor: theme.textMuted }}></View>
-              <Ionicons
-                name="sunny"
-                size={26}
-                color={mode === 'light' ? theme.accent : theme.textMuted}
-                style={styles.modeIcon}
-              />
-            </View>
-          </TouchableOpacity>
+          <Boton
+            name='Cerrar Sesión'
+            onPress={() => setModal(true)}
+            viewStyle={[{borderWidth:1, borderColor: theme.text, backgroundColor: theme.overlay }]}
+            textStyle={{ color: theme.text }}
+          />
         </View>
 
 
@@ -493,42 +485,11 @@ export default function IndexTab() {
             <Text style={[styles.smallTitle, { color: theme.text }]}>Registro Histórico</Text>
           </Boton>
 
-          {/* -- diario de entrenamiento -- (aún no está implementado) */}
-          {/*
-          <Boton
-            onPress={() => Alert.alert("perdonnn 😭", "Esto aún no ha sido implementado")}
-            viewStyle={[
-              styles.smallCard,
-              { backgroundColor: theme.warning, shadowColor: theme.text },
-            ]}
-          >
-            <Ionicons name="book-outline" size={40} color="#fff" />
-            <Text style={[styles.smallTitle, { color: theme.text }]}>Mi diario</Text>
-          </Boton>
-          */}
         </View>
-        {/* -- Noticias -- */}
-        {/*  
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Noticias..</Text>
 
-        <Boton
-          onPress={() => Alert.alert("Perdón 😭", "Esto aún no está implementado")}
-          viewStyle={[
-            styles.mainCard,
-            { backgroundColor: theme.accent, shadowColor: theme.text },
-          ]}
-        >
-          <Ionicons name="newspaper" size={60} color="#fff" />
-          <Text style={[styles.mainTitle, { color: theme.text }]}>Noticias de la semana</Text>
-          <Text style={[styles.mainSubtitle, { color: theme.text }]}>{fechaDeHoy}</Text>
-        </Boton>
-
-        */}
-
+        <View style={{ paddingVertical: 100 }}></View>
       </ScrollView>
-
-
-      <StatusBar style={mode == 'dark' ? 'light' : 'dark'} />
+      <StatusBar style='light' />
     </View>
   );
 }

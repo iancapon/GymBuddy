@@ -1,14 +1,13 @@
 import { Text, View, ScrollView, StyleSheet, TextInput, ImageBackground, ActivityIndicator, Alert } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import Boton from "../../components/Boton";
+import Boton from "../components/Boton";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
-import workoutsBase from "../workoutsBase";
-import { useAuth } from "../_layout";
+import workoutsBase from "./workoutsBase";
+import { useAuth } from "./_layout";
 
-import api_url from "../../constants/API_URL"
-const API_URL = api_url()
+import { API_URL } from "../constants/API_URL";
 
 export default function RegistroScreen() {
   const { login } = useAuth()
