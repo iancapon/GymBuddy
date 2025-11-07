@@ -143,10 +143,7 @@ export default function ProgramarScreen() {
     }
   }
 
-  useEffect(() => {
-    fetchUserRoutines()
-    fetchAlreadyAssignedDays()
-  }, [user]);
+
 
 
   // Asigno rutina a un dia
@@ -231,12 +228,6 @@ export default function ProgramarScreen() {
           }
         }
       }
-      router.back()
-      Alert.alert(
-        '¡Éxito!',
-        'Tu programación semanal ha sido guardada correctamente',
-        [{ text: 'OK' }]
-      );
     } catch (error) {
       console.error('Error saving schedule:', error);
       Alert.alert(
@@ -248,6 +239,12 @@ export default function ProgramarScreen() {
     }
   };
 
+
+  useEffect(() => {
+    fetchUserRoutines()
+    fetchAlreadyAssignedDays()
+  }, [user]);
+
   return (
 
     <View style={[styles.container, { backgroundColor: theme.overlay }]}>
@@ -258,6 +255,35 @@ export default function ProgramarScreen() {
       </Header>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+
+        {/* Save Button */}
+        <Boton
+          viewStyle={[
+            styles.saveButton,
+            savingSchedule && styles.saveButtonDisabled,
+            { backgroundColor: theme.warning, opacity: 0.9 }
+          ]}
+          onPress={() => {
+            if (!savingSchedule) {
+              saveSchedule()
+            }
+          }}
+        >
+          {savingSchedule ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <>
+              <Ionicons name="checkmark-circle" size={24} color="#fff" />
+              <Text style={styles.saveButtonText}>Guardar Programación</Text>
+            </>
+          )}
+        </Boton>
+
+
+
+        {/* Days List */}
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Días de la Semana</Text>
+
         {/* Instructions */}
         <View style={styles.instructionCard}>
           <Ionicons name="information-circle-outline" size={24} color="#4DB6FF" />
@@ -266,8 +292,6 @@ export default function ProgramarScreen() {
           </Text>
         </View>
 
-        {/* Days List */}
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Días de la Semana</Text>
         {dayAssignments.map((day) => (
           <TouchableOpacity
             key={day.dayIndex}
@@ -312,35 +336,16 @@ export default function ProgramarScreen() {
             </View>
           </TouchableOpacity>
         ))}
-        <View style={{ paddingBottom: 20 }}></View>
+
+
+        <View style={{ paddingVertical: 60 }}></View>
       </ScrollView>
 
-      {/* Save Button */}
-      <Boton
-        viewStyle={[
-          styles.saveButton,
-          savingSchedule && styles.saveButtonDisabled,
-          { marginTop: 0, marginBottom: 60, backgroundColor: theme.success }
-        ]}
-        onPress={() => {
-          if (!savingSchedule) {
-            saveSchedule()
-          }
-        }}
-      >
-        {savingSchedule ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <>
-            <Ionicons name="checkmark-circle" size={24} color="#fff" />
-            <Text style={styles.saveButtonText}>Guardar Programación</Text>
-          </>
-        )}
-      </Boton>
+
 
       {/* Modal de seleccion de rutina */}
       {selectedDayIndex !== null && (
-        <View style={styles.modal}>
+        <View style={[styles.modal, { marginBottom: 110 }]}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
@@ -352,7 +357,7 @@ export default function ProgramarScreen() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.routineList}>
+            <ScrollView style={[styles.routineList, {}]}>
               {loadingRoutines ? (
                 <ActivityIndicator size="large" color="#4DB6FF" style={{ marginTop: 20 }} />
               ) : routines.length === 0 ? (
@@ -379,11 +384,12 @@ export default function ProgramarScreen() {
                 ))
               )}
 
-              <View style={{ paddingVertical: 20 }}></View>
             </ScrollView>
           </View>
         </View>
       )}
+
+
     </View>
   );
 }
@@ -488,14 +494,14 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   saveButton: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#43e97b',
     padding: 18,
     borderRadius: 12,
-    marginTop: 24,
-    marginBottom: 40,
+
   },
   saveButtonDisabled: {
     backgroundColor: '#94a3b8',
@@ -517,8 +523,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderRadius: 20,
     maxHeight: '70%',
     paddingBottom: 20,
   },

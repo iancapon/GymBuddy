@@ -398,7 +398,7 @@ export default function IndexTab() {
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ width: 130 }}>
             <Boton
-              onPress={() => router.push('./crear_screen')}
+              onPress={() => router.push('../(modals)/crear_screen')}
               viewStyle={[
                 styles.smallCard,
                 { backgroundColor: theme.success, shadowColor: theme.text },
@@ -433,7 +433,7 @@ export default function IndexTab() {
 
               <Boton
                 onPress={() => router.push({
-                  pathname: './workout_screen',
+                  pathname: '../(modals)/workout_screen',
                   params: { userId: user?.id?.toString(), routineId: item.id, nombre: item.nombre }
                 })}
                 onLongPress={() => {
@@ -487,7 +487,7 @@ export default function IndexTab() {
 
         </View>
 
-        <View style={{ paddingVertical: 100 }}></View>
+        <View style={{paddingVertical:60}}></View>
       </ScrollView>
       <StatusBar style='light' />
     </View>

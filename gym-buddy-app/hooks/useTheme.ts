@@ -16,6 +16,8 @@ type themeType = {
     border: string,
     progressTrack: string,
     progressFill: string,
+    tabBar: string,
+    tabBarText: string
 }
 
 export default function useTheme() {

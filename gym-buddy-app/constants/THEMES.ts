@@ -13,6 +13,8 @@ export const THEMES = {
         border: '#2b2e36',
         progressTrack: 'rgba(165, 165, 165, 0.18)',
         progressFill: '#6b81ffff',
+        tabBar: '#aebdfcff',
+        tabBarText:'#fff'
     },
     light: {
         header: "#ffffffff",
@@ -27,5 +29,7 @@ export const THEMES = {
         border: '#e3e3e3',
         progressTrack: 'rgba(134, 134, 134, 0.18)',
         progressFill: '#6babffff',
+        tabBar: '#aebefc9a',
+        tabBarText:'#fff'
     },
 };
